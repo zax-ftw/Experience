@@ -207,9 +207,9 @@ void PlayerSkillsEx::GetSkillDatHook(ActorValue avId, float* level, float* xp, f
 		SkillData* skill = &data->skills[*id];
 		if (skill) {
 			*level = skill->level; // unused
-			*xp = skill->xp;
+			*xp = caps[*id] > player->GetBaseActorValue(avId) ? skill->xp : -100000.0f;
 			*next = skill->levelThreshold;
-			*legend = caps[*id] > player->GetBaseActorValue(avId) ? 0 : 1;
+			*legend = data->legendaryLevels[*id];
 		}
 	}
 }
@@ -253,7 +253,7 @@ void SkillCap_GenCode(Xbyak::CodeGenerator& code, uintptr_t func, uintptr_t call
 		code.jmp(ptr[rip]);
 		code.dq(func + 0x361);
 
-	} else { // SE
+	} else { // SE and VR
 
 		code.movss(xmm6, xmm0);  // lvl (xmm6-xmm15 - non volatile)
 		code.movss(xmm1, xmm8);  // max - a2
@@ -280,38 +280,38 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 		reinterpret_cast<uintptr_t>(&PlayerSkillsEx::GetSkillCap2));
 
 	trampoline.write_branch<6>(
-		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F), 
+		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F, 0x51), 
 		trampoline.allocate(code));
 
 	//trampoline.write_call<5>(Offset::PlayerCharacter::Ctor.address() + OFFSET(0xC3D, 0xECD), &PlayerSkillsEx::PlayerSkills_Hook);
 
-	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303), &PlayerSkillsEx::InitSkills_Hook);  // MainMenu
-	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + 0xE5, &PlayerSkillsEx::InitSkills_Hook);                  // MainMenu
-	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + 0x1A, &PlayerSkillsEx::InitSkills_Hook);
+	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), &PlayerSkillsEx::InitSkills_Hook);  // MainMenu
+	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), &PlayerSkillsEx::InitSkills_Hook);                  // MainMenu
+	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + OFFSET(0x1A, 0x1A, 0x1A), &PlayerSkillsEx::InitSkills_Hook);
 
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + 0x40, &PlayerSkillsEx::AdvanceLevel_Hook);
-	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + 0x3E, &PlayerSkillsEx::AdvanceLevel_Hook);
-	trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + 0xCE, &PlayerSkillsEx::AdvanceLevel_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), &PlayerSkillsEx::AdvanceLevel_Hook);
+	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), &PlayerSkillsEx::AdvanceLevel_Hook);
+	trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), &PlayerSkillsEx::AdvanceLevel_Hook);
 
-	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104), &PlayerSkillsEx::GetSkillDatHook);
+	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), &PlayerSkillsEx::GetSkillDatHook);
 
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + 0x2A, &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + 0x48, &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::PlayerCharacter::sub_69ABF0.address() + 0x37, &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + 0x72, &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::PlayerCharacter::sub_69ABF0.address() + OFFSET(0x37, 0x37, 0x5E), &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), &PlayerSkillsEx::CanLevelUp_Hook);
 	
 	if (REL::Module::IsAE()) {
 		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC9, 0x90, 0x90, 0x90, 0x90 };  // pxor xmm1, xmm1
 		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x2CF,
 			std::span<uint8_t>(kDisableExperienceGain));
-	} else {
+	} else { // SE and VR
 		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC0, 0x90 };  // pxor xmm0, xmm0
 		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x22B,
 			std::span<uint8_t>(kDisableExperienceGain));
 	}
 
 	uint8_t kDisableLevelUpMessage[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };  // level meter for skills
-	REL::safe_write(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF),
+	REL::safe_write(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC),
 		std::span<uint8_t>(kDisableLevelUpMessage));
 }

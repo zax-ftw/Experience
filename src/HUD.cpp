@@ -37,7 +37,7 @@ void HUD::ShowLevelMeter(uint16_t level, float startPercent, float endPercent)
 
 HUDObject* HUD::GetElement(HUDMenu* hud, ObjectType type) 
 { 
-	return hud->objects[type]; 
+	return hud->GetRuntimeData().objects[type];
 }
 
 void HUD::Impl::ShowNotification(HUDNotifications* object, const char* text, const char* status, const char* sound, MessageType type)

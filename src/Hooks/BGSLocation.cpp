@@ -26,10 +26,10 @@ MARKER_TYPE BGSLocationEx::GetMapMarkerType()
 
 void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 {
-	trampoline.write_call<5>(Offset::BGSLocation::TryToClear.address() + 0x3F, &BGSLocationEx::ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Unknown::LocationMarkerRelated.address() + OFFSET(0x71, 0xAE), &BGSLocationEx::ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Actor::Resurrect.address() + OFFSET(0x386, 0x347), &BGSLocationEx::ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Actor::Kill.address() + OFFSET(0x1142, 0x11E8), &BGSLocationEx::ClearedCheck_Hook);
+	trampoline.write_call<5>(Offset::BGSLocation::TryToClear.address() + OFFSET(0x3F, 0x3F, 0x3F), &BGSLocationEx::ClearedCheck_Hook);
+	trampoline.write_call<5>(Offset::Unknown::LocationMarkerRelated.address() + OFFSET(0x71, 0xAE, 0x71), &BGSLocationEx::ClearedCheck_Hook);
+	trampoline.write_call<5>(Offset::Actor::Resurrect.address() + OFFSET(0x386, 0x347, 0x386), &BGSLocationEx::ClearedCheck_Hook);
+	trampoline.write_call<5>(Offset::Actor::Kill.address() + OFFSET(0x1142, 0x11E8, 0x1142), &BGSLocationEx::ClearedCheck_Hook);
 }
 
 bool BGSLocationEx::ClearedCheck_Hook(int time, bool force)

@@ -119,7 +119,7 @@ float ActorKillEventHandler::GetGroupMult(PlayerCharacter* player) const
 	auto setting = Settings::GetSingleton().GetSettingFloat("fXPGroupFactor");
 
 	float groupFactor = std::clamp(setting, 0.0f, 1.0f);
-	float groupSize = player->GetPlayerRuntimeData().teammateCount;
+	float groupSize = player->GetInfoRuntimeData().teammateCount;
 
 	return std::pow((1.0f - groupFactor), groupSize);
 }
@@ -160,7 +160,7 @@ bool ActorKillEventHandler::IsValidKill(Actor* killer, Actor* victim)
 		}
 
 		// TODO: handle it better
-		if (killer->AsActorValueOwner()->GetActorValue(ActorValue::kAggresion) == 3) { 
+		if (killer->AsActorValueOwner()->GetActorValue(ActorValue::kAggression) == 3) { 
 			return true;
 		}
 	}

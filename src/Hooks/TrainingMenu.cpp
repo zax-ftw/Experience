@@ -15,12 +15,12 @@ void TrainingMenuEx::Train()
 
 void TrainingMenuEx::Train_Hook()
 {
-	auto trainer = static_cast<Character*>(unk38);
+	auto trainer = static_cast<Character*>(GetRuntimeData().unk38);
 
-	logger::trace("Train_Hook: {0} (trainer={1:08X})", skill, trainer->formID);
+	logger::trace("Train_Hook: {0} (trainer={1:08X})", GetRuntimeData().skill, trainer->formID);
 
 	auto player = PlayerCharacter::GetSingleton()->AsActorValueOwner();
-	if (player->GetBaseActorValue(skill) < PlayerSkillsEx::GetSkillCap1(skill)) {
+	if (player->GetBaseActorValue(GetRuntimeData().skill) < PlayerSkillsEx::GetSkillCap1(GetRuntimeData().skill)) {
 		Train();
 	} else {
 		ShowCappedMessage();
@@ -33,17 +33,17 @@ void TrainingMenuEx::ShowCappedMessage()
 	Setting* setting = settings->GetSetting("sCanNotTrainAnymore");
 	if (setting) {
 		const char* message = setting->GetString();
-		DebugNotification(message, nullptr);		
+		DebugNotification(message);		
 	}
 }
 
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 {
 	trampoline.write_branch<6>(
-		Offset::TrainingMenu::TrainCallback::Accept.address() + 0x7,
+		Offset::TrainingMenu::TrainCallback::Accept.address() + OFFSET(0x7, 0x7, 0x7),
 		&TrainingMenuEx::Train_Hook);
 
 	trampoline.write_call<5>(
-		Offset::TrainingMenu::ProcessMessage.address() + 0xDB,
+		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xDB, 0xDB),
 		&TrainingMenuEx::Train_Hook);
 }

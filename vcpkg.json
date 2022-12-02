@@ -5,7 +5,7 @@
   "homepage": "https://github.com/zax-ftw/Experience",
   "license": "Apache-2.0",
   "dependencies": [
-    "commonlibsse-ng-flatrim",
+    "commonlibsse-ng",
     "magic-enum",
     "simpleini"
   ]

@@ -127,5 +127,5 @@ constexpr std::string_view remove_prefix(std::string_view s, size_t count = 1)
 	return s;
 }
 
-#define OFFSET(SE, AE) REL::VariantOffset(SE, AE, 0).offset()
+#define OFFSET(SE, AE, VR) REL::VariantOffset(SE, AE, VR).offset()
 
