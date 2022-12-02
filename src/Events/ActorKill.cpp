@@ -97,7 +97,7 @@ BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event*
 		reward *= GetGroupMult(player);
 		reward *= Settings::GetSingleton().GetSettingFloat("fXPKillingMult");
 
-		int result = std::max(std::ceil(reward), 1.0f);
+		int result = max(std::ceil(reward), 1.0f);
 
 		AddExperience(result);
 	}
@@ -108,10 +108,10 @@ float ActorKillEventHandler::GetLevelMult(Actor* player, Actor* victim) const
 {
 	auto setting = Settings::GetSingleton().GetSettingInt("iXPLevelRange");
 
-	float levelRange = std::max(setting, 1);
+	float levelRange = max(setting, 1);
 	float levelDelta = player->GetLevel() - victim->GetLevel();
 
-	return std::max(1.0f - (levelDelta / levelRange), 0.0f);
+	return max(1.0f - (levelDelta / levelRange), 0.0f);
 }
 
 float ActorKillEventHandler::GetGroupMult(PlayerCharacter* player) const
@@ -119,7 +119,7 @@ float ActorKillEventHandler::GetGroupMult(PlayerCharacter* player) const
 	auto setting = Settings::GetSingleton().GetSettingFloat("fXPGroupFactor");
 
 	float groupFactor = std::clamp(setting, 0.0f, 1.0f);
-	float groupSize = player->GetPlayerRuntimeData().teammateCount;
+	float groupSize = player->GetInfoRuntimeData().teammateCount;
 
 	return std::pow((1.0f - groupFactor), groupSize);
 }
@@ -160,7 +160,7 @@ bool ActorKillEventHandler::IsValidKill(Actor* killer, Actor* victim)
 		}
 
 		// TODO: handle it better
-		if (killer->AsActorValueOwner()->GetActorValue(ActorValue::kAggresion) == 3) { 
+		if (killer->AsActorValueOwner()->GetActorValue(ActorValue::kAggression) == 3) { 
 			return true;
 		}
 	}
