@@ -69,7 +69,7 @@ float PlayerSkillsEx::GetSkillCap1(ActorValue avId)
 
 float PlayerSkillsEx::GetSkillCap2(ActorValue avId, float hard)
 {
-	return min(GetSkillCap1(avId), hard);
+	return std::min(GetSkillCap1(avId), hard);
 }
 
 float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
