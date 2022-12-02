@@ -206,7 +206,7 @@ void PlayerSkillsEx::GetSkillDatHook(ActorValue avId, float* level, float* xp, f
 		auto player = PlayerCharacter::GetSingleton()->AsActorValueOwner();
 		SkillData* skill = &data->skills[*id];
 		if (skill) {
-			*level = skill->level;  // unused
+			*level = skill->level; // unused
 			*xp = caps[*id] > player->GetBaseActorValue(avId) ? skill->xp : -100000.0f;
 			*next = skill->levelThreshold;
 			*legend = data->legendaryLevels[static_cast<int32_t>(avId) - kSkillOffset];
