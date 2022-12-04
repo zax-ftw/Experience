@@ -105,7 +105,7 @@ void ExperienceManager::AddExperience(int points, bool meter)
 
 	data->xp = xp_new;
 
-	logger::info("Progress: {0}/{2} => {1}/{2}", 
+	logger::trace("Progress: {0}/{2} => {1}/{2}", 
 		xp_old, xp_new, xp_max);
 
 	Settings& settings = Settings::GetSingleton();

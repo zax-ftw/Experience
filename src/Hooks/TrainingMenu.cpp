@@ -26,7 +26,6 @@ void TrainingMenuEx::Train_Hook()
 		ShowCappedMessage();
 	}
 }
-
 void TrainingMenuEx::ShowCappedMessage()
 {
 	auto settings = GameSettingCollection::GetSingleton();

@@ -199,7 +199,7 @@ void PlayerSkillsEx::AdvanceLevel_Hook(bool addThreshold)
 }
 
 // UpdateSkillList -> AS2_InitAnimatedSkillText
-void PlayerSkillsEx::GetSkillDatHook(ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
+void PlayerSkillsEx::GetSkillData_Hook(ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
 {
 	auto id = ResolveAdvanceableSkillId(avId);
 	if (id) {
@@ -293,7 +293,7 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), &PlayerSkillsEx::AdvanceLevel_Hook);
 	trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), &PlayerSkillsEx::AdvanceLevel_Hook);
 
-	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), &PlayerSkillsEx::GetSkillDatHook);
+	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), &PlayerSkillsEx::GetSkillData_Hook);
 
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), &PlayerSkillsEx::CanLevelUp_Hook);

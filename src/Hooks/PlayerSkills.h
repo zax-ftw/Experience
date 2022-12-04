@@ -34,7 +34,7 @@ private:
 	PlayerSkills* PlayerSkills_Hook();
 	void          InitSkills_Hook();
 	void          AdvanceLevel_Hook(bool addThreshold);
-	void          GetSkillDatHook(RE::ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend);
+	void          GetSkillData_Hook(RE::ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend);
 	bool          CanLevelUp_Hook();
 
 	static void ApplyRacials(RE::TESRace* race);
