@@ -6,7 +6,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}")
 ########################################################################################################################
 project(
 	Experience
-	VERSION 3.0.0
+	VERSION 3.0.1
 	LANGUAGES CXX
 )
 
@@ -59,8 +59,6 @@ set(SOURCE_FILES
  "src/Events/QuestStatus.h"
  "src/Events/SkillIncrease.cpp" 
  "src/Events/SkillIncrease.h"
- "src/Skyrim/BookRead.cpp" 
- "src/Skyrim/BookRead.h" 
  "src/Skyrim/LocationCleared.cpp"
  "src/Skyrim/LocationCleared.h" 
  "src/Skyrim/ObjectiveState.cpp"
