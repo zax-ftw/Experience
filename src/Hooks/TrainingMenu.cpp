@@ -43,6 +43,6 @@ void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 		&TrainingMenuEx::Train_Hook);
 
 	trampoline.write_call<5>(
-		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xDB, 0xDB),
+		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB),
 		&TrainingMenuEx::Train_Hook);
 }
