@@ -26,6 +26,8 @@ public:
 		Source(ExperienceManager* manager, MeterState meter) :
 			manager(manager), meter(meter) {};
 
+		virtual ~Source() {};
+
 		void AddExperience(int points);
 
 	private:
