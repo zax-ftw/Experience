@@ -140,16 +140,13 @@ target_compile_features(
 
 if (COPY_OUTPUT)
 	if (DEFINED SKYRIM_PATH)
-		add_custom_command(
-			TARGET ${PROJECT_NAME}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/
-		)
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/)		
+		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/)
+		endif()
 	else ()
-		message(
-			WARNING
-			"Installed Path is not defined. Skipping post-build copy command."
-		)
+		message("Installed Path is not defined. Skipping post-build copy command.")
 	endif ()
 endif ()
