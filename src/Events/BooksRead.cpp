@@ -7,22 +7,22 @@
 
 using namespace RE;
 
-BookReadEventHandler::BookReadEventHandler(ExperienceManager* manager) :
+BooksReadEventHandler::BooksReadEventHandler(ExperienceManager* manager) :
 	ExperienceManager::Source(manager, MeterState::kInactive)
 {
-	BookRead::GetEventSource()->AddEventSink(this);
+	BooksRead::GetEventSource()->AddEventSink(this);
 }
 
-BookReadEventHandler::~BookReadEventHandler(void)
+BooksReadEventHandler::~BooksReadEventHandler(void)
 {
-	BookRead::GetEventSource()->RemoveEventSink(this);
+	BooksRead::GetEventSource()->RemoveEventSink(this);
 }
 
 // kType_Skill flag doesn't seem to be used, using event->skillBook instead
-BSEventNotifyControl BookReadEventHandler::ProcessEvent(const BookRead::Event* event, BookReadEventSource*)
+BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event* event, BooksReadEventSource*)
 {
 	TESObjectBOOK* book = event->book;
-	if (!event->skillBook && !book->TeachesSpell())
+	if (!event->unk08 && !book->TeachesSpell()) // skillBook
 	{
 		logger::info("BookRead: {0} ({1})", book->GetName(), book->value);
 
@@ -33,7 +33,7 @@ BSEventNotifyControl BookReadEventHandler::ProcessEvent(const BookRead::Event* e
 	return BSEventNotifyControl::kContinue;
 }
 
-int BookReadEventHandler::GetReward(float value)
+int BooksReadEventHandler::GetReward(float value)
 {
 	float mult = Settings::GetSingleton().GetSettingFloat("fXPReadingMult");
 	float sqrt = std::sqrtf(value * mult);

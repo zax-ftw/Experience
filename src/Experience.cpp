@@ -43,7 +43,7 @@ void ExperienceManager::Init()
 		events.emplace_back(new ActorKillEventHandler(this));
 	}
 	if (settings.GetSettingBool("bEnableReading")) {
-		events.emplace_back(new BookReadEventHandler(this));
+		events.emplace_back(new BooksReadEventHandler(this));
 	}
 	if (settings.GetSettingBool("bEnableSkillXP")) {
 		events.emplace_back(new SkillIncreaseEventHandler(this));

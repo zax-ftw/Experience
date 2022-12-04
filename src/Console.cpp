@@ -5,17 +5,10 @@
 
 using namespace RE;
 
-bool ObScript::ExtractArgs(const ScriptParam* paramInfo, ScriptData* scriptData, std::uint32_t& opcodeOffsetPtr, TESObjectREFR* thisObj, TESObjectREFR* containingObj, Script* scriptObj, ScriptLocals* locals, void* args1, void* args2)
-{
-	using func_t = decltype(&ObScript::ExtractArgs);
-	REL::Relocation<func_t> func{ Offset::ObScript::ExtractArgs };
-	return func(paramInfo, scriptData, opcodeOffsetPtr, thisObj, containingObj, scriptObj, locals, args1, args2);
-}
-
 bool ObScript::AdvancePCLevel_Execute(const ScriptParam* paramInfo, ScriptData* scriptData, TESObjectREFR* thisObj, TESObjectREFR* containingObj, Script* scriptObj, ScriptLocals* locals, double&, std::uint32_t& opcodeOffsetPtr)
 {
 	std::int32_t points;
-	ObScript::ExtractArgs(paramInfo, scriptData, opcodeOffsetPtr, thisObj, containingObj, scriptObj, locals, &points, nullptr);
+	RE::Script::ParseParameters(paramInfo, scriptData, opcodeOffsetPtr, thisObj, containingObj, scriptObj, locals, &points);
 
 	ExperienceManager::Experience experience;
 

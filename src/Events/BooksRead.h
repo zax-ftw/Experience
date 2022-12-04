@@ -1,19 +1,17 @@
 #pragma once
 
-#include "Skyrim/BookRead.h"
-
 #include "Experience.h"
 
-class BookReadEventHandler : public ExperienceManager::Source, 
-	public RE::BSTEventSink<RE::BookRead::Event>
+class BooksReadEventHandler : public ExperienceManager::Source, 
+	public RE::BSTEventSink<RE::BooksRead::Event>
 {
 public:
-	using BookReadEventSource = RE::BSTEventSource<RE::BookRead::Event>;
+	using BooksReadEventSource = RE::BSTEventSource<RE::BooksRead::Event>;
 
-	BookReadEventHandler(ExperienceManager* manager);
-	~BookReadEventHandler(void);
+	BooksReadEventHandler(ExperienceManager* manager);
+	~BooksReadEventHandler(void);
 
-	RE::BSEventNotifyControl ProcessEvent(const RE::BookRead::Event* event, BookReadEventSource* source) override;
+	RE::BSEventNotifyControl ProcessEvent(const RE::BooksRead::Event* event, BooksReadEventSource* source) override;
 
 private:
 	int GetReward(float value);

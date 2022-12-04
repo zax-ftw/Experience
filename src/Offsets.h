@@ -93,11 +93,6 @@ namespace RE
 			constexpr auto UpdateLevel = RELOCATION_ID(21887, 22369);  // 00300210, 140314C20
 		}
 
-		namespace ObScript
-		{
-			constexpr auto ExtractArgs = RELOCATION_ID(21425, 21910);  // 002E8400, 1402FC890
-		}
-
 		namespace Main
 		{
 			constexpr auto sub_5B5490 = RELOCATION_ID(35593, 36601);  // 005B5490, 1405DCD70
@@ -106,7 +101,6 @@ namespace RE
 
 		namespace StoryEvents
 		{
-			constexpr auto BookRead = RELOCATION_ID(17470, 17865);
 			constexpr auto LocationCleared = RELOCATION_ID(18046, 18435);
 			constexpr auto ObjectiveState = RELOCATION_ID(23486, 23951);
 			constexpr auto QuestStatus = RELOCATION_ID(24719, 25196);
