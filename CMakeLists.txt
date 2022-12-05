@@ -99,11 +99,19 @@ find_package(magic_enum CONFIG REQUIRED)
 
 find_path(SIMPLEINI_INCLUDE_DIR "ConvertUTF.c")
 
-add_commonlibsse_plugin(
+add_library(
+	${PROJECT_NAME}
+	SHARED
+	${SOURCE_FILES}
+	${CMAKE_CURRENT_BINARY_DIR}/version.rc
+	.clang-format
+	.editorconfig
+)
+
+target_commonlibsse_properties(
 	${PROJECT_NAME}
 	AUTHOR ${AUTHOR_NAME}
-	SOURCES 
-	${SOURCE_FILES}
+	USE_ADDRESS_LIBRARY
 )
 
 target_link_libraries(
