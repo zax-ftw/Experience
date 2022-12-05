@@ -28,8 +28,8 @@ BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCle
 
 		ShowLocationCleared(name);
 
-		auto text = remove_prefix(enum_name(type));
-		logger::info("LocationCleared: {0} ({1})", name, text);
+		logger::info("LocationCleared: {0} ({1})", 
+			name, magic_enum::enum_name(type));
 
 		auto reward = GetReward(type);
 		AddExperience(reward);

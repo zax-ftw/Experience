@@ -112,19 +112,12 @@
 
 using namespace std::literals;
 using namespace REL::literals;
-using namespace magic_enum;
 
 namespace logger = SKSE::log;
 
 namespace util
 {
 	using SKSE::stl::report_and_fail;
-}
-
-constexpr std::string_view remove_prefix(std::string_view s, size_t count = 1)
-{
-	s.remove_prefix(count);
-	return s;
 }
 
 #define OFFSET(SE, AE, VR) REL::VariantOffset(SE, AE, VR).offset()

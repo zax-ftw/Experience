@@ -33,8 +33,8 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 
 	logger::trace("Objective: {}", displayText);
 	logger::trace("    State: {} => {}", 
-		remove_prefix(enum_name(event->oldState)), 
-		remove_prefix(enum_name(event->newState)));
+		magic_enum::enum_name(event->oldState), 
+		magic_enum::enum_name(event->newState));
 	logger::trace("    Quest: {}", quest->GetFormEditorID());
 
 	int reward = Settings::GetSingleton().GetSettingInt("iXPObjectives");
