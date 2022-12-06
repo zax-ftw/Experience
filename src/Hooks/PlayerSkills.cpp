@@ -206,10 +206,18 @@ void PlayerSkillsEx::GetSkillData_Hook(ActorValue avId, float* level, float* xp,
 		auto player = PlayerCharacter::GetSingleton()->AsActorValueOwner();
 		SkillData* skill = &data->skills[*id];
 		if (skill) {
-			*level = skill->level; // unused
-			*xp = caps[*id] > player->GetBaseActorValue(avId) ? skill->xp : -100000.0f;
-			*next = skill->levelThreshold;
-			*legend = data->legendaryLevels[*id];
+			if (level) {
+				*level = skill->level;  // unused
+			}
+			if (xp) {
+				*xp = caps[*id] > player->GetBaseActorValue(avId) ? skill->xp : -100000.0f;
+			}
+			if (next) {
+				*next = skill->levelThreshold;
+			}
+			if (legend) {
+				*legend = data->legendaryLevels[*id];
+			}
 		}
 	}
 }
@@ -294,6 +302,8 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 	trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), &PlayerSkillsEx::AdvanceLevel_Hook);
 
 	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), &PlayerSkillsEx::GetSkillData_Hook);
+	trampoline.write_call<5>(Offset::TrainingMenu::SetSkillXpPercent.address() + OFFSET(0x87, 0x87, 0x87), &PlayerSkillsEx::GetSkillData_Hook);
+	REL::safe_fill(Offset::TrainingMenu::SetSkillXpPercent.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
 
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), &PlayerSkillsEx::CanLevelUp_Hook);
