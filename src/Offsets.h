@@ -64,7 +64,8 @@ namespace RE
 		{
 			constexpr auto ProcessMessage = RELOCATION_ID(51788, 52662);  // 008CE590, 1408FD610
 			constexpr auto Train = RELOCATION_ID(51793, 52667);           // 008CE8E0, 1408FD960
-			constexpr auto SetSkillXpPercent = RELOCATION_ID(51795, 52669); 
+			constexpr auto SetSkillXpPercent = RELOCATION_ID(51795, 52669);
+
 			namespace TrainCallback
 			{
 				constexpr auto Accept = RELOCATION_ID(51790, 52664);  // 008CE6F0, 1408FD760

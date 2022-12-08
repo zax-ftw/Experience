@@ -22,7 +22,7 @@ BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Ev
 		TESQuest* quest = event->quest;
 		auto name = quest->GetName();
 
-		if (name && strlen(name) != 0) {
+		if (name && name[0]) {
 
 			auto edid = quest->GetFormEditorID();
 			auto type = quest->GetType();
