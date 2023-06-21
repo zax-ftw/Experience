@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Skyrim/QuestStatus.h"
-
 #include "Experience.h"
 
 class QuestStatusEventHandler : public ExperienceManager::Source, 

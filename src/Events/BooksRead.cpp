@@ -23,6 +23,7 @@ BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event*
 {
 	TESObjectBOOK* book = event->book;
 	if (!event->unk08 && !book->TeachesSpell()) // skillBook
+	if (!event->skillBook && !book->TeachesSpell())
 	{
 		logger::info("BookRead: {0} ({1})", book->GetName(), book->value);
 

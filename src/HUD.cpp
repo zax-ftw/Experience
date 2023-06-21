@@ -4,7 +4,6 @@
 
 using namespace RE;
 
-static uint32_t* realTime = (uint32_t*)Offset::RealTime.address();
 
 void HUD::ShowNotification(const char* text, const char* status, const char* sound, MessageType type)
 {
@@ -53,7 +52,7 @@ void HUD::Impl::ShowNotification(HUDNotifications* object, const char* text, con
 	Setting* setting = settings->GetSetting("iObjectivesWaitTime:Interface");
 	int waitTime = setting ? setting->GetSInt() : 250;
 
-	notification.time = *realTime + waitTime;
+	notification.time = GetDurationOfApplicationRunTime() + waitTime;
 	notification.type = type;
 
 	object->queue.push_back(notification);
@@ -70,7 +69,7 @@ void HUD::Impl::ShowLevelMeter(HUDNotifications* object, uint16_t level, float s
 		args[1].SetNumber(startPercent);
 		args[2].SetNumber(endPercent);
 
-		object->time = *realTime;
+		object->time = GetDurationOfApplicationRunTime();
 		object->root.Invoke("ShowLevelUpMeter", nullptr, args, 3);
 	});
 }

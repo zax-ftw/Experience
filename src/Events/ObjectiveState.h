@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Skyrim/ObjectiveState.h"
-
 #include "Experience.h"
 
 class ObjectiveStateEventHandler : public ExperienceManager::Source, 

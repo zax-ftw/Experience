@@ -4,9 +4,6 @@ namespace RE
 {
 	namespace Offset
 	{
-		constexpr auto RealTime = RELOCATION_ID(523662, 410201);  // 02F6B950, 1430064D0
-		constexpr auto FileExists = RELOCATION_ID(80087, 82411);
-
 		namespace Actor
 		{
 			constexpr auto Kill = RELOCATION_ID(36872, 37896);       // 00603B30, 14062B1E0
@@ -98,13 +95,6 @@ namespace RE
 		{
 			constexpr auto sub_5B5490 = RELOCATION_ID(35593, 36601);  // 005B5490, 1405DCD70
 			constexpr auto sub_5B6DC0 = RELOCATION_ID(35620, 36630);  // 005B6DC0, 1405DEB80
-		}
-
-		namespace StoryEvents
-		{
-			constexpr auto LocationCleared = RELOCATION_ID(18046, 18435);
-			constexpr auto ObjectiveState = RELOCATION_ID(23486, 23951);
-			constexpr auto QuestStatus = RELOCATION_ID(24719, 25196);
 		}
 
 	}

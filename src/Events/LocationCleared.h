@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Skyrim/LocationCleared.h"
-
 #include "Experience.h"
 
 class LocationClearedEventHandler : public ExperienceManager::Source, 

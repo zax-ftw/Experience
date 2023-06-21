@@ -15,12 +15,12 @@ void TrainingMenuEx::Train()
 
 void TrainingMenuEx::Train_Hook()
 {
-	auto trainer = static_cast<Character*>(GetRuntimeData().unk38);
+	auto& menu = GetRuntimeData();
 
-	logger::trace("Train_Hook: {0} (trainer={1:08X})", GetRuntimeData().skill, trainer->formID);
+	logger::trace("Train_Hook: {0} (trainer={1:08X})", menu.skill, menu.trainer->formID);
 
 	auto player = PlayerCharacter::GetSingleton()->AsActorValueOwner();
-	if (player->GetBaseActorValue(GetRuntimeData().skill) < PlayerSkillsEx::GetSkillCap1(GetRuntimeData().skill)) {
+	if (player->GetBaseActorValue(menu.skill) < PlayerSkillsEx::GetSkillCap1(menu.skill)) {
 		Train();
 	} else {
 		ShowCappedMessage();
