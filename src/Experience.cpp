@@ -77,10 +77,11 @@ void ExperienceManager::Process(std::unique_lock<std::mutex>& lock)
 
 	while (!queue.empty()) {
 		Experience& e = queue.front();
-		queue.pop();
 
 		points += e.points;
 		widget |= e.widget;
+
+		queue.pop();
 	}
 
 	AddExperience(points, widget);
