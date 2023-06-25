@@ -37,7 +37,7 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 		magic_enum::enum_name(event->newState));
 	logger::trace("    Quest: {}", quest->GetFormEditorID());
 
-	int reward = Settings::GetSingleton().GetSettingInt("iXPObjectives");
+	int reward = Settings::GetSingleton()->GetSettingInt("iXPObjectives");
 
 	if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
 		AddExperience(reward);

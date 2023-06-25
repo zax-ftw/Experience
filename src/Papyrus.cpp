@@ -26,7 +26,7 @@ namespace Papyrus
 		experience.widget = meter;
 		experience.source = nullptr;
 
-		ExperienceManager::GetSingleton().AddExperience(experience);
+		ExperienceManager::GetSingleton()->AddExperience(experience);
 	}
 
 	void ShowNotification(StaticFunctionTag*, BSFixedString text, BSFixedString status, BSFixedString sound)
@@ -43,52 +43,52 @@ namespace Papyrus
 
 	int32_t GetSettingInt(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton().GetSettingInt(setting);
+		return Settings::GetSingleton()->GetSettingInt(setting);
 	}
 
 	float GetSettingFloat(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton().GetSettingFloat(setting);
+		return Settings::GetSingleton()->GetSettingFloat(setting);
 	}
 
 	bool GetSettingBool(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton().GetSettingBool(setting);
+		return Settings::GetSingleton()->GetSettingBool(setting);
 	}
 
 	BSFixedString GetSettingString(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton().GetSettingString(setting);
+		return Settings::GetSingleton()->GetSettingString(setting);
 	}
 
 	void SetSettingInt(StaticFunctionTag*, BSFixedString setting, int32_t value)
 	{
-		return Settings::GetSingleton().SetSettingInt(setting, value);
+		return Settings::GetSingleton()->SetSettingInt(setting, value);
 	}
 
 	void SetSettingFloat(StaticFunctionTag*, BSFixedString setting, float value)
 	{
-		return Settings::GetSingleton().SetSettingFloat(setting, value);
+		return Settings::GetSingleton()->SetSettingFloat(setting, value);
 	}
 
 	void SetSettingBool(StaticFunctionTag*, BSFixedString setting, bool value)
 	{
-		return Settings::GetSingleton().SetSettingBool(setting, value);
+		return Settings::GetSingleton()->SetSettingBool(setting, value);
 	}
 
 	void SetSettingString(StaticFunctionTag*, BSFixedString setting, BSFixedString value)
 	{
-		return Settings::GetSingleton().SetSettingString(setting, value.c_str());
+		return Settings::GetSingleton()->SetSettingString(setting, value.c_str());
 	}
 
 	void SaveSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton().SaveSettings();
+		return Settings::GetSingleton()->SaveSettings();
 	}
 
 	void LoadSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton().LoadSettings();
+		return Settings::GetSingleton()->LoadSettings();
 	}
 
 	bool RegisterFuncs(BSScript::IVirtualMachine* vm)

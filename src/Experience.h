@@ -8,11 +8,11 @@
 
 #include "Utils/Singleton.h"
 
-class ExperienceManager : public Singleton<ExperienceManager>
+class ExperienceManager : public ISingleton<ExperienceManager>
 {
 public:
 
-	friend class Singleton<ExperienceManager>;
+	friend class ISingleton<ExperienceManager>;
 
 	class Source
 	{

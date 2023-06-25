@@ -37,15 +37,15 @@ void ExperienceManager::Init()
 	events.emplace_back(new LocationClearedEventHandler(this));
 	events.emplace_back(new ObjectiveStateEventHandler(this));
 
-	Settings& settings = Settings::GetSingleton();
+	auto settings = Settings::GetSingleton();
 
-	if (settings.GetSettingBool("bEnableKilling")) {
+	if (settings->GetSettingBool("bEnableKilling")) {
 		events.emplace_back(new ActorKillEventHandler(this));
 	}
-	if (settings.GetSettingBool("bEnableReading")) {
+	if (settings->GetSettingBool("bEnableReading")) {
 		events.emplace_back(new BooksReadEventHandler(this));
 	}
-	if (settings.GetSettingBool("bEnableSkillXP")) {
+	if (settings->GetSettingBool("bEnableSkillXP")) {
 		events.emplace_back(new SkillIncreaseEventHandler(this));
 	}
 
@@ -108,15 +108,15 @@ void ExperienceManager::AddExperience(int points, bool meter)
 	logger::trace("Progress: {0}/{2} => {1}/{2}", 
 		xp_old, xp_new, xp_max);
 
-	Settings& settings = Settings::GetSingleton();
+	auto settings = Settings::GetSingleton();
 
-	if (meter || settings.GetSettingBool("bForceLvlMeter")) {
+	if (meter || settings->GetSettingBool("bForceLvlMeter")) {
 		ShowLevelMeter(xp_old / xp_max, xp_new / xp_max);
 	}
 	if (xp_new >= xp_max && xp_old < xp_max) {
 		ShowLevelUpNotification();
 	}
-	if (settings.GetSettingBool("bShowMessages")) {
+	if (settings->GetSettingBool("bShowMessages")) {
 		ShowRewardMessage(points);
 	}
 }
@@ -156,7 +156,7 @@ void ExperienceManager::ShowLevelUpNotification()
 
 void ExperienceManager::ShowRewardMessage(int points)
 {
-	std::string format = Settings::GetSingleton().GetSettingString("sMessageFormat");
+	std::string format = Settings::GetSingleton()->GetSettingString("sMessageFormat");
 	std::string result = fmt::format(fmt::runtime(format), points);
 
 	DebugNotification(result.c_str());

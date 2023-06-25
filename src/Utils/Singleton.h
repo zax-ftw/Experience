@@ -1,20 +1,20 @@
 #pragma once
 
-template <typename T>
-class Singleton
+template <class T>
+class ISingleton
 {
 public:
-	static T& GetSingleton()
+	static T* GetSingleton()
 	{
 		static T instance;
-		return instance;
+		return std::addressof(instance);
 	}
 
 protected:
-	Singleton() noexcept = default;
-	Singleton(const Singleton&) = delete;
-	Singleton(Singleton&&) = delete;
-	Singleton& operator=(const Singleton&) = delete;
-	Singleton& operator=(Singleton&&) = delete;
-	virtual ~Singleton() = default;
+	ISingleton() noexcept = default;
+	ISingleton(const ISingleton&) = delete;
+	ISingleton(ISingleton&&) = delete;
+	ISingleton& operator=(const ISingleton&) = delete;
+	ISingleton& operator=(ISingleton&&) = delete;
+	virtual ~ISingleton() = default;
 };

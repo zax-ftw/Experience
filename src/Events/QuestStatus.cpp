@@ -39,32 +39,32 @@ BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Ev
 
 int QuestStatusEventHandler::GetReward(QuestType type)
 {
-	Settings& settings = Settings::GetSingleton();
+	auto settings = Settings::GetSingleton();
 
 	switch (type) {
 	case QuestType::kMainQuest:
-		return settings.GetSettingInt("iXPQuestMain");
+		return settings->GetSettingInt("iXPQuestMain");
 	case QuestType::kMagesGuild:
-		return settings.GetSettingInt("iXPQuestCollege");
+		return settings->GetSettingInt("iXPQuestCollege");
 	case QuestType::kThievesGuild:
-		return settings.GetSettingInt("iXPQuestThieves");
+		return settings->GetSettingInt("iXPQuestThieves");
 	case QuestType::kDarkBrotherhood:
-		return settings.GetSettingInt("iXPQuestBrotherhood");
+		return settings->GetSettingInt("iXPQuestBrotherhood");
 	case QuestType::kCompanionsQuest:
-		return settings.GetSettingInt("iXPQuestCompanions");
+		return settings->GetSettingInt("iXPQuestCompanions");
 	case QuestType::kMiscellaneous:
-		return settings.GetSettingInt("iXPQuestMisc");
+		return settings->GetSettingInt("iXPQuestMisc");
 	case QuestType::kDaedric:
-		return settings.GetSettingInt("iXPQuestDaedric");
+		return settings->GetSettingInt("iXPQuestDaedric");
 	case QuestType::kSideQuest:
-		return settings.GetSettingInt("iXPQuestSide");
+		return settings->GetSettingInt("iXPQuestSide");
 	case QuestType::kCivilWar:
-		return settings.GetSettingInt("iXPQuestCivilWar");
+		return settings->GetSettingInt("iXPQuestCivilWar");
 	case QuestType::kDLC01_Vampire:
-		return settings.GetSettingInt("iXPQuestDawnguard");
+		return settings->GetSettingInt("iXPQuestDawnguard");
 	case QuestType::kDLC02_Dragonborn:
-		return settings.GetSettingInt("iXPQuestDragonborn");
+		return settings->GetSettingInt("iXPQuestDragonborn");
 	default:
-		return settings.GetSettingInt("iXPQuestNone");
+		return settings->GetSettingInt("iXPQuestNone");
 	}
 }

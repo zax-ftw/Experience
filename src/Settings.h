@@ -3,10 +3,10 @@
 #include "Utils/Singleton.h"
 
 
-class Settings : public Singleton<Settings>
+class Settings : public ISingleton<Settings>
 {
-	friend class Singleton<Settings>;
 public:
+	friend class ISingleton<Settings>;
 
 	void LoadSettings();
 	void SaveSettings();

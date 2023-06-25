@@ -74,9 +74,9 @@ float PlayerSkillsEx::GetSkillCap2(ActorValue avId, float hard)
 
 float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
 {
-	Settings& settings = Settings::GetSingleton();
-	float base = settings.GetSettingFloat("fSkillCapBase");
-	float mult = settings.GetSettingFloat("fSkillCapMult");
+	auto settings = Settings::GetSingleton();
+	float base = settings->GetSettingFloat("fSkillCapBase");
+	float mult = settings->GetSettingFloat("fSkillCapMult");
 
 	return base + (level * mult);
 }
@@ -110,9 +110,9 @@ void PlayerSkillsEx::UpdateSkillCaps()
 	float base = GetBaseSkillCap(level);
 	std::fill(std::begin(caps), std::end(caps), base);
 
-	Settings& settings = Settings::GetSingleton();
-	if (settings.GetSettingBool("bUseRacialCaps")) {
 		ApplyRacials(player->GetRace());
+	auto settings = Settings::GetSingleton();
+	if (settings->GetSettingBool("bUseRacialCaps")) {
 	}
 }
 
@@ -226,9 +226,9 @@ bool PlayerSkillsEx::CanLevelUp_Hook()
 {
 	if (CanLevelUp()) {
 		auto player = PlayerCharacter::GetSingleton();
-		Settings& settings = Settings::GetSingleton();
+		auto settings = Settings::GetSingleton();
 
-		int maxLevel = settings.GetSettingInt("iMaxPlayerLevel");
+		int maxLevel = settings->GetSettingInt("iMaxPlayerLevel");
 
 		if (player->GetLevel() < maxLevel)
 			return true;

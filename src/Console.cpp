@@ -16,7 +16,7 @@ bool ObScript::AdvancePCLevel_Execute(const ScriptParam* paramInfo, ScriptData* 
 	experience.widget = 0;
 	experience.source = nullptr;
 
-	ExperienceManager::GetSingleton().AddExperience(experience);
+	ExperienceManager::GetSingleton()->AddExperience(experience);
 
 	return true;
 }

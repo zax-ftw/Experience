@@ -95,7 +95,7 @@ BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event*
 
 		reward *= GetLevelMult(player, victim);
 		reward *= GetGroupMult(player);
-		reward *= Settings::GetSingleton().GetSettingFloat("fXPKillingMult");
+		reward *= Settings::GetSingleton()->GetSettingFloat("fXPKillingMult");
 
 		int result = std::max(std::ceil(reward), 1.0f);
 
@@ -106,7 +106,7 @@ BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event*
 
 float ActorKillEventHandler::GetLevelMult(Actor* player, Actor* victim) const
 {
-	auto setting = Settings::GetSingleton().GetSettingInt("iXPLevelRange");
+	auto setting = Settings::GetSingleton()->GetSettingInt("iXPLevelRange");
 
 	float levelRange = std::max(setting, 1);
 	float levelDelta = player->GetLevel() - victim->GetLevel();
@@ -116,7 +116,7 @@ float ActorKillEventHandler::GetLevelMult(Actor* player, Actor* victim) const
 
 float ActorKillEventHandler::GetGroupMult(PlayerCharacter* player) const
 {
-	auto setting = Settings::GetSingleton().GetSettingFloat("fXPGroupFactor");
+	auto setting = Settings::GetSingleton()->GetSettingFloat("fXPGroupFactor");
 
 	float groupFactor = std::clamp(setting, 0.0f, 1.0f);
 	float groupSize = player->GetInfoRuntimeData().teammateCount;
