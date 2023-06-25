@@ -4,7 +4,7 @@
 
 #include "Experience.h"
 #include "Serialization.h"
-#include "Injector.h"
+#include "HUDInjector.h"
 #include "Settings.h"
 #include "Papyrus.h"
 #include "Console.h"
@@ -90,7 +90,7 @@ namespace
 					break;
 				case SKSE::MessagingInterface::kDataLoaded:  // MainMenu
 					{
-						ExperienceManager::GetSingleton().Init();
+						ExperienceManager::GetSingleton()->Init();
 						ObScript::Init();
 					}
 					break;
@@ -114,8 +114,8 @@ namespace
 		InitializeSerialization();
 		InitializePapyrus();
 
-		Settings::GetSingleton().LoadSettings();
-		Injector::GetSingleton().Register();
+		Settings::GetSingleton()->LoadSettings();
+		HUDInjector::GetSingleton()->Register();
 
 		return true;
 	}
