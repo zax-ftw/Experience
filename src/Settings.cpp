@@ -1,6 +1,5 @@
 #include "Settings.h"
 
-using namespace SKSE;
 
 int GetIntValue(CSimpleIniA& ini, const char* section, const char* setting, int _default)
 {
@@ -29,7 +28,7 @@ void SetIntValue(CSimpleIniA& ini, const char* section, const char* setting, int
 
 void SetBoolValue(CSimpleIniA& ini, const char* section, const char* setting, bool value)
 {
-	ini.SetLongValue(section, setting, value);
+	ini.SetBoolValue(section, setting, value);
 }
 
 void SetFloatValue(CSimpleIniA& ini, const char* section, const char* setting, float value)
@@ -44,8 +43,8 @@ void SetStringValue(CSimpleIniA& ini, const char* section, const char* setting, 
 
 Settings::Settings()
 {
-	auto plugin = PluginDeclaration::GetSingleton()->GetName();
-	path = fmt::format("Data/SKSE/Plugins/{}.ini", plugin);
+	auto plugin = SKSE::PluginDeclaration::GetSingleton();
+	path = fmt::format("Data/SKSE/Plugins/{}.ini", plugin->GetName());
 }
 
 void Settings::LoadSettings()
@@ -55,7 +54,6 @@ void Settings::LoadSettings()
 
 	if (ini.LoadFile(path.c_str()) == SI_FILE) {
 		logger::warn("Failed to load file: {}", path);
-		return;
 	}
 
 	// general
@@ -86,94 +84,94 @@ void Settings::LoadSettings()
 	data["iXPObjectives"] = GetIntValue(ini, "Questing", "iXPObjectives", 10);
 
 	// exploring
-	int iXPDiscDefault = GetIntValue(ini, "Exploring", "iXPDiscDefault", 10);
+	int discDefault = GetIntValue(ini, "Exploring", "iXPDiscDefault", 10);
 
-	data["iXPDiscDefault"] = iXPDiscDefault;
-	data["iXPDiscCity"] = GetIntValue(ini, "Exploring", "iXPDiscCity", iXPDiscDefault);
-	data["iXPDiscTown"] = GetIntValue(ini, "Exploring", "iXPDiscTown", iXPDiscDefault);
-	data["iXPDiscSettlement"] = GetIntValue(ini, "Exploring", "iXPDiscSettlement", iXPDiscDefault);
-	data["iXPDiscCave"] = GetIntValue(ini, "Exploring", "iXPDiscCave", iXPDiscDefault);
-	data["iXPDiscCamp"] = GetIntValue(ini, "Exploring", "iXPDiscCamp", iXPDiscDefault);
-	data["iXPDiscFort"] = GetIntValue(ini, "Exploring", "iXPDiscFort", iXPDiscDefault);
-	data["iXPDiscNordicRuin"] = GetIntValue(ini, "Exploring", "iXPDiscNordicRuin", iXPDiscDefault);
-	data["iXPDiscDwemerRuin"] = GetIntValue(ini, "Exploring", "iXPDiscDwemerRuin", iXPDiscDefault);
-	data["iXPDiscShipwreck"] = GetIntValue(ini, "Exploring", "iXPDiscShipwreck", iXPDiscDefault);
-	data["iXPDiscGrove"] = GetIntValue(ini, "Exploring", "iXPDiscGrove", iXPDiscDefault);
-	data["iXPDiscLandmark"] = GetIntValue(ini, "Exploring", "iXPDiscLandmark", iXPDiscDefault);
-	data["iXPDiscDragonLair"] = GetIntValue(ini, "Exploring", "iXPDiscDragonLair", iXPDiscDefault);
-	data["iXPDiscFarm"] = GetIntValue(ini, "Exploring", "iXPDiscFarm", iXPDiscDefault);
-	data["iXPDiscWoodMill"] = GetIntValue(ini, "Exploring", "iXPDiscWoodMill", iXPDiscDefault);
-	data["iXPDiscMine"] = GetIntValue(ini, "Exploring", "iXPDiscMine", iXPDiscDefault);
-	data["iXPDiscMilitaryCamp"] = GetIntValue(ini, "Exploring", "iXPDiscMilitaryCamp", iXPDiscDefault);
-	data["iXPDiscDoomstone"] = GetIntValue(ini, "Exploring", "iXPDiscDoomstone", iXPDiscDefault);
-	data["iXPDiscWheatMill"] = GetIntValue(ini, "Exploring", "iXPDiscWheatMill", iXPDiscDefault);
-	data["iXPDiscSmelter"] = GetIntValue(ini, "Exploring", "iXPDiscSmelter", iXPDiscDefault);
-	data["iXPDiscStable"] = GetIntValue(ini, "Exploring", "iXPDiscStable", iXPDiscDefault);
-	data["iXPDiscImperialTower"] = GetIntValue(ini, "Exploring", "iXPDiscImperialTower", iXPDiscDefault);
-	data["iXPDiscClearing"] = GetIntValue(ini, "Exploring", "iXPDiscClearing", iXPDiscDefault);
-	data["iXPDiscPass"] = GetIntValue(ini, "Exploring", "iXPDiscPass", iXPDiscDefault);
-	data["iXPDiscAltar"] = GetIntValue(ini, "Exploring", "iXPDiscAltar", iXPDiscDefault);
-	data["iXPDiscRock"] = GetIntValue(ini, "Exploring", "iXPDiscRock", iXPDiscDefault);
-	data["iXPDiscLighthouse"] = GetIntValue(ini, "Exploring", "iXPDiscLighthouse", iXPDiscDefault);
-	data["iXPDiscOrcStronghold"] = GetIntValue(ini, "Exploring", "iXPDiscOrcStronghold", iXPDiscDefault);
-	data["iXPDiscGiantCamp"] = GetIntValue(ini, "Exploring", "iXPDiscGiantCamp", iXPDiscDefault);
-	data["iXPDiscShack"] = GetIntValue(ini, "Exploring", "iXPDiscShack", iXPDiscDefault);
-	data["iXPDiscNordicTower"] = GetIntValue(ini, "Exploring", "iXPDiscNordicTower", iXPDiscDefault);
-	data["iXPDiscNordicDwelling"] = GetIntValue(ini, "Exploring", "iXPDiscNordicDwelling", iXPDiscDefault);
-	data["iXPDiscDocks"] = GetIntValue(ini, "Exploring", "iXPDiscDocks", iXPDiscDefault);
-	data["iXPDiscDaedricShrine"] = GetIntValue(ini, "Exploring", "iXPDiscDaedricShrine", iXPDiscDefault);
-	data["iXPDiscCastle"] = GetIntValue(ini, "Exploring", "iXPDiscCastle", iXPDiscDefault);
-	//data["iXPDiscCapitol"] = GetIntValue(ini, "Exploring", "iXPDiscCapitol", iXPDiscDefault);
-	//data["iXPDiscMiraakTemple"] = GetIntValue(ini, "Exploring", "iXPDiscMiraakTemple", iXPDiscDefault);
-	//data["iXPDiscRavenRock"] = GetIntValue(ini, "Exploring", "iXPDiscRavenRock", iXPDiscDefault);
-	//data["iXPDiscStandingStone"] = GetIntValue(ini, "Exploring", "iXPDiscStandingStone", iXPDiscDefault);
-	//data["iXPDiscTelvanniTower"] = GetIntValue(ini, "Exploring", "iXPDiscTelvanniTower", iXPDiscDefault);
-	//data["iXPDiscCastleKarstaag"] = GetIntValue(ini, "Exploring", "iXPDiscCastleKarstaag", iXPDiscDefault);
+	data["iXPDiscDefault"] = discDefault;
+	data["iXPDiscCity"] = GetIntValue(ini, "Exploring", "iXPDiscCity", discDefault);
+	data["iXPDiscTown"] = GetIntValue(ini, "Exploring", "iXPDiscTown", discDefault);
+	data["iXPDiscSettlement"] = GetIntValue(ini, "Exploring", "iXPDiscSettlement", discDefault);
+	data["iXPDiscCave"] = GetIntValue(ini, "Exploring", "iXPDiscCave", discDefault);
+	data["iXPDiscCamp"] = GetIntValue(ini, "Exploring", "iXPDiscCamp", discDefault);
+	data["iXPDiscFort"] = GetIntValue(ini, "Exploring", "iXPDiscFort", discDefault);
+	data["iXPDiscNordicRuin"] = GetIntValue(ini, "Exploring", "iXPDiscNordicRuin", discDefault);
+	data["iXPDiscDwemerRuin"] = GetIntValue(ini, "Exploring", "iXPDiscDwemerRuin", discDefault);
+	data["iXPDiscShipwreck"] = GetIntValue(ini, "Exploring", "iXPDiscShipwreck", discDefault);
+	data["iXPDiscGrove"] = GetIntValue(ini, "Exploring", "iXPDiscGrove", discDefault);
+	data["iXPDiscLandmark"] = GetIntValue(ini, "Exploring", "iXPDiscLandmark", discDefault);
+	data["iXPDiscDragonLair"] = GetIntValue(ini, "Exploring", "iXPDiscDragonLair", discDefault);
+	data["iXPDiscFarm"] = GetIntValue(ini, "Exploring", "iXPDiscFarm", discDefault);
+	data["iXPDiscWoodMill"] = GetIntValue(ini, "Exploring", "iXPDiscWoodMill", discDefault);
+	data["iXPDiscMine"] = GetIntValue(ini, "Exploring", "iXPDiscMine", discDefault);
+	data["iXPDiscMilitaryCamp"] = GetIntValue(ini, "Exploring", "iXPDiscMilitaryCamp", discDefault);
+	data["iXPDiscDoomstone"] = GetIntValue(ini, "Exploring", "iXPDiscDoomstone", discDefault);
+	data["iXPDiscWheatMill"] = GetIntValue(ini, "Exploring", "iXPDiscWheatMill", discDefault);
+	data["iXPDiscSmelter"] = GetIntValue(ini, "Exploring", "iXPDiscSmelter", discDefault);
+	data["iXPDiscStable"] = GetIntValue(ini, "Exploring", "iXPDiscStable", discDefault);
+	data["iXPDiscImperialTower"] = GetIntValue(ini, "Exploring", "iXPDiscImperialTower", discDefault);
+	data["iXPDiscClearing"] = GetIntValue(ini, "Exploring", "iXPDiscClearing", discDefault);
+	data["iXPDiscPass"] = GetIntValue(ini, "Exploring", "iXPDiscPass", discDefault);
+	data["iXPDiscAltar"] = GetIntValue(ini, "Exploring", "iXPDiscAltar", discDefault);
+	data["iXPDiscRock"] = GetIntValue(ini, "Exploring", "iXPDiscRock", discDefault);
+	data["iXPDiscLighthouse"] = GetIntValue(ini, "Exploring", "iXPDiscLighthouse", discDefault);
+	data["iXPDiscOrcStronghold"] = GetIntValue(ini, "Exploring", "iXPDiscOrcStronghold", discDefault);
+	data["iXPDiscGiantCamp"] = GetIntValue(ini, "Exploring", "iXPDiscGiantCamp", discDefault);
+	data["iXPDiscShack"] = GetIntValue(ini, "Exploring", "iXPDiscShack", discDefault);
+	data["iXPDiscNordicTower"] = GetIntValue(ini, "Exploring", "iXPDiscNordicTower", discDefault);
+	data["iXPDiscNordicDwelling"] = GetIntValue(ini, "Exploring", "iXPDiscNordicDwelling", discDefault);
+	data["iXPDiscDocks"] = GetIntValue(ini, "Exploring", "iXPDiscDocks", discDefault);
+	data["iXPDiscDaedricShrine"] = GetIntValue(ini, "Exploring", "iXPDiscDaedricShrine", discDefault);
+	data["iXPDiscCastle"] = GetIntValue(ini, "Exploring", "iXPDiscCastle", discDefault);
+	//data["iXPDiscCapitol"] = GetIntValue(ini, "Exploring", "iXPDiscCapitol", discDefault);
+	data["iXPDiscMiraakTemple"] = GetIntValue(ini, "Exploring", "iXPDiscMiraakTemple", discDefault);
+	//data["iXPDiscRavenRock"] = GetIntValue(ini, "Exploring", "iXPDiscRavenRock", discDefault);
+	data["iXPDiscStandingStone"] = GetIntValue(ini, "Exploring", "iXPDiscStandingStone", discDefault);
+	data["iXPDiscTelvanniTower"] = GetIntValue(ini, "Exploring", "iXPDiscTelvanniTower", discDefault);
+	data["iXPDiscCastleKarstaag"] = GetIntValue(ini, "Exploring", "iXPDiscCastleKarstaag", discDefault);
 
 	// clearing
-	int iXPClearDefault = GetIntValue(ini, "Clearing", "iXPClearDefault", 30);
+	int clearingDefault = GetIntValue(ini, "Clearing", "iXPClearDefault", 30);
 
-	data["iXPClearDefault"] = iXPClearDefault;
-	data["iXPClearCity"] = GetIntValue(ini, "Clearing", "iXPClearCity", iXPClearDefault);
-	data["iXPClearTown"] = GetIntValue(ini, "Clearing", "iXPClearTown", iXPClearDefault);
-	data["iXPClearSettlement"] = GetIntValue(ini, "Clearing", "iXPClearSettlement", iXPClearDefault);
-	data["iXPClearCave"] = GetIntValue(ini, "Clearing", "iXPClearCave", iXPClearDefault);
-	data["iXPClearCamp"] = GetIntValue(ini, "Clearing", "iXPClearCamp", iXPClearDefault);
-	data["iXPClearFort"] = GetIntValue(ini, "Clearing", "iXPClearFort", iXPClearDefault);
-	data["iXPClearNordicRuin"] = GetIntValue(ini, "Clearing", "iXPClearNordicRuin", iXPClearDefault);
-	data["iXPClearDwemerRuin"] = GetIntValue(ini, "Clearing", "iXPClearDwemerRuin", iXPClearDefault);
-	data["iXPClearShipwreck"] = GetIntValue(ini, "Clearing", "iXPClearShipwreck", iXPClearDefault);
-	data["iXPClearGrove"] = GetIntValue(ini, "Clearing", "iXPClearGrove", iXPClearDefault);
-	data["iXPClearLandmark"] = GetIntValue(ini, "Clearing", "iXPClearLandmark", iXPClearDefault);
-	data["iXPClearDragonLair"] = GetIntValue(ini, "Clearing", "iXPClearDragonLair", iXPClearDefault);
-	data["iXPClearFarm"] = GetIntValue(ini, "Clearing", "iXPClearFarm", iXPClearDefault);
-	data["iXPClearWoodMill"] = GetIntValue(ini, "Clearing", "iXPClearWoodMill", iXPClearDefault);
-	data["iXPClearMine"] = GetIntValue(ini, "Clearing", "iXPClearMine", iXPClearDefault);
-	data["iXPClearMilitaryCamp"] = GetIntValue(ini, "Exploring", "iXPClearMilitaryCamp", iXPClearDefault);
-	data["iXPClearDoomstone"] = GetIntValue(ini, "Clearing", "iXPClearDoomstone", iXPClearDefault);
-	data["iXPClearWheatMill"] = GetIntValue(ini, "Clearing", "iXPClearWheatMill", iXPClearDefault);
-	data["iXPClearSmelter"] = GetIntValue(ini, "Clearing", "iXPClearSmelter", iXPClearDefault);
-	data["iXPClearStable"] = GetIntValue(ini, "Clearing", "iXPClearStable", iXPClearDefault);
-	data["iXPClearImperialTower"] = GetIntValue(ini, "Clearing", "iXPClearImperialTower", iXPClearDefault);
-	data["iXPClearClearing"] = GetIntValue(ini, "Clearing", "iXPClearClearing", iXPClearDefault);
-	data["iXPClearPass"] = GetIntValue(ini, "Clearing", "iXPClearPass", iXPClearDefault);
-	data["iXPClearAltar"] = GetIntValue(ini, "Clearing", "iXPClearAltar", iXPClearDefault);
-	data["iXPClearRock"] = GetIntValue(ini, "Clearing", "iXPClearRock", iXPClearDefault);
-	data["iXPClearLighthouse"] = GetIntValue(ini, "Clearing", "iXPClearLighthouse", iXPClearDefault);
-	data["iXPClearOrcStronghold"] = GetIntValue(ini, "Clearing", "iXPClearOrcStronghold", iXPClearDefault);
-	data["iXPClearGiantCamp"] = GetIntValue(ini, "Clearing", "iXPClearGiantCamp", iXPClearDefault);
-	data["iXPClearShack"] = GetIntValue(ini, "Clearing", "iXPClearShack", iXPClearDefault);
-	data["iXPClearNordicTower"] = GetIntValue(ini, "Clearing", "iXPClearNordicTower", iXPClearDefault);
-	data["iXPClearNordicDwelling"] = GetIntValue(ini, "Clearing", "iXPClearNordicDwelling", iXPClearDefault);
-	data["iXPClearDocks"] = GetIntValue(ini, "Clearing", "iXPClearDocks", iXPClearDefault);
-	data["iXPClearDaedricShrine"] = GetIntValue(ini, "Clearing", "iXPClearDaedricShrine", iXPClearDefault);
-	data["iXPClearCastle"] = GetIntValue(ini, "Clearing", "iXPClearCastle", iXPClearDefault);
-	//data["iXPClearCapitol"] = GetIntValue(ini, "Clearing", "iXPClearCapitol", iXPClearDefault);
-	//data["iXPClearMiraakTemple"] = GetIntValue(ini, "Clearing", "iXPClearMiraakTemple", iXPClearDefault);
-	//data["iXPClearRavenRock"] = GetIntValue(ini, "Clearing", "iXPClearRavenRock", iXPClearDefault);
-	//data["iXPClearStandingStone"] = GetIntValue(ini, "Clearing", "iXPClearStandingStone", iXPClearDefault);
-	//data["iXPClearTelvanniTower"] = GetIntValue(ini, "Clearing", "iXPClearTelvanniTower", iXPClearDefault);
-	//data["iXPClearCastleKarstaag"] = GetIntValue(ini, "Clearing", "iXPClearCastleKarstaag", iXPClearDefault);
+	data["iXPClearDefault"] = clearingDefault;
+	data["iXPClearCity"] = GetIntValue(ini, "Clearing", "iXPClearCity", clearingDefault);
+	data["iXPClearTown"] = GetIntValue(ini, "Clearing", "iXPClearTown", clearingDefault);
+	data["iXPClearSettlement"] = GetIntValue(ini, "Clearing", "iXPClearSettlement", clearingDefault);
+	data["iXPClearCave"] = GetIntValue(ini, "Clearing", "iXPClearCave", clearingDefault);
+	data["iXPClearCamp"] = GetIntValue(ini, "Clearing", "iXPClearCamp", clearingDefault);
+	data["iXPClearFort"] = GetIntValue(ini, "Clearing", "iXPClearFort", clearingDefault);
+	data["iXPClearNordicRuin"] = GetIntValue(ini, "Clearing", "iXPClearNordicRuin", clearingDefault);
+	data["iXPClearDwemerRuin"] = GetIntValue(ini, "Clearing", "iXPClearDwemerRuin", clearingDefault);
+	data["iXPClearShipwreck"] = GetIntValue(ini, "Clearing", "iXPClearShipwreck", clearingDefault);
+	data["iXPClearGrove"] = GetIntValue(ini, "Clearing", "iXPClearGrove", clearingDefault);
+	data["iXPClearLandmark"] = GetIntValue(ini, "Clearing", "iXPClearLandmark", clearingDefault);
+	data["iXPClearDragonLair"] = GetIntValue(ini, "Clearing", "iXPClearDragonLair", clearingDefault);
+	data["iXPClearFarm"] = GetIntValue(ini, "Clearing", "iXPClearFarm", clearingDefault);
+	data["iXPClearWoodMill"] = GetIntValue(ini, "Clearing", "iXPClearWoodMill", clearingDefault);
+	data["iXPClearMine"] = GetIntValue(ini, "Clearing", "iXPClearMine", clearingDefault);
+	data["iXPClearMilitaryCamp"] = GetIntValue(ini, "Exploring", "iXPClearMilitaryCamp", clearingDefault);
+	data["iXPClearDoomstone"] = GetIntValue(ini, "Clearing", "iXPClearDoomstone", clearingDefault);
+	data["iXPClearWheatMill"] = GetIntValue(ini, "Clearing", "iXPClearWheatMill", clearingDefault);
+	data["iXPClearSmelter"] = GetIntValue(ini, "Clearing", "iXPClearSmelter", clearingDefault);
+	data["iXPClearStable"] = GetIntValue(ini, "Clearing", "iXPClearStable", clearingDefault);
+	data["iXPClearImperialTower"] = GetIntValue(ini, "Clearing", "iXPClearImperialTower", clearingDefault);
+	data["iXPClearClearing"] = GetIntValue(ini, "Clearing", "iXPClearClearing", clearingDefault);
+	data["iXPClearPass"] = GetIntValue(ini, "Clearing", "iXPClearPass", clearingDefault);
+	data["iXPClearAltar"] = GetIntValue(ini, "Clearing", "iXPClearAltar", clearingDefault);
+	data["iXPClearRock"] = GetIntValue(ini, "Clearing", "iXPClearRock", clearingDefault);
+	data["iXPClearLighthouse"] = GetIntValue(ini, "Clearing", "iXPClearLighthouse", clearingDefault);
+	data["iXPClearOrcStronghold"] = GetIntValue(ini, "Clearing", "iXPClearOrcStronghold", clearingDefault);
+	data["iXPClearGiantCamp"] = GetIntValue(ini, "Clearing", "iXPClearGiantCamp", clearingDefault);
+	data["iXPClearShack"] = GetIntValue(ini, "Clearing", "iXPClearShack", clearingDefault);
+	data["iXPClearNordicTower"] = GetIntValue(ini, "Clearing", "iXPClearNordicTower", clearingDefault);
+	data["iXPClearNordicDwelling"] = GetIntValue(ini, "Clearing", "iXPClearNordicDwelling", clearingDefault);
+	data["iXPClearDocks"] = GetIntValue(ini, "Clearing", "iXPClearDocks", clearingDefault);
+	data["iXPClearDaedricShrine"] = GetIntValue(ini, "Clearing", "iXPClearDaedricShrine", clearingDefault);
+	data["iXPClearCastle"] = GetIntValue(ini, "Clearing", "iXPClearCastle", clearingDefault);
+	//data["iXPClearCapitol"] = GetIntValue(ini, "Clearing", "iXPClearCapitol", clearingDefault);
+	data["iXPClearMiraakTemple"] = GetIntValue(ini, "Clearing", "iXPClearMiraakTemple", clearingDefault);
+	//data["iXPClearRavenRock"] = GetIntValue(ini, "Clearing", "iXPClearRavenRock", clearingDefault);
+	data["iXPClearStandingStone"] = GetIntValue(ini, "Clearing", "iXPClearStandingStone", clearingDefault);
+	data["iXPClearTelvanniTower"] = GetIntValue(ini, "Clearing", "iXPClearTelvanniTower", clearingDefault);
+	data["iXPClearCastleKarstaag"] = GetIntValue(ini, "Clearing", "iXPClearCastleKarstaag", clearingDefault);
 
 	// killing
 	data["iXPLevelRange"] = GetIntValue(ini, "Killing", "iXPLevelRange", 20);
@@ -182,8 +180,6 @@ void Settings::LoadSettings()
 
 	// reading
 	data["fXPReadingMult"] = GetFloatValue(ini, "Reading", "fXPReadingMult", 2.0f);
-
-	logger::info("Settings loaded");
 }
 
 void Settings::SaveSettings()
@@ -254,11 +250,11 @@ void Settings::SaveSettings()
 	SetIntValue(ini, "Exploring", "iXPDiscDaedricShrine", GetSettingInt("iXPDiscDaedricShrine"));
 	SetIntValue(ini, "Exploring", "iXPDiscCastle", GetSettingInt("iXPDiscCastle"));
 	//SetIntValue(ini, "Exploring", "iXPDiscCapitol", GetSettingInt("iXPDiscCapitol"));
-	//SetIntValue(ini, "Exploring", "iXPDiscMiraakTemple", GetSettingInt("iXPDiscMiraakTemple"));
+	SetIntValue(ini, "Exploring", "iXPDiscMiraakTemple", GetSettingInt("iXPDiscMiraakTemple"));
 	//SetIntValue(ini, "Exploring", "iXPDiscRavenRock", GetSettingInt("iXPDiscRavenRock"));
-	//SetIntValue(ini, "Exploring", "iXPDiscStandingStone", GetSettingInt("iXPDiscStandingStone"));
-	//SetIntValue(ini, "Exploring", "iXPDiscTelvanniTower", GetSettingInt("iXPDiscTelvanniTower"));
-	//SetIntValue(ini, "Exploring", "iXPDiscCastleKarstaag", GetSettingInt("iXPDiscCastleKarstaag"));
+	SetIntValue(ini, "Exploring", "iXPDiscStandingStone", GetSettingInt("iXPDiscStandingStone"));
+	SetIntValue(ini, "Exploring", "iXPDiscTelvanniTower", GetSettingInt("iXPDiscTelvanniTower"));
+	SetIntValue(ini, "Exploring", "iXPDiscCastleKarstaag", GetSettingInt("iXPDiscCastleKarstaag"));
 	SetIntValue(ini, "Exploring", "iXPDiscDefault", GetSettingInt("iXPDiscDefault"));
 
 	// clearing
@@ -297,11 +293,11 @@ void Settings::SaveSettings()
 	SetIntValue(ini, "Clearing", "iXPClearDaedricShrine", GetSettingInt("iXPClearDaedricShrine"));
 	SetIntValue(ini, "Clearing", "iXPClearCastle", GetSettingInt("iXPClearCastle"));
 	//SetIntValue(ini, "Clearing", "iXPClearCapitol", GetSettingInt("iXPClearCapitol"));
-	//SetIntValue(ini, "Clearing", "iXPClearMiraakTemple", GetSettingInt("iXPClearMiraakTemple"));
+	SetIntValue(ini, "Clearing", "iXPClearMiraakTemple", GetSettingInt("iXPClearMiraakTemple"));
 	//SetIntValue(ini, "Clearing", "iXPClearRavenRock", GetSettingInt("iXPClearRavenRock"));
-	//SetIntValue(ini, "Clearing", "iXPClearStandingStone", GetSettingInt("iXPClearStandingStone"));
-	//SetIntValue(ini, "Clearing", "iXPClearTelvanniTower", GetSettingInt("iXPClearTelvanniTower"));
-	//SetIntValue(ini, "Clearing", "iXPClearCastleKarstaag", GetSettingInt("iXPClearCastleKarstaag"));
+	SetIntValue(ini, "Clearing", "iXPClearStandingStone", GetSettingInt("iXPClearStandingStone"));
+	SetIntValue(ini, "Clearing", "iXPClearTelvanniTower", GetSettingInt("iXPClearTelvanniTower"));
+	SetIntValue(ini, "Clearing", "iXPClearCastleKarstaag", GetSettingInt("iXPClearCastleKarstaag"));
 	SetIntValue(ini, "Clearing", "iXPClearDefault", GetSettingInt("iXPClearDefault"));
 
 	// killing
@@ -314,7 +310,5 @@ void Settings::SaveSettings()
 
 	if (ini.SaveFile(path.c_str()) == SI_FILE) {
 		logger::warn("Failed to save file: {}", path);
-		return;
 	}
-	logger::info("Settings saved");
 }

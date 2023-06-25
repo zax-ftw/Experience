@@ -54,6 +54,7 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 		return settings->GetSettingInt("iXPClearCamp");
 	case MarkerType::kFort:
 		return settings->GetSettingInt("iXPClearFort");
+	case MarkerType::kNordicRuin:
 		return settings->GetSettingInt("iXPClearNordicRuin");
 	case MarkerType::kDwemerRuin:
 		return settings->GetSettingInt("iXPClearDwemerRuin");
@@ -83,17 +84,19 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kStable:
 		return settings->GetSettingInt("iXPClearStable");
 	case MarkerType::kImperialTower:
+		return settings->GetSettingInt("iXPClearImperialTower");
 	case MarkerType::kClearing:
 		return settings->GetSettingInt("iXPClearClearing");
 	case MarkerType::kPass:
 		return settings->GetSettingInt("iXPClearPass");
+	case MarkerType::kAltar:
 		return settings->GetSettingInt("iXPClearAltar");
 	case MarkerType::kRock:
 		return settings->GetSettingInt("iXPClearRock");
 	case MarkerType::kLighthouse:
 		return settings->GetSettingInt("iXPClearLighthouse");
 	case MarkerType::kOrcStronghold:
-		return settings.GetSettingInt("iXPClearOrcStronghold");
+		return settings->GetSettingInt("iXPClearOrcStronghold");
 	case MarkerType::kGiantCamp:
 		return settings->GetSettingInt("iXPClearGiantCamp");
 	case MarkerType::kShack:

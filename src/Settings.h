@@ -6,26 +6,37 @@
 class Settings : public ISingleton<Settings>
 {
 public:
+	using Setting = std::variant<std::monostate, int, float, bool, std::string>;
+	using SettingsMap = std::map<std::string_view, Setting>;
+
 	friend class ISingleton<Settings>;
 
 	void LoadSettings();
 	void SaveSettings();
 
-	template <typename T>
-	[[nodiscard]] T GetSetting(std::string_view key) const
+	Setting GetSetting(std::string_view key) const
 	{
 		auto it = data.find(key);
 		if (it == data.end())
-			return T();
+			return Setting();
 
-		return std::get<T>(it->second);  // std::get_if
+		return it->second;
+	};
+
+	void SetSetting(std::string_view key, Setting value)
+	{
+		data.insert_or_assign(key, value);
 	};
 
 	template <typename T>
-	void SetSetting(std::string_view key, T value)
-	{
-		data[key] = value;
-	};
+	[[nodiscard]] T GetSetting(std::string_view key) const 
+	{ 
+		auto setting = GetSetting(key);
+		if (std::holds_alternative<T>(setting)) {
+			return std::get<T>(setting);
+		}
+		return T();
+	}
 
 	auto GetSettingInt(std::string_view key) const { return GetSetting<int>(key); }
 	auto GetSettingFloat(std::string_view key) const { return GetSetting<float>(key); }
@@ -38,10 +49,10 @@ public:
 	void SetSettingString(std::string_view key, std::string value) { SetSetting(key, value); };
 
 private:
+
 	Settings();
 	~Settings(){};
 
-	std::map<std::string_view, std::variant<int, float, bool, std::string>> data;
-
+	SettingsMap data;
 	std::string path;
 };
