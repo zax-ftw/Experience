@@ -61,10 +61,7 @@ std::optional<int> PlayerSkillsEx::ResolveAdvanceableSkillId(ActorValue actorVal
 float PlayerSkillsEx::GetSkillCap1(ActorValue avId)
 {
 	auto id = ResolveAdvanceableSkillId(avId);
-	if (id) {
-		return caps[*id];
-	}
-	return 0.0f;
+	return id ? caps[*id] : 0.0f;
 }
 
 float PlayerSkillsEx::GetSkillCap2(ActorValue avId, float hard)
@@ -85,17 +82,13 @@ void PlayerSkillsEx::ApplyRacials(TESRace* race)
 {
 	logger::info("Applying racials for {}", race->GetFormEditorID());
 
-	RACE_DATA& info = race->data;
-	for (auto boost : info.skillBoosts) {
+	for (auto& [skill, bonus] : race->data.skillBoosts) {
 
-		auto skill = boost.skill;  // stl::enumeration<ActorValue, int>
-		auto bonus = boost.bonus;  // uint8_t
+		logger::info("{}: {}", *skill, bonus);
 
-		logger::info("{}: {}", skill.get(), bonus);
-
-		auto id = ResolveAdvanceableSkillId(skill.get());
-		if (id) { 
-			caps[*id] += bonus; 
+		auto id = ResolveAdvanceableSkillId(*skill);
+		if (id) {
+			caps[*id] += bonus;
 		}
 	}
 }
@@ -105,14 +98,16 @@ void PlayerSkillsEx::UpdateSkillCaps()
 	logger::info("Updating skillcap data...");
 
 	auto player = PlayerCharacter::GetSingleton();
-	uint16_t level = player->GetLevel();
+	auto level = player->GetLevel();
 
 	float base = GetBaseSkillCap(level);
 	std::fill(std::begin(caps), std::end(caps), base);
 
-		ApplyRacials(player->GetRace());
 	auto settings = Settings::GetSingleton();
 	if (settings->GetSettingBool("bUseRacialCaps")) {
+
+		auto race = player->GetRace();
+		ApplyRacials(race);
 	}
 }
 
@@ -130,14 +125,14 @@ void PlayerSkillsEx::Update_V2(SKSE::SerializationInterface* intfc, uint32_t ver
 void PlayerSkillsEx::Load(SKSE::SerializationInterface* intfc, uint32_t version, uint32_t length)
 {
 	switch (version) {
+	case kDataVersion:
+		{
+			intfc->ReadRecordData(&caps, length);
+			break;
+		}
 	case 1:
 		{
 			Update_V2(intfc, version);
-			break;
-		}
-	case 2:
-		{
-			intfc->ReadRecordData(&caps, length);
 			break;
 		}
 	default:
@@ -169,9 +164,9 @@ PlayerCharacter::PlayerSkills* PlayerSkillsEx::PlayerSkills_Hook()
 void PlayerSkillsEx::InitSkills_Hook()
 {
 	float points, levelup;
-	GetLevelData(&points, &levelup);
+	auto  level = GetLevelData(&points, &levelup);
 
-	logger::info("Initializing skills...");
+	logger::info("Initializing skills at level {}", level);
 
 	data->levelThreshold = levelup;
 
@@ -190,8 +185,8 @@ void PlayerSkillsEx::AdvanceLevel_Hook(bool addThreshold)
 	auto ui = UI::GetSingleton();
 
 	if (ui->IsMenuOpen(strings->statsMenu)) {
-		auto temp = ui->GetMenu(strings->statsMenu);
-		StatsMenuEx* menu = static_cast<StatsMenuEx*>(temp.get());
+		auto ptr = ui->GetMenu(strings->statsMenu);
+		StatsMenuEx* menu = static_cast<StatsMenuEx*>(ptr.get());
 		if (menu) {
 			menu->UpdateSkillList();
 		}
@@ -293,8 +288,8 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 
 	//trampoline.write_call<5>(Offset::PlayerCharacter::Ctor.address() + OFFSET(0xC3D, 0xECD), &PlayerSkillsEx::PlayerSkills_Hook);
 
-	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), &PlayerSkillsEx::InitSkills_Hook);  // MainMenu
-	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), &PlayerSkillsEx::InitSkills_Hook);                  // MainMenu
+	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), &PlayerSkillsEx::InitSkills_Hook);
+	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), &PlayerSkillsEx::InitSkills_Hook);
 	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + OFFSET(0x1A, 0x1A, 0x1A), &PlayerSkillsEx::InitSkills_Hook);
 
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), &PlayerSkillsEx::AdvanceLevel_Hook);

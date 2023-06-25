@@ -71,7 +71,7 @@ namespace
 	{
 		logger::trace("Initializing trampoline...");
 		auto& trampoline = GetTrampoline();
-		trampoline.create(512);
+		trampoline.create(256);
 		logger::trace("Trampoline initialized");
 
 		PlayerSkillsEx::Install(trampoline);
