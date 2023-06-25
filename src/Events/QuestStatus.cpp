@@ -27,7 +27,7 @@ BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Ev
 			auto edid = quest->GetFormEditorID();
 			auto type = quest->GetType();
 
-			logger::info("QuestCompleted: {0} ({1})", 
+			logger::info("[QuestCompleted] {0} ({1})", 
 				edid, magic_enum::enum_name(type));
 
 			auto reward = GetReward(type);

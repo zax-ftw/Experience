@@ -16,11 +16,6 @@ public:
 private:
 	using State = RE::QUEST_OBJECTIVE_STATE;
 
-	static constexpr bool IsCompleted(State state)
-	{
-		return state == State::kCompleted || state == State::kCompletedDisplayed;
-	}
-
-	//std::string GetObjectiveStateString(State state);
+	static bool IsCompleted(State state);
 };
 

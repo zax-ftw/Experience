@@ -6,6 +6,7 @@
 
 using namespace RE;
 
+
 ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 	ExperienceManager::Source(manager, MeterState::kInactive)
 {
@@ -87,9 +88,8 @@ BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event*
 		auto player = PlayerCharacter::GetSingleton();
 		auto victim = event->victim;
 
-		logger::info("ActorKill: {0} ({1})",
-			victim->GetName(),	
-			victim->GetRace()->GetFormEditorID());
+		logger::info("[ActorKill] {} (RefID:{:#08})", 
+			victim->GetName(), victim->GetFormID());
 
 		float reward = GetBaseReward(victim);
 

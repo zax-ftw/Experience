@@ -22,10 +22,9 @@ BooksReadEventHandler::~BooksReadEventHandler(void)
 BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event* event, BooksReadEventSource*)
 {
 	TESObjectBOOK* book = event->book;
-	if (!event->unk08 && !book->TeachesSpell()) // skillBook
 	if (!event->skillBook && !book->TeachesSpell())
 	{
-		logger::info("BookRead: {0} ({1})", book->GetName(), book->value);
+		logger::info("[BookRead] {0} ({1})", book->GetName(), book->value);
 
 		auto reward = GetReward(book->value);
 		AddExperience(reward);
