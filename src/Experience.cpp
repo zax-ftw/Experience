@@ -122,6 +122,11 @@ void ExperienceManager::AddExperience(int points, bool meter)
 	}
 }
 
+float ExperienceManager::GetExperience()
+{
+	return data->xp;
+}
+
 void ExperienceManager::Source::AddExperience(int points)
 {
 	if (points != 0) {

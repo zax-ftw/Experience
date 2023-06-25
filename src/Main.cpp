@@ -9,11 +9,13 @@
 #include "Papyrus.h"
 #include "Console.h"
 
+#include "ModAPI.h"
+
 using namespace SKSE;
 using namespace SKSE::log;
 using namespace SKSE::stl;
 
-namespace
+namespace Experience
 {
 	void InitializeLogging()
 	{
@@ -118,6 +120,19 @@ namespace
 		HUDInjector::GetSingleton()->Register();
 
 		return true;
+	}
+
+	extern "C" DLLEXPORT void* SKSEAPI RequestAPI(ApiVersion a_version)
+	{
+		auto api = ExperienceInterface::GetSingleton();
+
+		switch (a_version) {
+		case ApiVersion::Current:
+			return static_cast<void*>(api);	
+		}
+
+		logger::warn("RequestAPI requested wrong interface version");
+		return nullptr;
 	}
 
 }

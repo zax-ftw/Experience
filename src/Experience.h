@@ -44,6 +44,7 @@ public:
 
 	void AddExperience(const Experience& xp);
 	void AddExperience(int points, bool meter = false);
+	float GetExperience();
 
 	void Init();
 	void Stop() { running = false; };

@@ -21,6 +21,10 @@ configure_file(
 	@ONLY
 )
 
+set(HEADER_FILES
+ "include/ExperienceAPI.h"
+)
+
 set(SOURCE_FILES
  "src/Main.cpp"
  "src/Settings.cpp"
@@ -35,6 +39,8 @@ set(SOURCE_FILES
  "src/Translation.h"
  "src/Papyrus.cpp"
  "src/Papyrus.h"
+ "src/ModAPI.cpp"
+ "src/ModAPI.h"
  "src/Console.cpp"
  "src/Console.h"
  "src/HUD.cpp"
@@ -68,6 +74,12 @@ source_group(
 	TREE ${CMAKE_CURRENT_SOURCE_DIR}/src
 	PREFIX "Source Files"
 	FILES ${SOURCE_FILES}
+)
+
+source_group(
+	TREE ${CMAKE_CURRENT_SOURCE_DIR}/include
+	PREFIX "Header Files"
+	FILES ${HEADER_FILES}
 )
 
 #########################################################################################################################
@@ -120,6 +132,12 @@ target_include_directories(
     PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/src
 	${SIMPLEINI_INCLUDE_DIR}
+)
+
+target_include_directories(
+	${PROJECT_NAME}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_precompile_headers(
