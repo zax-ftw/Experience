@@ -4,6 +4,7 @@
 #include "HUD.h"
 
 #include "Hooks/BGSLocation.h"
+#include "Utils/GameSettings.h"
 
 using namespace RE;
 
@@ -147,12 +148,7 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 
 void LocationClearedEventHandler::ShowLocationCleared(const char* text)
 {
-	using Type = HUD::MessageType;
+	auto status = Utils::GetGameSettingString("sCleared");
 
-	auto settings = GameSettingCollection::GetSingleton();
-	Setting* setting = settings->GetSetting("sCleared");
-	if (setting) {
-		const char* status = setting->GetString();
-		HUD::ShowNotification(text, status, "", Type::kQuestStarted);
-	}
+	HUD::ShowNotification(text, status, "", HUD::MessageType::kQuestStarted);
 }

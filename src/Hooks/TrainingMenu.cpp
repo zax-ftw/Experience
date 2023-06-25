@@ -1,6 +1,7 @@
 #include "TrainingMenu.h"
 
 #include "Hooks/PlayerSkills.h"
+#include "Utils/GameSettings.h"
 #include "Offsets.h"
 #include "Settings.h"
 
@@ -28,12 +29,8 @@ void TrainingMenuEx::Train_Hook()
 }
 void TrainingMenuEx::ShowCappedMessage()
 {
-	auto settings = GameSettingCollection::GetSingleton();
-	Setting* setting = settings->GetSetting("sCanNotTrainAnymore");
-	if (setting) {
-		const char* message = setting->GetString();
-		DebugNotification(message);		
-	}
+	auto message = Utils::GetGameSettingString("sCanNotTrainAnymore");
+	DebugNotification(message);
 }
 
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)

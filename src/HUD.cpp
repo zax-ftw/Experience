@@ -1,6 +1,7 @@
 #include "HUD.h"
 
 #include "Offsets.h"
+#include "Utils/GameSettings.h"
 
 using namespace RE;
 
@@ -47,10 +48,7 @@ void HUD::Impl::ShowNotification(HUDNotifications* object, const char* text, con
 	notification.status = status;
 	notification.sound = sound;
 
-	auto settings = GameSettingCollection::GetSingleton();
-
-	Setting* setting = settings->GetSetting("iObjectivesWaitTime:Interface");
-	int waitTime = setting ? setting->GetSInt() : 250;
+	int waitTime = Utils::GetGameSettingInt("iObjectivesWaitTime:Interface", 250);
 
 	notification.time = GetDurationOfApplicationRunTime() + waitTime;
 	notification.type = type;

@@ -1,6 +1,7 @@
 #include "Events/SkillIncrease.h"
 
 #include "Hooks/PlayerSkills.h"
+#include "Utils/GameSettings.h"
 
 using namespace RE;
 
@@ -17,12 +18,8 @@ SkillIncreaseEventHandler::~SkillIncreaseEventHandler(void)
 
 float SkillIncreaseEventHandler::GetExperienceGain(float skillLevel) const
 {
-	auto settings = GameSettingCollection::GetSingleton();
-	Setting* setting = settings->GetSetting("fXPPerSkillRank");
-
-	float fXPPerSkillRank = setting->GetFloat();
-
-	return skillLevel * fXPPerSkillRank;
+	float mult = Utils::GetGameSettingFloat("fXPPerSkillRank");
+	return skillLevel * mult;
 }
 
 BSEventNotifyControl SkillIncreaseEventHandler::ProcessEvent(const SkillIncrease::Event* event, SkillIncreaseEventSource*)
