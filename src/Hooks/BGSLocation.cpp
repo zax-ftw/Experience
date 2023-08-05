@@ -36,8 +36,5 @@ bool BGSLocationEx::ClearedCheck_Hook(int time, bool force)
 {
 	lastChecked = this;
 
-	if (loadedCount > 0) {
-		return ClearedCheck(time, force);
-	}
-	return false;
+	return ClearedCheck(time, force);
 }

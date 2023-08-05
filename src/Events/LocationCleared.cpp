@@ -22,7 +22,7 @@ LocationClearedEventHandler::~LocationClearedEventHandler(void)
 BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCleared::Event*, LocationClearedEventSource*)
 {
 	BGSLocationEx* location = BGSLocationEx::GetLastChecked();
-	if (location && location->cleared) {
+	if (location && location->IsLoaded()) {
 
 		auto type = location->GetMapMarkerType();
 		auto name = location->GetName();
