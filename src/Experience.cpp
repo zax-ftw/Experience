@@ -111,7 +111,7 @@ void ExperienceManager::AddExperience(int points, bool meter)
 
 	auto settings = Settings::GetSingleton();
 
-	if (meter || settings->GetSettingBool("bForceLvlMeter")) {
+	if (ShouldDisplayLevelMeter(meter)) {
 		ShowLevelMeter(xp_old / xp_max, xp_new / xp_max);
 	}
 	if (xp_new >= xp_max && xp_old < xp_max) {
@@ -140,6 +140,21 @@ void ExperienceManager::Source::AddExperience(int points)
 		logger::trace("{0:+d} XP", points);
 
 		manager->AddExperience(experience);
+	}
+}
+
+bool ExperienceManager::ShouldDisplayLevelMeter(bool display)
+{
+	int mode = Settings::GetSingleton()->GetValue<int>("iMeterMode");
+	switch (mode) {
+	case MeterMode::kHidden:
+		return false;
+	case MeterMode::kDynamic:
+		return display;
+	case MeterMode::kForced:
+		return true;
+	default:
+		return true;
 	}
 }
 

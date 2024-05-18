@@ -14,9 +14,17 @@ public:
 
 	friend class ISingleton<ExperienceManager>;
 
+	enum MeterMode
+	{
+		kHidden = 0,
+		kDynamic = 1,
+		kForced = 2
+	};
+
 	class Source
 	{
 	public:
+
 		enum MeterState
 		{
 			kInactive = 0,
@@ -62,6 +70,7 @@ private:
 	void Loop();
 	void Process(std::unique_lock<std::mutex>& lock);
 
+	bool ShouldDisplayLevelMeter(bool display);
 	void ShowLevelMeter(float start, float end);
 	void ShowLevelUpNotification();
 	void ShowRewardMessage(int points);
