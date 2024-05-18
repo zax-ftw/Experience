@@ -18,5 +18,5 @@ public:
 private:
 	HUDInjector() = default;
 
-	void Inject(RE::GFxMovieView* view);
+	void Inject(RE::GPtr<RE::GFxMovieView> view);
 };

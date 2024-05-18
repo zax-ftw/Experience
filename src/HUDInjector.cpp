@@ -18,26 +18,35 @@ BSEventNotifyControl HUDInjector::ProcessEvent(const MenuOpenCloseEvent* event, 
 	auto ui = UI::GetSingleton();
 
 	if (event->menuName == strings->hudMenu && event->opening) {
-		auto ptr = ui->GetMovieView(strings->hudMenu);
-		Inject(ptr.get());
+
+		if (auto task = SKSE::GetTaskInterface()) {
+
+			task->AddUITask([=] {
+				auto view = ui->GetMovieView(strings->hudMenu);
+				Inject(view);	
+			});
+		}
 	}
 	return BSEventNotifyControl::kContinue;
 }
 
-void HUDInjector::Inject(GFxMovieView* view)
+void HUDInjector::Inject(GPtr<GFxMovieView> view)
 {
-	GFxValue args[2], object, path;
+	if (view && view->GetVisible()) {
 
-	args[0].SetString("HUDHooksContainer");
-	view->Invoke("getNextHighestDepth", &args[1], nullptr, 0);
-	view->Invoke("createEmptyMovieClip", &object, args, 2);
+		GFxValue args[2], object, path;
 
-	// Determine which file is loaded for the hud menu
-	if (BSScaleformManager::FileExists("Interface/HUDMenu.swf")) {
-		path.SetString("exported/HUDHooks.swf");
-	} else if (BSScaleformManager::FileExists("Interface/exported/HUDMenu.gfx")) {
-		path.SetString("HUDHooks.swf");
+		args[0].SetString("HUDHooksContainer");
+		view->Invoke("getNextHighestDepth", &args[1], nullptr, 0);
+		view->Invoke("createEmptyMovieClip", &object, args, 2);
+
+		// Determine which file is loaded for the hud menu
+		if (BSScaleformManager::FileExists("Interface/HUDMenu.swf")) {
+			path.SetString("exported/HUDHooks.swf");
+		} else if (BSScaleformManager::FileExists("Interface/exported/HUDMenu.gfx")) {
+			path.SetString("HUDHooks.swf");
+		}
+
+		object.Invoke("loadMovie", nullptr, &path, 1);
 	}
-
-	object.Invoke("loadMovie", nullptr, &path, 1);
 }
