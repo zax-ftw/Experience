@@ -28,24 +28,27 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 	BGSQuestObjective* objective = event->objective;
 	TESQuest* quest = objective->ownerQuest;
 
-	BSString displayText(objective->displayText);
-	FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
+	if (quest->GetType() != QuestType::kNone) {
+
+		BSString displayText(objective->displayText);
+		FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
 	
-	logger::info("[ObjectiveState] {0} ({1})", 
-		displayText.c_str(), magic_enum::enum_name(event->newState));
+		logger::info("[ObjectiveState] {0} ({1})", 
+			displayText.c_str(), magic_enum::enum_name(event->newState));
 
 	int reward = Settings::GetSingleton()->GetSettingInt("iXPObjectives");
 
-	if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
-		AddExperience(reward);
-	} else if (IsCompleted(event->oldState) && !IsCompleted(event->newState)) {
-		AddExperience(-reward);
+		if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
+			AddExperience(reward);
+		} else if (IsCompleted(event->oldState) && !IsCompleted(event->newState)) {
+			AddExperience(-reward);
+		}
 	}
 
 	return BSEventNotifyControl::kContinue;
 }
 
-bool ObjectiveStateEventHandler::IsCompleted(State state)
+bool ObjectiveStateEventHandler::IsCompleted(ObjState state)
 {
-	return state == State::kCompleted || state == State::kCompletedDisplayed;
+	return state == ObjState::kCompleted || state == ObjState::kCompletedDisplayed;
 }
