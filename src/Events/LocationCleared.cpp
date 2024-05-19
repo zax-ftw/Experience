@@ -44,72 +44,72 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 
 	switch (type) {
 	case MarkerType::kCity:
-		return settings->GetSettingInt("iXPClearCity");
+		return settings->GetValue<int>("iXPClearCity");
 	case MarkerType::kTown:
-		return settings->GetSettingInt("iXPClearTown");
+		return settings->GetValue<int>("iXPClearTown");
 	case MarkerType::kSettlement:
-		return settings->GetSettingInt("iXPClearSettlement");
+		return settings->GetValue<int>("iXPClearSettlement");
 	case MarkerType::kCave:
-		return settings->GetSettingInt("iXPClearCave");
+		return settings->GetValue<int>("iXPClearCave");
 	case MarkerType::kCamp:
-		return settings->GetSettingInt("iXPClearCamp");
+		return settings->GetValue<int>("iXPClearCamp");
 	case MarkerType::kFort:
-		return settings->GetSettingInt("iXPClearFort");
+		return settings->GetValue<int>("iXPClearFort");
 	case MarkerType::kNordicRuin:
-		return settings->GetSettingInt("iXPClearNordicRuin");
+		return settings->GetValue<int>("iXPClearNordicRuin");
 	case MarkerType::kDwemerRuin:
-		return settings->GetSettingInt("iXPClearDwemerRuin");
+		return settings->GetValue<int>("iXPClearDwemerRuin");
 	case MarkerType::kShipwreck:
-		return settings->GetSettingInt("iXPClearShipwreck");
+		return settings->GetValue<int>("iXPClearShipwreck");
 	case MarkerType::kGrove:
-		return settings->GetSettingInt("iXPClearGrove");
+		return settings->GetValue<int>("iXPClearGrove");
 	case MarkerType::kLandmark:
-		return settings->GetSettingInt("iXPClearLandmark");
+		return settings->GetValue<int>("iXPClearLandmark");
 	case MarkerType::kDragonLair:
-		return settings->GetSettingInt("iXPClearDragonLair");
+		return settings->GetValue<int>("iXPClearDragonLair");
 	case MarkerType::kFarm:
-		return settings->GetSettingInt("iXPClearFarm");
+		return settings->GetValue<int>("iXPClearFarm");
 	case MarkerType::kWoodMill:
-		return settings->GetSettingInt("iXPClearWoodMill");
+		return settings->GetValue<int>("iXPClearWoodMill");
 	case MarkerType::kMine:
-		return settings->GetSettingInt("iXPClearMine");
+		return settings->GetValue<int>("iXPClearMine");
 	case MarkerType::kImperialCamp:
 	case MarkerType::kStormcloakCamp:
-		return settings->GetSettingInt("iXPClearMilitaryCamp");
+		return settings->GetValue<int>("iXPClearMilitaryCamp");
 	case MarkerType::kDoomstone:
-		return settings->GetSettingInt("iXPClearDoomstone");
+		return settings->GetValue<int>("iXPClearDoomstone");
 	case MarkerType::kWheatMill:
-		return settings->GetSettingInt("iXPClearWheatMill");
+		return settings->GetValue<int>("iXPClearWheatMill");
 	case MarkerType::kSmelter:
-		return settings->GetSettingInt("iXPClearSmelter");
+		return settings->GetValue<int>("iXPClearSmelter");
 	case MarkerType::kStable:
-		return settings->GetSettingInt("iXPClearStable");
+		return settings->GetValue<int>("iXPClearStable");
 	case MarkerType::kImperialTower:
-		return settings->GetSettingInt("iXPClearImperialTower");
+		return settings->GetValue<int>("iXPClearImperialTower");
 	case MarkerType::kClearing:
-		return settings->GetSettingInt("iXPClearClearing");
+		return settings->GetValue<int>("iXPClearClearing");
 	case MarkerType::kPass:
-		return settings->GetSettingInt("iXPClearPass");
+		return settings->GetValue<int>("iXPClearPass");
 	case MarkerType::kAltar:
-		return settings->GetSettingInt("iXPClearAltar");
+		return settings->GetValue<int>("iXPClearAltar");
 	case MarkerType::kRock:
-		return settings->GetSettingInt("iXPClearRock");
+		return settings->GetValue<int>("iXPClearRock");
 	case MarkerType::kLighthouse:
-		return settings->GetSettingInt("iXPClearLighthouse");
+		return settings->GetValue<int>("iXPClearLighthouse");
 	case MarkerType::kOrcStronghold:
-		return settings->GetSettingInt("iXPClearOrcStronghold");
+		return settings->GetValue<int>("iXPClearOrcStronghold");
 	case MarkerType::kGiantCamp:
-		return settings->GetSettingInt("iXPClearGiantCamp");
+		return settings->GetValue<int>("iXPClearGiantCamp");
 	case MarkerType::kShack:
-		return settings->GetSettingInt("iXPClearShack");
+		return settings->GetValue<int>("iXPClearShack");
 	case MarkerType::kNordicTower:
-		return settings->GetSettingInt("iXPClearNordicTower");
+		return settings->GetValue<int>("iXPClearNordicTower");
 	case MarkerType::kNordicDwelling:
-		return settings->GetSettingInt("iXPClearNordicDwelling");
+		return settings->GetValue<int>("iXPClearNordicDwelling");
 	case MarkerType::kDocks:
-		return settings->GetSettingInt("iXPClearDocks");
+		return settings->GetValue<int>("iXPClearDocks");
 	case MarkerType::kShrine:
-		return settings->GetSettingInt("iXPClearDaedricShrine");
+		return settings->GetValue<int>("iXPClearDaedricShrine");
 	case MarkerType::kRiftenCastle:
 	case MarkerType::kWindhelmCastle:
 	case MarkerType::kWhiterunCastle:
@@ -119,7 +119,7 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kMorthalCastle:
 	case MarkerType::kFalkreathCastle:
 	case MarkerType::kDawnstarCastle:
-		return settings->GetSettingInt("iXPClearCastle");
+		return settings->GetValue<int>("iXPClearCastle");
 	case MarkerType::kRiftenCapitol:
 	case MarkerType::kWindhelmCapitol:
 	case MarkerType::kWhiterunCapitol:
@@ -130,19 +130,19 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kFalkreathCapitol:
 	case MarkerType::kDawnstarCapitol:
 	case MarkerType::kDLC02RavenRock:
-		return settings->GetSettingInt("iXPClearCity");
+		return settings->GetValue<int>("iXPClearCity");
 	case MarkerType::kDLC02MiraakTemple:
-		return settings->GetSettingInt("iXPClearMiraakTemple");
+		return settings->GetValue<int>("iXPClearMiraakTemple");
 	case MarkerType::kDLC02StandingStone:
-		return settings->GetSettingInt("iXPClearStandingStone");
+		return settings->GetValue<int>("iXPClearStandingStone");
 	case MarkerType::kDLC02TelvanniTower:
-		return settings->GetSettingInt("iXPClearTelvanniTower");
+		return settings->GetValue<int>("iXPClearTelvanniTower");
 	//case MarkerType::kDLC02ToSkyrim:
 	//case MarkerType::kDLC02ToSolstheim:	
 	case MarkerType::kDLC02CastleKarstaag:
-		return settings->GetSettingInt("iXPClearCastleKarstaag");
+		return settings->GetValue<int>("iXPClearCastleKarstaag");
 	default:
-		return settings->GetSettingInt("iXPClearDefault");
+		return settings->GetValue<int>("iXPClearDefault");
 	}
 }
 

@@ -35,7 +35,7 @@ BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event*
 
 int BooksReadEventHandler::GetReward(float value)
 {
-	float mult = Settings::GetSingleton()->GetSettingFloat("fXPReadingMult");
+	float mult = Settings::GetSingleton()->GetValue<float>("fXPReadingMult");
 	float sqrt = std::sqrtf(value * mult);
 
 	return std::round(sqrt);

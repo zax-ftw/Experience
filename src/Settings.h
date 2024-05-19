@@ -3,34 +3,27 @@
 #include "Utils/Singleton.h"
 
 
+template <typename, typename>
+constexpr bool is_one_of_variants_types = false;
+
+template <typename... Ts, typename T>
+constexpr bool is_one_of_variants_types<std::variant<Ts...>, T> = (std::is_same_v<T, Ts> || ...);
+
 class Settings : public ISingleton<Settings>
 {
 public:
 	using Setting = std::variant<std::monostate, int, float, bool, std::string>;
-	using SettingsMap = std::map<std::string_view, Setting>;
+	using SettingsMap = std::unordered_map<std::string_view, Setting>;
 
 	friend class ISingleton<Settings>;
 
-	void LoadSettings();
-	void SaveSettings();
-
-	Setting GetSetting(std::string_view key) const
-	{
-		auto it = data.find(key);
-		if (it == data.end())
-			return Setting();
-
-		return it->second;
-	};
-
-	void SetSetting(std::string_view key, Setting value)
-	{
-		data.insert_or_assign(key, value);
-	};
+	void ReadSettings();
+	void WriteSettings();
 
 	template <typename T>
-	[[nodiscard]] T GetSetting(std::string_view key) const 
-	{ 
+	auto GetValue(std::string_view key) const
+		-> std::enable_if_t<is_one_of_variants_types<Setting, T>,T>
+	{
 		auto setting = GetSetting(key);
 		if (std::holds_alternative<T>(setting)) {
 			return std::get<T>(setting);
@@ -38,21 +31,33 @@ public:
 		return T();
 	}
 
-	auto GetSettingInt(std::string_view key) const { return GetSetting<int>(key); }
-	auto GetSettingFloat(std::string_view key) const { return GetSetting<float>(key); }
-	auto GetSettingBool(std::string_view key) const { return GetSetting<bool>(key); }
-	auto GetSettingString(std::string_view key) const { return GetSetting<std::string>(key); }
-
-	void SetSettingInt(std::string_view key, int value) { SetSetting(key, value); };
-	void SetSettingFloat(std::string_view key, float value) { SetSetting(key, value); };
-	void SetSettingBool(std::string_view key, bool value) { SetSetting(key, value); };
-	void SetSettingString(std::string_view key, std::string value) { SetSetting(key, value); };
+	template <typename T>
+	auto SetValue(std::string_view key, T value)
+		-> std::enable_if_t<is_one_of_variants_types<Setting, T>>
+	{
+		std::unique_lock lock(mtx);
+		data.insert_or_assign(key, value);
+	};
 
 private:
 
-	Settings();
-	~Settings(){};
+	Settings() {};
+	~Settings() {};
 
+	Setting GetSetting(std::string_view key) const;
+
+	int ReadIntSetting(CSimpleIniA& ini, const char* section, const char* key, int def);
+	float ReadFloatSetting(CSimpleIniA& ini, const char* section, const char* key, float def);
+	bool ReadBoolSetting(CSimpleIniA& ini, const char* section, const char* key, bool def);
+	const char* ReadStringSetting(CSimpleIniA& ini, const char* section, const char* key, const char* def);
+
+	void WriteIntSetting(CSimpleIniA& ini, const char* section, const char* key, const char* comment = nullptr);
+	void WriteFloatSetting(CSimpleIniA& ini, const char* section, const char* key, const char* comment = nullptr);
+	void WriteBoolSetting(CSimpleIniA& ini, const char* section, const char* key, const char* comment = nullptr);
+	void WriteStringSetting(CSimpleIniA& ini, const char* section, const char* key, const char* comment = nullptr);
+
+	static constexpr const char* path = "Data/SKSE/Plugins/Experience.ini";
+
+	mutable std::shared_mutex mtx;
 	SettingsMap data;
-	std::string path;
 };

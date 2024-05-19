@@ -43,28 +43,28 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 
 	switch (type) {
 	case QuestType::kMainQuest:
-		return settings->GetSettingInt("iXPQuestMain");
+		return settings->GetValue<int>("iXPQuestMain");
 	case QuestType::kMagesGuild:
-		return settings->GetSettingInt("iXPQuestCollege");
+		return settings->GetValue<int>("iXPQuestCollege");
 	case QuestType::kThievesGuild:
-		return settings->GetSettingInt("iXPQuestThieves");
+		return settings->GetValue<int>("iXPQuestThieves");
 	case QuestType::kDarkBrotherhood:
-		return settings->GetSettingInt("iXPQuestBrotherhood");
+		return settings->GetValue<int>("iXPQuestBrotherhood");
 	case QuestType::kCompanionsQuest:
-		return settings->GetSettingInt("iXPQuestCompanions");
+		return settings->GetValue<int>("iXPQuestCompanions");
 	case QuestType::kMiscellaneous:
-		return settings->GetSettingInt("iXPQuestMisc");
+		return settings->GetValue<int>("iXPQuestMisc");
 	case QuestType::kDaedric:
-		return settings->GetSettingInt("iXPQuestDaedric");
+		return settings->GetValue<int>("iXPQuestDaedric");
 	case QuestType::kSideQuest:
-		return settings->GetSettingInt("iXPQuestSide");
+		return settings->GetValue<int>("iXPQuestSide");
 	case QuestType::kCivilWar:
-		return settings->GetSettingInt("iXPQuestCivilWar");
+		return settings->GetValue<int>("iXPQuestCivilWar");
 	case QuestType::kDLC01_Vampire:
-		return settings->GetSettingInt("iXPQuestDawnguard");
+		return settings->GetValue<int>("iXPQuestDawnguard");
 	case QuestType::kDLC02_Dragonborn:
-		return settings->GetSettingInt("iXPQuestDragonborn");
+		return settings->GetValue<int>("iXPQuestDragonborn");
 	default:
-		return settings->GetSettingInt("iXPQuestNone");
+		return settings->GetValue<int>("iXPQuestNone");
 	}
 }

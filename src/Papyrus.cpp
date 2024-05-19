@@ -43,52 +43,52 @@ namespace Papyrus
 
 	int32_t GetSettingInt(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton()->GetSettingInt(setting);
+		return Settings::GetSingleton()->GetValue<int>(setting);
 	}
 
 	float GetSettingFloat(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton()->GetSettingFloat(setting);
+		return Settings::GetSingleton()->GetValue<float>(setting);
 	}
 
 	bool GetSettingBool(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton()->GetSettingBool(setting);
+		return Settings::GetSingleton()->GetValue<bool>(setting);
 	}
 
 	BSFixedString GetSettingString(StaticFunctionTag*, BSFixedString setting)
 	{
-		return Settings::GetSingleton()->GetSettingString(setting);
+		return Settings::GetSingleton()->GetValue<std::string>(setting);
 	}
 
 	void SetSettingInt(StaticFunctionTag*, BSFixedString setting, int32_t value)
 	{
-		return Settings::GetSingleton()->SetSettingInt(setting, value);
+		return Settings::GetSingleton()->SetValue<int>(setting, value);
 	}
 
 	void SetSettingFloat(StaticFunctionTag*, BSFixedString setting, float value)
 	{
-		return Settings::GetSingleton()->SetSettingFloat(setting, value);
+		return Settings::GetSingleton()->SetValue<float>(setting, value);
 	}
 
 	void SetSettingBool(StaticFunctionTag*, BSFixedString setting, bool value)
 	{
-		return Settings::GetSingleton()->SetSettingBool(setting, value);
+		return Settings::GetSingleton()->SetValue<bool>(setting, value);
 	}
 
 	void SetSettingString(StaticFunctionTag*, BSFixedString setting, BSFixedString value)
 	{
-		return Settings::GetSingleton()->SetSettingString(setting, value.c_str());
+		return Settings::GetSingleton()->SetValue<std::string>(setting, value.c_str());
 	}
 
 	void SaveSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton()->SaveSettings();
+		return Settings::GetSingleton()->WriteSettings();
 	}
 
 	void LoadSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton()->LoadSettings();
+		return Settings::GetSingleton()->ReadSettings();
 	}
 
 	bool RegisterFuncs(BSScript::IVirtualMachine* vm)

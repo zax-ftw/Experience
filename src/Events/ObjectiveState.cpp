@@ -36,7 +36,7 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 		logger::info("[ObjectiveState] {0} ({1})", 
 			displayText.c_str(), magic_enum::enum_name(event->newState));
 
-	int reward = Settings::GetSingleton()->GetSettingInt("iXPObjectives");
+		int reward = Settings::GetSingleton()->GetValue<int>("iXPObjectives");
 
 		if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
 			AddExperience(reward);

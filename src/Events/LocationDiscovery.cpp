@@ -38,72 +38,72 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 
 	switch (type) {
 	case MarkerType::kCity:
-		return settings->GetSettingInt("iXPDiscCity");
+		return settings->GetValue<int>("iXPDiscCity");
 	case MarkerType::kTown:
-		return settings->GetSettingInt("iXPDiscTown");
+		return settings->GetValue<int>("iXPDiscTown");
 	case MarkerType::kSettlement:
-		return settings->GetSettingInt("iXPDiscSettlement");
+		return settings->GetValue<int>("iXPDiscSettlement");
 	case MarkerType::kCave:
-		return settings->GetSettingInt("iXPDiscCave");
+		return settings->GetValue<int>("iXPDiscCave");
 	case MarkerType::kCamp:
-		return settings->GetSettingInt("iXPDiscCamp");
+		return settings->GetValue<int>("iXPDiscCamp");
 	case MarkerType::kFort:
-		return settings->GetSettingInt("iXPDiscFort");
+		return settings->GetValue<int>("iXPDiscFort");
 	case MarkerType::kNordicRuin:
-		return settings->GetSettingInt("iXPDiscNordicRuin");
+		return settings->GetValue<int>("iXPDiscNordicRuin");
 	case MarkerType::kDwemerRuin:
-		return settings->GetSettingInt("iXPDiscDwemerRuin");
+		return settings->GetValue<int>("iXPDiscDwemerRuin");
 	case MarkerType::kShipwreck:
-		return settings->GetSettingInt("iXPDiscShipwreck");
+		return settings->GetValue<int>("iXPDiscShipwreck");
 	case MarkerType::kGrove:
-		return settings->GetSettingInt("iXPDiscGrove");
+		return settings->GetValue<int>("iXPDiscGrove");
 	case MarkerType::kLandmark:
-		return settings->GetSettingInt("iXPDiscLandmark");
+		return settings->GetValue<int>("iXPDiscLandmark");
 	case MarkerType::kDragonLair:
-		return settings->GetSettingInt("iXPDiscDragonLair");
+		return settings->GetValue<int>("iXPDiscDragonLair");
 	case MarkerType::kFarm:
-		return settings->GetSettingInt("iXPDiscFarm");
+		return settings->GetValue<int>("iXPDiscFarm");
 	case MarkerType::kWoodMill:
-		return settings->GetSettingInt("iXPDiscWoodMill");
+		return settings->GetValue<int>("iXPDiscWoodMill");
 	case MarkerType::kMine:
-		return settings->GetSettingInt("iXPDiscMine");
+		return settings->GetValue<int>("iXPDiscMine");
 	case MarkerType::kImperialCamp:
 	case MarkerType::kStormcloakCamp:
-		return settings->GetSettingInt("iXPDiscMilitaryCamp");
+		return settings->GetValue<int>("iXPDiscMilitaryCamp");
 	case MarkerType::kDoomstone:
-		return settings->GetSettingInt("iXPDiscDoomstone");
+		return settings->GetValue<int>("iXPDiscDoomstone");
 	case MarkerType::kWheatMill:
-		return settings->GetSettingInt("iXPDiscWheatMill");
+		return settings->GetValue<int>("iXPDiscWheatMill");
 	case MarkerType::kSmelter:
-		return settings->GetSettingInt("iXPDiscSmelter");
+		return settings->GetValue<int>("iXPDiscSmelter");
 	case MarkerType::kStable:
-		return settings->GetSettingInt("iXPDiscStable");
+		return settings->GetValue<int>("iXPDiscStable");
 	case MarkerType::kImperialTower:
-		return settings->GetSettingInt("iXPDiscImperialTower");
+		return settings->GetValue<int>("iXPDiscImperialTower");
 	case MarkerType::kClearing:
-		return settings->GetSettingInt("iXPDiscClearing");
+		return settings->GetValue<int>("iXPDiscClearing");
 	case MarkerType::kPass:
-		return settings->GetSettingInt("iXPDiscPass");
+		return settings->GetValue<int>("iXPDiscPass");
 	case MarkerType::kAltar:
-		return settings->GetSettingInt("iXPDiscAltar");
+		return settings->GetValue<int>("iXPDiscAltar");
 	case MarkerType::kRock:
-		return settings->GetSettingInt("iXPDiscRock");
+		return settings->GetValue<int>("iXPDiscRock");
 	case MarkerType::kLighthouse:
-		return settings->GetSettingInt("iXPDiscLighhouse");
+		return settings->GetValue<int>("iXPDiscLighhouse");
 	case MarkerType::kOrcStronghold:
-		return settings->GetSettingInt("iXPDiscOrcStronghold");
+		return settings->GetValue<int>("iXPDiscOrcStronghold");
 	case MarkerType::kGiantCamp:
-		return settings->GetSettingInt("iXPDiscGiantCamp");
+		return settings->GetValue<int>("iXPDiscGiantCamp");
 	case MarkerType::kShack:
-		return settings->GetSettingInt("iXPDiscShack");
+		return settings->GetValue<int>("iXPDiscShack");
 	case MarkerType::kNordicTower:
-		return settings->GetSettingInt("iXPDiscNordicTower");
+		return settings->GetValue<int>("iXPDiscNordicTower");
 	case MarkerType::kNordicDwelling:
-		return settings->GetSettingInt("iXPDiscNordicDwelling");
+		return settings->GetValue<int>("iXPDiscNordicDwelling");
 	case MarkerType::kDocks:
-		return settings->GetSettingInt("iXPDiscDocks");
+		return settings->GetValue<int>("iXPDiscDocks");
 	case MarkerType::kShrine:
-		return settings->GetSettingInt("iXPDiscDaedricShrine");
+		return settings->GetValue<int>("iXPDiscDaedricShrine");
 	case MarkerType::kRiftenCastle:
 	case MarkerType::kWindhelmCastle:
 	case MarkerType::kWhiterunCastle:
@@ -113,7 +113,7 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 	case MarkerType::kMorthalCastle:
 	case MarkerType::kFalkreathCastle:
 	case MarkerType::kDawnstarCastle:
-		return settings->GetSettingInt("iXPDiscCastle");
+		return settings->GetValue<int>("iXPDiscCastle");
 	case MarkerType::kRiftenCapitol:
 	case MarkerType::kWindhelmCapitol:
 	case MarkerType::kWhiterunCapitol:
@@ -124,18 +124,18 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 	case MarkerType::kFalkreathCapitol:
 	case MarkerType::kDawnstarCapitol:
 	case MarkerType::kDLC02RavenRock:	
-		return settings->GetSettingInt("iXPDiscCity");
+		return settings->GetValue<int>("iXPDiscCity");
 	case MarkerType::kDLC02MiraakTemple:		
-		return settings->GetSettingInt("iXPDiscMiraakTemple");
+		return settings->GetValue<int>("iXPDiscMiraakTemple");
 	case MarkerType::kDLC02StandingStone:
-		return settings->GetSettingInt("iXPDiscStandingStone");
+		return settings->GetValue<int>("iXPDiscStandingStone");
 	case MarkerType::kDLC02TelvanniTower:	
-		return settings->GetSettingInt("iXPDiscTelvanniTower");
+		return settings->GetValue<int>("iXPDiscTelvanniTower");
 	//case MarkerType::kDLC02ToSkyrim:
 	//case MarkerType::kDLC02ToSolstheim:
 	case MarkerType::kDLC02CastleKarstaag:
-		return settings->GetSettingInt("iXPDiscCastleKarstaag");
+		return settings->GetValue<int>("iXPDiscCastleKarstaag");
 	default:
-		return settings->GetSettingInt("iXPDiscDefault");
+		return settings->GetValue<int>("iXPDiscDefault");
 	}
 }
