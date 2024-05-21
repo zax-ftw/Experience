@@ -6,11 +6,10 @@
 
 using namespace RE;
 
-
 ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 	ExperienceManager::Source(manager, MeterState::kInactive)
 {
-	ActorKill::GetEventSource()->AddEventSink(this);
+	ScriptEventSourceHolder::GetSingleton()->AddEventSink<TESDeathEvent>(this);
 
 	ParseDirectory("Data/SKSE/Plugins/Experience/Actors", npcs);
 	ParseDirectory("Data/SKSE/Plugins/Experience/Races", races);
@@ -18,7 +17,7 @@ ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 
 ActorKillEventHandler::~ActorKillEventHandler(void)
 {
-	ActorKill::GetEventSource()->RemoveEventSink(this);
+	ScriptEventSourceHolder::GetSingleton()->RemoveEventSink<TESDeathEvent>(this);
 }
 
 void ActorKillEventHandler::ParseFile(const fs::path& file, std::unordered_map<TESForm*, int>& data)
@@ -81,19 +80,31 @@ void ActorKillEventHandler::ParseDirectory(const fs::path& root, std::unordered_
 	logger::info("Directory '{}' parsed in {} ms", root.string() , ms.count());
 }
 
-BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event* event, ActorKillEventSource*)
+RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::TESDeathEvent* event, RE::BSTEventSource<RE::TESDeathEvent>*)
 {
-	if (IsValidKill(event->killer, event->victim)) {
+	Actor* victim = event->actorDying ? event->actorDying->As<Actor>() : nullptr;
+	Actor* killer = event->actorKiller ? event->actorKiller->As<Actor>() : nullptr;
 
-		auto player = PlayerCharacter::GetSingleton();
-		auto victim = event->victim;
+	if (event->dead) {
+		HandleKill(victim, killer);
+	}
 
-		logger::info("[ActorKill] {} (RefID:{:#08})", 
-			victim->GetName(), victim->GetFormID());
+	return BSEventNotifyControl::kContinue;
+}
+
+void ActorKillEventHandler::HandleKill(Actor* victim, Actor* killer)
+{
+	auto player = PlayerCharacter::GetSingleton();
+
+	if (IsValidKill(victim, player)) {
+
+		logger::info("[ActorDeath] {} (RefID:{:08X})",
+			victim->GetName(),
+			victim->GetFormID());
 
 		float reward = GetBaseReward(victim);
 
-		reward *= GetLevelMult(player, victim);
+		reward *= GetLevelMult(victim, player);
 		reward *= GetGroupMult(player);
 		reward *= Settings::GetSingleton()->GetValue<float>("fXPKillingMult");
 
@@ -101,30 +112,29 @@ BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const ActorKill::Event*
 
 		AddExperience(result);
 	}
-	return BSEventNotifyControl::kContinue;
 }
 
-float ActorKillEventHandler::GetLevelMult(Actor* player, Actor* victim) const
+float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* killer)
 {
 	float setting = Settings::GetSingleton()->GetValue<float>("fXPLevelFactor");
 
-	float levelRange = std::max(setting, 1);
-	float levelDelta = player->GetLevel() - victim->GetLevel();
+	float levelFactor = std::clamp(setting, 0.0f, 1.0f);
+	float levelRatio = (float)victim->GetLevel() / (float)killer->GetLevel();
 
-	return std::max(1.0f - (levelDelta / levelRange), 0.0f);
+	return std::pow(levelRatio, levelFactor);
 }
 
-float ActorKillEventHandler::GetGroupMult(PlayerCharacter* player) const
+float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 {
 	float setting = Settings::GetSingleton()->GetValue<float>("fXPGroupFactor");
 
-	float groupFactor = std::clamp(setting, 0.0f, 1.0f);
+	float groupFactor = std::clamp(setting, 0.0f, 0.5f);
 	float groupSize = player->GetInfoRuntimeData().teammateCount;
 
-	return std::pow((1.0f - groupFactor), groupSize);
+	return std::pow(1.0f - groupFactor, groupSize);
 }
 
-TESNPC* ActorKillEventHandler::GetTemplateBase(Actor* actor) const
+TESNPC* ActorKillEventHandler::GetTemplateBase(Actor* actor)
 {
 	auto LeveledCreature = actor->extraList.GetByType<ExtraLeveledCreature>();
 	if (LeveledCreature) {
@@ -133,7 +143,7 @@ TESNPC* ActorKillEventHandler::GetTemplateBase(Actor* actor) const
 	return actor->GetActorBase();
 }
 
-float ActorKillEventHandler::GetBaseReward(Actor* actor) const
+float ActorKillEventHandler::GetBaseReward(Actor* actor)
 {
 	auto base = GetTemplateBase(actor);
 	if (auto it = npcs.find(base); it != npcs.end()) {
@@ -147,22 +157,19 @@ float ActorKillEventHandler::GetBaseReward(Actor* actor) const
 	return 0.0;
 }
 
-bool ActorKillEventHandler::IsValidKill(Actor* killer, Actor* victim)
+bool ActorKillEventHandler::IsValidKill(Actor* victim, Actor* killer)
 {
-	if (killer) {
-
-		if (victim->IsSummoned() || victim->IsChild() || victim->IsGuard()) {
-			return false;
-		}
-
-		if (killer->IsPlayerRef() || killer->IsPlayerTeammate()) {
-			return true;
-		}
-
-		// TODO: handle it better
-		if (killer->AsActorValueOwner()->GetActorValue(ActorValue::kAggression) == 3) { 
-			return true;
-		}
+	if (victim->IsSummoned() || victim->IsCommandedActor()) {
+		return false;
 	}
-	return false;
+
+	if (victim->IsChild() || victim->IsGuard()) {
+		return false;
+	}
+
+	if (!victim->IsHostileToActor(killer)) {
+		return false;
+	}
+
+	return true;
 }

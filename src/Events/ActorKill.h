@@ -5,7 +5,7 @@
 namespace fs = std::filesystem;
 
 class ActorKillEventHandler : public ExperienceManager::Source, 
-	public RE::BSTEventSink<RE::ActorKill::Event>
+	public RE::BSTEventSink<RE::TESDeathEvent>
 {
 public:
 	using ActorKillEventSource = RE::BSTEventSource<RE::ActorKill::Event>;
@@ -13,15 +13,17 @@ public:
 	ActorKillEventHandler(ExperienceManager* manager);
 	~ActorKillEventHandler();
 
-	RE::BSEventNotifyControl ProcessEvent(const RE::ActorKill::Event* event, ActorKillEventSource* source) override;
+	RE::BSEventNotifyControl ProcessEvent(const RE::TESDeathEvent* event, RE::BSTEventSource<RE::TESDeathEvent>* source) override;
 
-	RE::TESNPC* GetTemplateBase(RE::Actor* actor) const;
+	void HandleKill(RE::Actor* victim, RE::Actor* killer);
 
-	float GetBaseReward(RE::Actor* actor) const;
-	float GetLevelMult(RE::Actor* player, RE::Actor* victim) const;
-	float GetGroupMult(RE::PlayerCharacter* player) const;
+	static RE::TESNPC* GetTemplateBase(RE::Actor* actor);
 
-	bool IsValidKill( RE::Actor* killer, RE::Actor* victim);
+	float GetBaseReward(RE::Actor* victim);
+	static float GetLevelMult(const RE::Actor* victim, const RE::Actor* killer);
+	static float GetGroupMult(const RE::PlayerCharacter* player);
+
+	static bool IsValidKill(RE::Actor* victim, RE::Actor* killer);
 
 private:
 	void ParseDirectory(const fs::path& root, std::unordered_map<RE::TESForm*, int>& data);
