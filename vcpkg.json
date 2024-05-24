@@ -1,6 +1,6 @@
 {
   "name": "experience",
-  "version-string": "3.2.0",
+  "version-string": "3.3.0",
   "description": "Makes the player gain levels by completing quests and exploring",
   "homepage": "https://github.com/zax-ftw/Experience",
   "license": "Apache-2.0",
