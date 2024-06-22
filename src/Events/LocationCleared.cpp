@@ -1,7 +1,7 @@
 #include "Events/LocationCleared.h"
 
 #include "Settings.h"
-#include "HUD.h"
+#include "Skyrim/HUDMenu.h"
 
 #include "Hooks/BGSLocation.h"
 #include "Utils/GameSettings.h"
@@ -150,5 +150,5 @@ void LocationClearedEventHandler::ShowLocationCleared(const char* text)
 {
 	auto status = Utils::GetGameSettingString("sCleared");
 
-	HUD::ShowNotification(text, status, "", HUD::MessageType::kQuestStarted);
+	HUDMenuEx::ShowNotification(text, status, "");
 }

@@ -2,7 +2,7 @@
 
 #include "Experience.h"
 #include "Settings.h"
-#include "HUD.h"
+#include "Skyrim/HUDMenu.h"
 
 #include "Hooks/PlayerSkills.h"
 
@@ -32,6 +32,6 @@ namespace Experience
 
 	void ExperienceInterface::ShowNotification(const char* text, const char* status, const char* sound)
 	{
-		HUD::ShowNotification(text, status, sound, HUD::MessageType::kQuestStarted);
+		HUDMenuEx::ShowNotification(text, status, sound);
 	}
 }

@@ -2,7 +2,7 @@
 
 #include "Experience.h"
 #include "Settings.h"
-#include "HUD.h"
+#include "Skyrim/HUDMenu.h"
 
 #include "Hooks/PlayerSkills.h"
 
@@ -31,9 +31,7 @@ namespace Papyrus
 
 	void ShowNotification(StaticFunctionTag*, BSFixedString text, BSFixedString status, BSFixedString sound)
 	{
-		using Type = HUD::MessageType;
-
-		HUD::ShowNotification(text.c_str(), status.c_str(), sound.c_str(), Type::kQuestStarted);
+		HUDMenuEx::ShowNotification(text.c_str(), status.c_str(), sound.c_str());
 	}
 
 	float GetSkillCap(StaticFunctionTag*, ActorValue skill)

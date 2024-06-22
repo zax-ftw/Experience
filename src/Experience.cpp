@@ -2,7 +2,7 @@
 
 #include "Settings.h"
 #include "Translation.h"
-#include "HUD.h"
+#include "Skyrim/HUDMenu.h"
 
 #include "Events/ActorKill.h"
 #include "Events/BooksRead.h"
@@ -161,16 +161,14 @@ void ExperienceManager::ShowLevelMeter(float start, float end)
 	PlayerCharacter* player = PlayerCharacter::GetSingleton();
 	uint16_t level = player->GetLevel();
 
-	HUD::ShowLevelMeter(level, start, end);
+	HUDMenuEx::ShowLevelMeter(level, start, end);
 }
 
 void ExperienceManager::ShowLevelUpNotification()
 {
-	using Type = HUD::MessageType;
-
 	std::string message = Translation::Translate("$LEVEL UP");
 
-	HUD::ShowNotification(message.c_str(), "", "UILevelUp", Type::kLocationDiscoverd);
+	HUDMenuEx::ShowNotification(message.c_str(), "", "UILevelUp");
 }
 
 void ExperienceManager::ShowRewardMessage(int points)
