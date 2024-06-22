@@ -124,11 +124,18 @@ void Settings::ReadSettings()
 	ReadIntSetting(ini, "Clearing", "iXPClearTelvanniTower", clearDefault);
 	ReadIntSetting(ini, "Clearing", "iXPClearCastleKarstaag", clearDefault);
 
-	ReadFloatSetting(ini, "Killing", "fXPLevelFactor", 0.8f);
-	ReadFloatSetting(ini, "Killing", "fXPKillingMult", 1.0f);
-	ReadFloatSetting(ini, "Killing", "fXPGroupFactor", 0.2f);
+	// 3.4.0
+	float fLevelFactor = ReadFloatSetting(ini, "Killing", "fXPLevelFactor", 0.8f);
+	ReadFloatSetting(ini, "Killing", "fLevelFactor", fLevelFactor);
 
-	ReadFloatSetting(ini, "Reading", "fXPReadingMult", 2.0f);
+	float fGroupFactor = ReadFloatSetting(ini, "Killing", "fXPGroupFactor", 0.0f);
+	ReadFloatSetting(ini, "Killing", "fGroupFactor", fGroupFactor);
+
+	float fKillingMult = ReadFloatSetting(ini, "Killing", "fXPKillingMult", 1.0f);
+	ReadFloatSetting(ini, "Killing", "fKillingMult", fKillingMult);
+
+	float fReadingMult = ReadFloatSetting(ini, "Reading", "fXPReadingMult", 2.0f);
+	ReadFloatSetting(ini, "Reading", "fReadingMult", fReadingMult);
 }
 
 void Settings::WriteSettings()
@@ -245,11 +252,11 @@ void Settings::WriteSettings()
 	WriteIntSetting(ini, "Clearing", "iXPClearCastleKarstaag");
 	WriteIntSetting(ini, "Clearing", "iXPClearDefault");
 
-	WriteFloatSetting(ini, "Killing", "fXPLevelFactor");
-	WriteFloatSetting(ini, "Killing", "fXPGroupFactor");
-	WriteFloatSetting(ini, "Killing", "fXPKillingMult");
+	WriteFloatSetting(ini, "Killing", "fLevelFactor");
+	WriteFloatSetting(ini, "Killing", "fGroupFactor");
+	WriteFloatSetting(ini, "Killing", "fKillingMult");
 
-	WriteFloatSetting(ini, "Reading", "fXPReadingMult");
+	WriteFloatSetting(ini, "Reading", "fReadingMult");
 
 	if (ini.SaveFile(path) == SI_FILE) {
 		logger::warn("Failed to save file: {}", path);

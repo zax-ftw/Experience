@@ -35,7 +35,7 @@ void ActorKillEventHandler::HandleKill(Actor* victim, Actor* killer)
 
 		reward *= GetLevelMult(victim, player);
 		reward *= GetGroupMult(player);
-		reward *= Settings::GetSingleton()->GetValue<float>("fXPKillingMult");
+		reward *= Settings::GetSingleton()->GetValue<float>("fKillingMult");
 
 		int result = std::max(std::ceil(reward), 1.0f);
 
@@ -45,7 +45,7 @@ void ActorKillEventHandler::HandleKill(Actor* victim, Actor* killer)
 
 float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* killer)
 {
-	float setting = Settings::GetSingleton()->GetValue<float>("fXPLevelFactor");
+	float setting = Settings::GetSingleton()->GetValue<float>("fLevelFactor");
 
 	float levelFactor = std::clamp(setting, 0.0f, 1.0f);
 	float levelRatio = (float)victim->GetLevel() / (float)killer->GetLevel();
@@ -55,7 +55,7 @@ float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* kill
 
 float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 {
-	float setting = Settings::GetSingleton()->GetValue<float>("fXPGroupFactor");
+	float setting = Settings::GetSingleton()->GetValue<float>("fGroupFactor");
 
 	float groupFactor = std::clamp(setting, 0.0f, 0.5f);
 	float groupSize = player->GetInfoRuntimeData().teammateCount;
