@@ -34,6 +34,7 @@ BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Ev
 			AddExperience(reward);
 		}
 	}
+
 	return BSEventNotifyControl::kContinue;
 }
 
@@ -52,8 +53,6 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 		return settings->GetValue<int>("iXPQuestBrotherhood");
 	case QuestType::kCompanionsQuest:
 		return settings->GetValue<int>("iXPQuestCompanions");
-	case QuestType::kMiscellaneous:
-		return settings->GetValue<int>("iXPQuestMisc");
 	case QuestType::kDaedric:
 		return settings->GetValue<int>("iXPQuestDaedric");
 	case QuestType::kSideQuest:
@@ -65,6 +64,6 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 	case QuestType::kDLC02_Dragonborn:
 		return settings->GetValue<int>("iXPQuestDragonborn");
 	default:
-		return settings->GetValue<int>("iXPQuestNone");
+		return 0;
 	}
 }

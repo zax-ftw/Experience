@@ -36,7 +36,7 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 
 	if (quest->GetType() != QuestType::kNone) {
 
-		int reward = Settings::GetSingleton()->GetValue<int>("iXPObjectives");
+		int reward = Settings::GetSingleton()->GetValue<int>("iXPQuestObjectives");
 
 		if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
 			AddExperience(reward);

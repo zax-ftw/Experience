@@ -24,19 +24,19 @@ void Settings::ReadSettings()
 	int forceLvlMeter = ReadBoolSetting(ini, "General", "bForceLvlMeter", false);
 	ReadIntSetting(ini, "General", "iMeterMode", forceLvlMeter + 1);
 
-	ReadIntSetting(ini, "Questing", "iXPQuestNone", 0);
+	//ReadIntSetting(ini, "Questing", "iXPQuestNone", 0);
 	ReadIntSetting(ini, "Questing", "iXPQuestMain", 75);
 	ReadIntSetting(ini, "Questing", "iXPQuestCollege", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestThieves", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestBrotherhood", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestCompanions", 50);
-	ReadIntSetting(ini, "Questing", "iXPQuestMisc", 0);
+	//ReadIntSetting(ini, "Questing", "iXPQuestMisc", 0);
 	ReadIntSetting(ini, "Questing", "iXPQuestDaedric", 75);
 	ReadIntSetting(ini, "Questing", "iXPQuestSide", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestCivilWar", 75);
 	ReadIntSetting(ini, "Questing", "iXPQuestDawnguard", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestDragonborn", 75);
-	ReadIntSetting(ini, "Questing", "iXPObjectives", 10);
+	ReadIntSetting(ini, "Questing", "iXPQuestObjectives", 10);
 
 	int discDefault = ReadIntSetting(ini, "Exploring", "iXPDiscDefault", 10);
 
@@ -154,19 +154,19 @@ void Settings::WriteSettings()
 	WriteStringSetting(ini, "General", "sMessageFormat");
 	WriteIntSetting(ini, "General", "iMeterMode");
 
-	WriteIntSetting(ini, "Questing", "iXPQuestNone");
+	//WriteIntSetting(ini, "Questing", "iXPQuestNone");
 	WriteIntSetting(ini, "Questing", "iXPQuestMain");
 	WriteIntSetting(ini, "Questing", "iXPQuestCollege");
 	WriteIntSetting(ini, "Questing", "iXPQuestThieves");
 	WriteIntSetting(ini, "Questing", "iXPQuestBrotherhood");
 	WriteIntSetting(ini, "Questing", "iXPQuestCompanions");
-	WriteIntSetting(ini, "Questing", "iXPQuestMisc");
+	//WriteIntSetting(ini, "Questing", "iXPQuestMisc");
 	WriteIntSetting(ini, "Questing", "iXPQuestDaedric");
 	WriteIntSetting(ini, "Questing", "iXPQuestSide");
 	WriteIntSetting(ini, "Questing", "iXPQuestCivilWar");
 	WriteIntSetting(ini, "Questing", "iXPQuestDawnguard");
 	WriteIntSetting(ini, "Questing", "iXPQuestDragonborn");
-	WriteIntSetting(ini, "Questing", "iXPObjectives");
+	WriteIntSetting(ini, "Questing", "iXPQuestObjectives");
 
 	WriteIntSetting(ini, "Exploring", "iXPDiscCity");
 	WriteIntSetting(ini, "Exploring", "iXPDiscTown");
