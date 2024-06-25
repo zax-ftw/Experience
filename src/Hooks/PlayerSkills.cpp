@@ -106,8 +106,9 @@ void PlayerSkillsEx::UpdateSkillCaps()
 	auto settings = Settings::GetSingleton();
 	if (settings->GetValue<bool>("bUseRacialCaps")) {
 
-		auto race = player->GetRace();
-		ApplyRacials(race);
+		if (auto race = player->GetRace()) {
+			ApplyRacials(race);
+		}	
 	}
 }
 
@@ -302,7 +303,7 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::PlayerCharacter::sub_69ABF0.address() + OFFSET(0x37, 0x37, 0x5E), &PlayerSkillsEx::CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::PlayerCharacter::StopWaitSleep.address() + OFFSET(0x37, 0x37, 0x5E), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), &PlayerSkillsEx::CanLevelUp_Hook);
 	

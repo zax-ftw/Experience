@@ -2,8 +2,6 @@
 
 #include "Experience.h"
 
-namespace fs = std::filesystem;
-
 class ActorKillEventHandler : public ExperienceManager::Source, 
 	public RE::BSTEventSink<RE::TESDeathEvent>
 {
@@ -26,8 +24,6 @@ public:
 	static bool IsValidKill(RE::Actor* victim, RE::Actor* killer);
 
 private:
-	void ParseDirectory(const fs::path& root, std::unordered_map<RE::TESForm*, int>& data);
-	void ParseFile(const fs::path& file, std::unordered_map<RE::TESForm*, int>& data);
 
 	std::unordered_map<RE::TESForm*, int> races;
 	std::unordered_map<RE::TESForm*, int> npcs;

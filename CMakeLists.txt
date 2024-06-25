@@ -69,9 +69,9 @@ set(SOURCE_FILES
  "src/Skyrim/HUDMenu.h"
  "src/Skyrim/StatsMenu.cpp"
  "src/Skyrim/StatsMenu.h"
- "src/Utils/SafeQueue.h" 
  "src/Utils/GameSettings.h" 
  "src/Utils/DirectoryParser.h"
+ "src/Utils/SafeQueue.h"
  "src/Utils/Singleton.h")
 
 source_group(

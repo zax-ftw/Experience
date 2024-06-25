@@ -28,13 +28,13 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 	BGSQuestObjective* objective = event->objective;
 	TESQuest* quest = objective->ownerQuest;
 
-	if (quest->GetType() != QuestType::kNone) {
-
-		BSString displayText(objective->displayText);
-		FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
+	BSString displayText(objective->displayText);
+	FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
 	
-		logger::info("[ObjectiveState] {0} ({1})", 
-			displayText.c_str(), magic_enum::enum_name(event->newState));
+	logger::info("[ObjectiveState] {0} ({1})", 
+		displayText.c_str(), magic_enum::enum_name(event->newState));
+
+	if (quest->GetType() != QuestType::kNone) {
 
 		int reward = Settings::GetSingleton()->GetValue<int>("iXPObjectives");
 
@@ -48,7 +48,8 @@ BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveSta
 	return BSEventNotifyControl::kContinue;
 }
 
-bool ObjectiveStateEventHandler::IsCompleted(ObjState state)
+bool ObjectiveStateEventHandler::IsCompleted(QUEST_OBJECTIVE_STATE state)
 {
-	return state == ObjState::kCompleted || state == ObjState::kCompletedDisplayed;
+	using enum QUEST_OBJECTIVE_STATE;
+	return state == kCompleted || state == kCompletedDisplayed;
 }

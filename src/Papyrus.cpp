@@ -18,15 +18,11 @@ namespace Papyrus
 		return version.string("."sv);
 	}
 
-	void AddExperience(StaticFunctionTag*, float points, bool meter)
+	void AddExperience(StaticFunctionTag*, int points, bool meter)
 	{
-		ExperienceManager::Experience experience;
+		ExperienceManager::Experience exp {.points = points, .widget = meter};
 
-		experience.points = points;
-		experience.widget = meter;
-		experience.source = nullptr;
-
-		ExperienceManager::GetSingleton()->AddExperience(experience);
+		ExperienceManager::GetSingleton()->AddExperience(exp);
 	}
 
 	void ShowNotification(StaticFunctionTag*, BSFixedString text, BSFixedString status, BSFixedString sound)

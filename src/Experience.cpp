@@ -129,15 +129,11 @@ void ExperienceManager::Source::AddExperience(int points)
 {
 	if (points != 0) {
 
-		Experience experience;
-
-		experience.points = points;
-		experience.widget = meter;
-		experience.source = this;
+		Experience exp { .source = this, .points = points, .widget = meter };
 
 		logger::trace("{0:+d} XP", points);
 
-		manager->AddExperience(experience);
+		manager->AddExperience(exp);
 	}
 }
 
