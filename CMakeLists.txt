@@ -6,7 +6,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}")
 ########################################################################################################################
 project(
 	Experience
-	VERSION 3.3.0
+	VERSION 3.4.0
 	LANGUAGES CXX
 )
 
@@ -45,6 +45,8 @@ set(SOURCE_FILES
  "src/ModAPI.h"
  "src/Console.cpp"
  "src/Console.h"
+ "src/Hooks/Actor.cpp"
+ "src/Hooks/Actor.h"
  "src/Hooks/PlayerSkills.cpp"
  "src/Hooks/PlayerSkills.h"
  "src/Hooks/TrainingMenu.cpp"
