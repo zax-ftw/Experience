@@ -8,6 +8,8 @@ namespace RE
 		{
 			constexpr auto Kill = RELOCATION_ID(36872, 37896);
 			constexpr auto Resurrect = RELOCATION_ID(36331, 37321);
+			constexpr auto DamageHealth = RELOCATION_ID(36345, 37335);
+			constexpr auto IsCombatTarget = RELOCATION_ID(37618, 38571);
 		}
 
 		namespace PlayerCharacter
@@ -40,6 +42,7 @@ namespace RE
 		namespace Unknown
 		{
 			constexpr auto LocationMarkerRelated = RELOCATION_ID(24647, 25118);
+			constexpr auto HandleAction = RELOCATION_ID(38048, 39004);
 		}
 
 		namespace HUDNotifications

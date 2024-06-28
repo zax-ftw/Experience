@@ -1,6 +1,7 @@
 #include "Hooks/PlayerSkills.h"
 #include "Hooks/TrainingMenu.h"
 #include "Hooks/BGSLocation.h"
+#include "Hooks/Actor.h"
 
 #include "Experience.h"
 #include "Serialization.h"
@@ -79,6 +80,7 @@ namespace Experience
 		PlayerSkillsEx::Install(trampoline);
 		TrainingMenuEx::Install(trampoline);
 		BGSLocationEx::Install(trampoline);
+		ActorEx::Install(trampoline);
 	}
 
     void InitializeMessaging()

@@ -131,6 +131,8 @@ void Settings::ReadSettings()
 	float fGroupFactor = ReadFloatSetting(ini, "Killing", "fXPGroupFactor", 0.0f);
 	ReadFloatSetting(ini, "Killing", "fGroupFactor", fGroupFactor);
 
+	ReadFloatSetting(ini, "Killing", "fDamageThreshold", 0.2f);
+
 	float fKillingMult = ReadFloatSetting(ini, "Killing", "fXPKillingMult", 1.0f);
 	ReadFloatSetting(ini, "Killing", "fKillingMult", fKillingMult);
 
@@ -254,6 +256,7 @@ void Settings::WriteSettings()
 
 	WriteFloatSetting(ini, "Killing", "fLevelFactor");
 	WriteFloatSetting(ini, "Killing", "fGroupFactor");
+	WriteFloatSetting(ini, "Killing", "fDamageThreshold");
 	WriteFloatSetting(ini, "Killing", "fKillingMult");
 
 	WriteFloatSetting(ini, "Reading", "fReadingMult");

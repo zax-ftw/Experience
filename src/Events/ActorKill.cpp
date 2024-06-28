@@ -1,16 +1,18 @@
 #include "Events/ActorKill.h"
 
 #include <algorithm>
+#include <math.h>
 
 #include "Settings.h"
 #include "Utils/DirectoryParser.h"
+#include "Hooks/Actor.h"
 
 using namespace RE;
 
 ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 	ExperienceManager::Source(manager, MeterState::kInactive)
 {
-	ScriptEventSourceHolder::GetSingleton()->AddEventSink<TESDeathEvent>(this);
+	ActorKill::GetEventSource()->AddEventSink(this);
 
 	Utils::ParseDirectory("Data/SKSE/Plugins/Experience/Actors", npcs);
 	Utils::ParseDirectory("Data/SKSE/Plugins/Experience/Races", races);
@@ -18,16 +20,17 @@ ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 
 ActorKillEventHandler::~ActorKillEventHandler(void)
 {
-	ScriptEventSourceHolder::GetSingleton()->RemoveEventSink<TESDeathEvent>(this);
+	ActorKill::GetEventSource()->RemoveEventSink(this);
 }
 
-void ActorKillEventHandler::HandleKill(Actor* victim, Actor* killer)
+RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill::Event* event, ActorKillEventSource*)
 {
 	auto player = PlayerCharacter::GetSingleton();
+	auto victim = event->victim;
 
 	if (IsValidKill(victim, player)) {
 
-		logger::info("[ActorDeath] {} (RefID:{:08X})",
+		logger::info("[ActorKill] {} (RefID:{:08X})",
 			victim->GetName(),
 			victim->GetFormID());
 
@@ -41,6 +44,8 @@ void ActorKillEventHandler::HandleKill(Actor* victim, Actor* killer)
 
 		AddExperience(result);
 	}
+
+	return BSEventNotifyControl::kContinue;
 }
 
 float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* killer)
@@ -83,7 +88,15 @@ float ActorKillEventHandler::GetBaseReward(Actor* actor)
 	if (auto it = races.find(race); it != races.end()) {
 		return (float)it->second;
 	}
-	return 0.0;
+	return 0.0f;
+}
+
+float ActorKillEventHandler::GetPlayerDamagePercent(Actor* actor)
+{
+	float totalHealth = actor->AsActorValueOwner()->GetBaseActorValue(ActorValue::kHealth);
+	float totalDamage = ActorEx::GetTrackedDamage(actor);
+
+	return totalDamage / totalHealth;
 }
 
 bool ActorKillEventHandler::IsValidKill(Actor* victim, Actor* killer)
@@ -92,11 +105,9 @@ bool ActorKillEventHandler::IsValidKill(Actor* victim, Actor* killer)
 		return false;
 	}
 
-	if (victim->IsChild() || victim->IsGuard()) {
-		return false;
-	}
+	float damageThreshold = Settings::GetSingleton()->GetValue<float>("fDamageThreshold");
 
-	if (!victim->IsHostileToActor(killer)) {
+	if (GetPlayerDamagePercent(victim) < damageThreshold) {
 		return false;
 	}
 
