@@ -36,7 +36,8 @@ void ActorEx::ModTrackedDamage(AIProcess* process, Actor* attacker, float damage
 	auto player = PlayerCharacter::GetSingleton();
 	auto target = process->GetUserData();
 
-	if (attacker && IsInPlayerTeam(attacker) || IsCombatTarget(target, player)) {
+	if ((attacker && IsInPlayerTeam(attacker)) || 
+		(target && IsCombatTarget(target, player))) {
 		attacker = player;
 	}
 	_ModTrackedDamage(process, attacker, damage);
