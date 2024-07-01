@@ -6,7 +6,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}")
 ########################################################################################################################
 project(
 	Experience
-	VERSION 3.4.0
+	VERSION 3.4.1
 	LANGUAGES CXX
 )
 
