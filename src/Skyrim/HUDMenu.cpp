@@ -26,7 +26,7 @@ void HUDMenuEx::ShowNotification_Impl(const char* text, const char* status, cons
 	logger::trace("ShowNotification, text: {0}, status: {1}, sound: {2}", text, status, sound);
 
 	HUDNotificationsEx* notifications = static_cast<HUDNotificationsEx*>(
-		GetElement(ObjectType::kHUDNotifications));
+		GetElement<HUDNotifications>());
 
 	if (notifications) {
 		notifications->ShowNotification(text, status, sound);
@@ -38,18 +38,12 @@ void HUDMenuEx::ShowLevelMeter_Impl(uint16_t level, float startPercent, float en
 	logger::trace("ShowLevelMeter, level: {0}, {1:.2f} => {2:.2f}", level, startPercent, endPercent);
 
 	HUDNotificationsEx* notifications = static_cast<HUDNotificationsEx*>(
-		GetElement(ObjectType::kHUDNotifications));
+		GetElement<HUDNotifications>());
 
 	if (notifications) {
 		notifications->ShowLevelMeter(level, startPercent, endPercent);
 	}
 }
-
-HUDObject* HUDMenuEx::GetElement(ObjectType type)
-{ 
-	return GetRuntimeData().objects[type];
-}
-
 
 void HUDNotificationsEx::ShowNotification(const char* text, const char* status, const char* sound)
 {

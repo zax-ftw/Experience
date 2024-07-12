@@ -4,21 +4,6 @@ class HUDMenuEx : public RE::HUDMenu
 {
 public:
 
-	enum ObjectType
-	{
-		kHealthMeter,
-		kMagickaMeter,
-		kStaminaMeter,
-		kShoutMeter,
-		kEnemyHealth,
-		kCompass,
-		kHUDNotifications,
-		kStealthMeter,
-		kHUDChargeMeter,
-		kFloatingQuestMarker,
-		kTotal
-	};
-
 	static void ShowNotification(const char* text, const char* status, const char* sound);
 	static void ShowLevelMeter(uint16_t level, float startPercent, float endPercent);
 
@@ -27,8 +12,17 @@ private:
 	void ShowNotification_Impl(const char* text, const char* status, const char* sound);
 	void ShowLevelMeter_Impl(uint16_t level, float startPercent, float endPercent);
 
-	RE::HUDObject* GetElement(ObjectType type);
-
+	template <typename T,
+		typename = std::enable_if_t<std::is_base_of_v<RE::HUDObject, T>>>
+	T* GetElement() const
+	{
+		for (auto object : objects) {
+			if (auto result = skyrim_cast<T*>(object)) {
+				return result;
+			}
+		}
+		return nullptr;
+	}
 };
 
 class HUDNotificationsEx : public RE::HUDNotifications
