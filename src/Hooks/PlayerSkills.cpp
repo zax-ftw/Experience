@@ -199,7 +199,7 @@ void PlayerSkillsEx::GetSkillData_Hook(ActorValue avId, float* level, float* xp,
 {
 	auto id = ResolveAdvanceableSkillId(avId);
 	if (id) {
-		auto player = PlayerCharacter::GetSingleton()->AsActorValueOwner();
+		auto player = PlayerCharacter::GetSingleton();
 		SkillData* skill = &data->skills[*id];
 		if (skill) {
 			if (level) {
@@ -236,8 +236,7 @@ void SkillCap_GenCode(Xbyak::CodeGenerator& code, uintptr_t func, uintptr_t call
 {
 	using namespace Xbyak::util;
 
-	if (REL::Module::IsAE()) {  // AE
-
+#ifdef SKYRIM_SUPPORT_AE
 		Xbyak::Label skipLabel;
 
 		code.movss(xmm1, xmm10);  // max - a2 (xmm6-xmm15 - non volatile)
@@ -256,9 +255,7 @@ void SkillCap_GenCode(Xbyak::CodeGenerator& code, uintptr_t func, uintptr_t call
 		code.L(skipLabel);
 		code.jmp(ptr[rip]);
 		code.dq(func + 0x361);
-
-	} else { // SE and VR
-
+#else
 		code.movss(xmm6, xmm0);  // lvl (xmm6-xmm15 - non volatile)
 		code.movss(xmm1, xmm8);  // max - a2
 
@@ -272,7 +269,7 @@ void SkillCap_GenCode(Xbyak::CodeGenerator& code, uintptr_t func, uintptr_t call
 
 		code.jmp(ptr[rip]);
 		code.dq(func + 0x58);
-	}
+#endif
 }
 
 void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
@@ -307,16 +304,15 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), &PlayerSkillsEx::CanLevelUp_Hook);
 	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), &PlayerSkillsEx::CanLevelUp_Hook);
 	
-	if (REL::Module::IsAE()) {
+#ifdef SKYRIM_SUPPORT_AE
 		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC9, 0x90, 0x90, 0x90, 0x90 };  // pxor xmm1, xmm1
 		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x2CF,
 			std::span<uint8_t>(kDisableExperienceGain));
-	} else { // SE and VR
+#else
 		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC0, 0x90 };  // pxor xmm0, xmm0
 		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x22B,
 			std::span<uint8_t>(kDisableExperienceGain));
-	}
-
+#endif
 	uint8_t kDisableLevelUpMessage[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };  // level meter for skills
 	REL::safe_write(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC),
 		std::span<uint8_t>(kDisableLevelUpMessage));

@@ -24,8 +24,7 @@ float SkillIncreaseEventHandler::GetExperienceGain(float skillLevel) const
 
 BSEventNotifyControl SkillIncreaseEventHandler::ProcessEvent(const SkillIncrease::Event* event, SkillIncreaseEventSource*)
 {
-	auto player = event->player->AsActorValueOwner();
-	float level = player->GetBaseActorValue(event->actorValue);
+	float level = event->player->GetBaseActorValue(event->actorValue);
 
 	logger::info("[SkillIncrease] {0} ({1})", event->actorValue, level);
 

@@ -63,7 +63,7 @@ float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 	float setting = Settings::GetSingleton()->GetValue<float>("fGroupFactor");
 
 	float groupFactor = std::clamp(setting, 0.0f, 0.5f);
-	float groupSize = player->GetInfoRuntimeData().teammateCount;
+	float groupSize = player->teammateCount;
 
 	return std::pow(1.0f - groupFactor, groupSize);
 }
@@ -93,7 +93,7 @@ float ActorKillEventHandler::GetBaseReward(Actor* actor)
 
 float ActorKillEventHandler::GetPlayerDamagePercent(Actor* actor)
 {
-	float totalHealth = actor->AsActorValueOwner()->GetBaseActorValue(ActorValue::kHealth);
+	float totalHealth = actor->GetBaseActorValue(ActorValue::kHealth);
 	float totalDamage = ActorEx::GetTrackedDamage(actor);
 
 	return totalDamage / totalHealth;

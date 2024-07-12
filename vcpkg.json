@@ -1,12 +1,13 @@
 {
   "name": "experience",
-  "version-string": "3.4.1",
-  "description": "Makes the player gain levels by completing quests and exploring",
+  "version-string": "3.4.3",
   "homepage": "https://github.com/zax-ftw/Experience",
   "license": "Apache-2.0",
   "dependencies": [
-    "commonlibsse-ng",
+    "rsm-binary-io",
     "magic-enum",
-    "simpleini"
+    "simpleini",
+    "spdlog",
+    "xbyak"
   ]
 }

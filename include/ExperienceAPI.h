@@ -59,7 +59,7 @@ namespace Experience
 
 		inline void* RequestAPI(ApiVersion version) noexcept
 		{
-			HMODULE handle = GetModuleHandle(L"Experience.dll");
+			HMODULE handle = GetModuleHandle("Experience.dll");
 			if (handle) {
 				_RequestAPI func = (_RequestAPI)GetProcAddress(handle, "RequestAPI");
 				if (func) {

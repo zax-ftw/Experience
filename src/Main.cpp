@@ -9,32 +9,25 @@
 #include "Settings.h"
 #include "Papyrus.h"
 #include "Console.h"
-
 #include "ModAPI.h"
 
 using namespace SKSE;
-using namespace SKSE::log;
-using namespace SKSE::stl;
 
 namespace Experience
 {
 	void InitializeLogging()
 	{
-		auto path = log_directory();
+#ifndef NDEBUG
+		auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
+#else
+		auto path = logger::log_directory();
 		if (!path) {
-			report_and_fail("Unable to lookup SKSE logs directory");
+			stl::report_and_fail("Unable to lookup SKSE logs directory"sv);
 		}
-		*path /= PluginDeclaration::GetSingleton()->GetName();
-		*path += L".log";
 
-		std::shared_ptr<spdlog::logger> log;
-		if (IsDebuggerPresent()) {
-			log = std::make_shared<spdlog::logger>(
-				"Global", std::make_shared<spdlog::sinks::msvc_sink_mt>());
-		} else {
-			log = std::make_shared<spdlog::logger>(
-				"Global", std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true));
-		}
+		*path /= fmt::format("{}.log"sv, Plugin::NAME);
+		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
+#endif
 
 #ifndef NDEBUG
 		const auto level = spdlog::level::trace;
@@ -42,11 +35,13 @@ namespace Experience
 		const auto level = spdlog::level::info;
 #endif
 
+		auto log = std::make_shared<spdlog::logger>("Global"s, std::move(sink));
+
 		log->set_level(level);
 		log->flush_on(level);
 
 		spdlog::set_default_logger(std::move(log));
-		spdlog::set_pattern("[%H:%M:%S][%l] %v");
+		spdlog::set_pattern("[%H:%M:%S][%l] %v"s);
 	}
 
     void InitializeSerialization()
@@ -104,14 +99,50 @@ namespace Experience
 		}
 	}
 
+#ifdef SKYRIM_SUPPORT_AE
+	extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() {
+		SKSE::PluginVersionData v;
+
+		v.PluginVersion(Plugin::VERSION);
+		v.PluginName(Plugin::NAME);
+		v.AuthorName("Zax-Ftw");
+		v.UsesAddressLibrary();
+		v.UsesUpdatedStructs();
+		v.CompatibleVersions({ SKSE::RUNTIME_LATEST });
+
+		return v;
+	}();
+#else
+	extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+	{
+		a_info->infoVersion = SKSE::PluginInfo::kVersion;
+		a_info->name = Plugin::NAME.data();
+		a_info->version = Plugin::VERSION.pack();
+
+		if (a_skse->IsEditor()) {
+			logger::critical("Loaded in editor, marking as incompatible"sv);
+			return false;
+		}
+
+		const auto ver = a_skse->RuntimeVersion();
+#	ifdef SKYRIMVR
+		if (ver > SKSE::RUNTIME_VR_1_4_15_1) {
+#	else
+		if (ver < SKSE::RUNTIME_1_5_39) {
+#	endif	
+			logger::critical("Unsupported runtime version {}", ver.string());
+			return false;
+		}
+		return true;
+	}
+#endif
+
 	extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* skse)
 	{
 		InitializeLogging();
 
-		auto plugin = PluginDeclaration::GetSingleton();
-
 		logger::info("{} {} is loading...", 
-			plugin->GetName(), plugin->GetVersion());
+			Plugin::NAME, Plugin::VERSION.string());
 
 		SKSE::Init(skse);
 		InitializeMessaging();

@@ -1,26 +1,41 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}")
+
+# ########################################################################################################################
+# ## Build options
+# ########################################################################################################################
+
+option(BUILD_SKYRIMSE "Build for Skyrim SE" OFF)
+option(BUILD_SKYRIMAE "Build for Skyrim AE" OFF)
+option(BUILD_SKYRIMVR "Build for Skyrim VR" OFF)
+
+option(COPY_OUTPUT "Copy the build output to the Skyrim directory." ON)
 
 ########################################################################################################################
 ## Define project
 ########################################################################################################################
+
 project(
 	Experience
-	VERSION 3.4.1
+	VERSION 3.4.3
 	LANGUAGES CXX
 )
 
-set(AUTHOR_NAME "Zax-Ftw")
+#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 set(SKSE_SUPPORT_XBYAK ON)
 
-add_compile_definitions(_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING)
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/Plugin.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/src/Plugin.h
+	@ONLY
+)
 
 configure_file(
-	${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in
-	${CMAKE_CURRENT_BINARY_DIR}/version.rc
-	@ONLY
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+    @ONLY
 )
 
 set(HEADER_FILES
@@ -83,61 +98,81 @@ source_group(
 )
 
 source_group(
+	TREE ${CMAKE_CURRENT_BINARY_DIR}
+	PREFIX "Source Files"
+	FILES ${CMAKE_CURRENT_BINARY_DIR}/src/Plugin.h
+)
+
+source_group(
 	TREE ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PREFIX "Header Files"
 	FILES ${HEADER_FILES}
 )
 
-#########################################################################################################################
-### Build options
-#########################################################################################################################
-
-option(BUILD_TESTS "Build unit tests." OFF)
-option(COPY_OUTPUT "Copy the build output to the Skyrim directory." ON)
-
 cmake_host_system_information(
-	RESULT SKYRIM_PATH
-	QUERY WINDOWS_REGISTRY 
+	RESULT SKYRIMSE_PATH
+	QUERY WINDOWS_REGISTRY
 	"HKLM/SOFTWARE/WOW6432Node/Bethesda Softworks/Skyrim Special Edition"
 	VALUE "Installed Path"
 )
+
+cmake_host_system_information(
+	RESULT SKYRIMVR_PATH
+	QUERY WINDOWS_REGISTRY
+	"HKLM/SOFTWARE/WOW6432Node/Bethesda Softworks/Skyrim VR"
+	VALUE "Installed Path"
+)
+
+if(BUILD_SKYRIMSE)
+	set(CLIB_NAME "CommonLibSSE")
+	set(COPY_PATH ${SKYRIMSE_PATH})
+elseif(BUILD_SKYRIMAE)
+	add_compile_definitions(SKYRIM_SUPPORT_AE)
+	set(CLIB_NAME "CommonLibSSE")
+	set(COPY_PATH ${SKYRIMSE_PATH})
+elseif(BUILD_SKYRIMVR)
+	add_compile_definitions(SKYRIMVR)
+	set(CLIB_NAME "CommonLibVR")
+	set(COPY_PATH ${SKYRIMVR_PATH})
+endif()
+
+set(CLIB_PATH "extern/${CLIB_NAME}")
 
 ########################################################################################################################
 ## Configure target DLL
 ########################################################################################################################
 
-find_package(CommonLibSSE CONFIG REQUIRED)
-find_package(magic_enum CONFIG REQUIRED)
+add_subdirectory(${CLIB_PATH} ${CLIB_NAME} EXCLUDE_FROM_ALL)
 
-find_path(SIMPLEINI_INCLUDE_DIR "ConvertUTF.c")
+find_package(magic_enum CONFIG REQUIRED)
+find_package(xbyak REQUIRED CONFIG)
+
+find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 
 add_library(
 	${PROJECT_NAME}
 	SHARED
 	${SOURCE_FILES}
+	${CMAKE_CURRENT_BINARY_DIR}/src/Plugin.h
 	${CMAKE_CURRENT_BINARY_DIR}/version.rc
 	.clang-format
 	.editorconfig
 )
 
-target_commonlibsse_properties(
-	${PROJECT_NAME}
-	AUTHOR ${AUTHOR_NAME}
-	USE_ADDRESS_LIBRARY
-)
-
 target_link_libraries(
 	${PROJECT_NAME}
 	PRIVATE
-	CommonLibSSE::CommonLibSSE
+	${CLIB_NAME}::${CLIB_NAME}
 	magic_enum::magic_enum
+	xbyak::xbyak
 )
 
 target_include_directories(
-	${PROJECT_NAME}
+    ${PROJECT_NAME}
     PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/src
-	${SIMPLEINI_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${SIMPLEINI_INCLUDE_DIRS}
 )
 
 target_include_directories(
@@ -158,19 +193,17 @@ target_compile_features(
 		cxx_std_23
 )
 
-########################################################################################################################
-## Automatic plugin deployment
-########################################################################################################################
+# #######################################################################################################################
+# # Automatic plugin deployment
+# #######################################################################################################################
 
-if (COPY_OUTPUT)
-	if (DEFINED SKYRIM_PATH)
-		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/)		
-		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-			add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-				COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${SKYRIM_PATH}/Data/SKSE/Plugins/)
-		endif()
-	else ()
-		message("Installed Path is not defined. Skipping post-build copy command.")
-	endif ()
-endif ()
+if(COPY_OUTPUT)
+	if (NOT ${COPY_PATH} STREQUAL "")
+		add_custom_command(
+			TARGET ${PROJECT_NAME}
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${COPY_PATH}/Data/SKSE/Plugins/
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${COPY_PATH}/Data/SKSE/Plugins/
+		)
+	endif()
+endif()

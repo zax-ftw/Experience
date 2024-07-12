@@ -21,13 +21,13 @@ bool IsCombatTarget(Actor* a_actor, Actor* a_other)
 
 bool GetPlayerControls(const Actor* actor)
 {
-	auto& ctrl = actor->GetActorRuntimeData().movementController;
+	auto& ctrl = actor->movementController;
 	return ctrl && ctrl->unk1C5 ? true : false;
 }
 
 float ActorEx::GetTrackedDamage(Actor* actor)
 {
-	auto process = actor->GetActorRuntimeData().currentProcess;
+	auto process = actor->currentProcess;
 	return process ? process->trackedDamage : 0.0f;
 }
 
@@ -73,11 +73,9 @@ void ActorEx::ModTrackedDamage_Hook(AIProcess* process, Actor* attacker, float d
 // Unknown::HandleAction
 void ActorEx::KillMoveStart_Hook(Actor* victim, Actor* killer)
 {
-	float currentHealth = victim->AsActorValueOwner()->GetActorValue(ActorValue::kHealth);
+	float currentHealth = victim->GetActorValue(ActorValue::kHealth);
 	if (currentHealth > 0.0f) {
-
-		auto process = victim->GetActorRuntimeData().currentProcess;
-		ModTrackedDamage(process, killer, currentHealth);
+		ModTrackedDamage(victim->currentProcess, killer, currentHealth);
 	}
 	_KillMoveStart(victim, killer);
 }

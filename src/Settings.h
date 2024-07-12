@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Utils/Singleton.h"
+#include <shared_mutex>
 
+#include "Utils/Singleton.h"
 
 template <typename, typename>
 constexpr bool is_one_of_variants_types = false;

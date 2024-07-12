@@ -26,7 +26,7 @@ bool ObScript::GetXPForNextLevel_Execute(const ScriptParam* paramInfo, ScriptDat
 	float points = 0.0f;
 
 	auto player = PlayerCharacter::GetSingleton();
-	if (auto skills = player->GetInfoRuntimeData().skills) {
+	if (auto skills = player->skills) {
 		if (auto data = skills->data) {
 			points = data->levelThreshold - data->xp;
 		}

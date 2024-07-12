@@ -19,7 +19,7 @@ ExperienceManager::ExperienceManager()
 	worker = std::thread(&ExperienceManager::Loop, this);
 
 	auto player = PlayerCharacter::GetSingleton();
-	data = player->GetInfoRuntimeData().skills->data;
+	data = player->skills->data;		
 }
 
 ExperienceManager::~ExperienceManager()
@@ -170,7 +170,7 @@ void ExperienceManager::ShowLevelUpNotification()
 void ExperienceManager::ShowRewardMessage(int points)
 {
 	std::string format = Settings::GetSingleton()->GetValue<std::string>("sMessageFormat");
-	std::string result = fmt::format(fmt::runtime(format), points);
+	std::string result = std::vformat(format, std::make_format_args(points));
 
 	DebugNotification(result.c_str());
 }

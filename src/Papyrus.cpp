@@ -12,10 +12,7 @@ namespace Papyrus
 {
 	BSFixedString GetVersion(StaticFunctionTag*)
 	{
-		auto plugin = SKSE::PluginDeclaration::GetSingleton();
-		auto version = plugin->GetVersion();
-
-		return version.string("."sv);
+		return Plugin::VERSION.string();
 	}
 
 	void AddExperience(StaticFunctionTag*, int points, bool meter)

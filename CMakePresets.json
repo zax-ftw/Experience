@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
     "minor": 21,
@@ -9,172 +9,76 @@
     {
       "name": "base",
       "hidden": true,
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "$env{COMMONLIBSSE_COMPILER} $env{COMMONLIBSSE_PLATFORM} $env{COMMONLIBSSE_TEXT}"
-      }
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}"
     },
     {
       "name": "vcpkg",
       "hidden": true,
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md",
-        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
-        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake",
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake"
       }
     },
     {
-      "name": "win32",
+      "name": "windows",
       "hidden": true,
-      "environment": {
-        "COMMONLIBSSE_PLATFORM": "-DWIN32_LEAN_AND_MEAN -DNOMINMAX"
-      }
-    },
-    {
-      "name": "win32-unicode",
-      "hidden": true,
-      "inherits": "win32",
-      "environment": {
-        "COMMONLIBSSE_TEXT": "-DUNICODE -D_UNICODE"
-      }
-    },
-    {
-      "name": "x64",
-      "hidden": true,
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
     },
     {
       "name": "msvc",
       "hidden": true,
-      "environment": {
-        "COMMONLIBSSE_COMPILER": "/permissive- /Zc:preprocessor /EHsc $penv{CXXFLAGS}"
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "/permissive- /Zc:preprocessor /EHsc $penv{CXXFLAGS}"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-msvc-x64",
-          "enableMicrosoftCodeAnalysis": true,
-          "enableClangTidyCodeAnalysis": true
+          "intelliSenseMode": "windows-msvc-x64"
         }
       }
     },
     {
-      "name": "build-tests",
-      "displayName": "Build Tests",
-      "hidden": true,
-      "description": "Include test suites in the build.",
+      "name": "msvc-se",
+      "inherits": [ "base", "vcpkg", "windows", "msvc" ],
       "cacheVariables": {
-        "BUILD_TESTS": {
-          "type": "STRING",
-          "value": "ON"
-        }
+        "BUILD_SKYRIMSE": true
       }
     },
     {
-      "name": "build-debug-msvc",
-      "inherits": [
-        "base",
-        "vcpkg",
-        "win32-unicode",
-        "x64",
-        "build-tests",
-        "msvc"
-      ],
-      "displayName": "Debug",
-      "description": "Debug build for testing.",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/debug-msvc",
+      "name": "msvc-ae",
+      "inherits": [ "base", "vcpkg", "windows", "msvc" ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Debug"
-        }
+        "BUILD_SKYRIMAE": true
       }
     },
     {
-      "name": "build-release-msvc",
-      "inherits": [
-        "base",
-        "vcpkg",
-        "win32-unicode",
-        "x64",
-        "build-tests",
-        "msvc"
-      ],
-      "displayName": "Release",
-      "description": "Optimized release build.",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/release-msvc",
+      "name": "msvc-vr",
+      "inherits": [ "base", "vcpkg", "windows", "msvc" ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "RelWithDebInfo"
-        }
+        "BUILD_SKYRIMVR": true
       }
-    },
+    }
   ],
   "buildPresets": [
     {
-      "name": "release-msvc",
-      "displayName": "Release (MSVC)",
-      "configurePreset": "build-release-msvc",
-      "description": "Optimized release build."
+      "name": "release-msvc-se",
+      "displayName": "Release SE (MSVC)",
+      "configurePreset": "msvc-se",
+      "configuration": "RelWithDebInfo"
     },
     {
-      "name": "debug-msvc",
-      "displayName": "Debug (MSVC)",
-      "configurePreset": "build-debug-msvc",
-      "description": "Debug build for testing."
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "tests-all",
-      "displayName": "All Tests",
-      "configurePreset": "build-debug-msvc",
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": false
-      }
+      "name": "release-msvc-ae",
+      "displayName": "Release AE (MSVC)",
+      "configurePreset": "msvc-ae",
+      "configuration": "RelWithDebInfo"
     },
     {
-      "name": "tests-unit",
-      "displayName": "Unit Tests",
-      "description": "Runs tests that do not require any Skyrim module loaded into the process.",
-      "inherits": "tests-all",
-      "filter": {
-        "exclude": {
-          "label": "[integration],[e2e]"
-        }
-      }
-    },
-    {
-      "name": "tests-integration",
-      "displayName": "Integration Tests",
-      "description": "Runs tests that interact with a Skyrim module at rest (do not require the Skyrim module to have run any main function).",
-      "inherits": "tests-all",
-      "filter": {
-        "include": {
-          "label": "[integration]"
-        }
-      }
-    },
-    {
-      "name": "tests-e2e",
-      "displayName": "End-to-End Tests",
-      "description": "Runs test that depend on a fully running Skyrim engine in the process.",
-      "inherits": "tests-all",
-      "filter": {
-        "include": {
-          "label": "[e2e]"
-        }
-      }
+      "name": "release-msvc-vr",
+      "displayName": "Release VR (MSVC)",
+      "configurePreset": "msvc-vr",
+      "configuration": "RelWithDebInfo"
     }
   ]
 }

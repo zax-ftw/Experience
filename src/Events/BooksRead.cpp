@@ -3,7 +3,6 @@
 #include "Settings.h"
 
 #include <math.h> // round, sqrt
-#include <bitset>
 
 using namespace RE;
 
