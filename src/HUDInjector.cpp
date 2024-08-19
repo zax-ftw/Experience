@@ -4,7 +4,6 @@
 
 using namespace RE;
 
-
 void HUDInjector::Register()
 {
 	if (auto ui = UI::GetSingleton()) {
@@ -40,7 +39,6 @@ void HUDInjector::Inject(GPtr<GFxMovieView> view)
 		view->Invoke("getNextHighestDepth", &args[1], nullptr, 0);
 		view->Invoke("createEmptyMovieClip", &object, args, 2);
 
-		// Determine which file is loaded for the hud menu
 		if (BSScaleformManager::FileExists("Interface/HUDMenu.swf")) {
 			path.SetString("exported/HUDHooks.swf");
 		} else if (BSScaleformManager::FileExists("Interface/exported/HUDMenu.gfx")) {
