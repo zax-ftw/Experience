@@ -5,19 +5,25 @@
 
 using namespace RE;
 
+HUDMenuEx* HUDMenuEx::GetInstance()
+{
+	auto strings = InterfaceStrings::GetSingleton();
+	auto menu = UI::GetSingleton()->GetMenu(strings->hudMenu);
+	
+	return menu ? static_cast<HUDMenuEx*>(menu.get()) : nullptr;		
+}
+
 void HUDMenuEx::ShowNotification(const char* text, const char* status, const char* sound)
 {
-	if (auto menu = UI::GetSingleton()->GetMenu<HUDMenu>()) {
-		auto hud = static_cast<HUDMenuEx*>(menu.get());
-		hud->ShowNotification_Impl(text, status, sound);
+	if (auto menu = GetInstance()) {
+		menu->ShowNotification_Impl(text, status, sound);
 	}
 }
 
 void HUDMenuEx::ShowLevelMeter(uint16_t level, float startPercent, float endPercent)
 {
-	if (auto menu = UI::GetSingleton()->GetMenu<HUDMenu>()) {
-		auto hud = static_cast<HUDMenuEx*>(menu.get());
-		hud->ShowLevelMeter_Impl(level, startPercent, endPercent);
+	if (auto menu = GetInstance()) {
+		menu->ShowLevelMeter_Impl(level, startPercent, endPercent);
 	}
 }
 

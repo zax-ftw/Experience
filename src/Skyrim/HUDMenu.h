@@ -4,13 +4,10 @@ class HUDMenuEx : public RE::HUDMenu
 {
 public:
 
+	static HUDMenuEx* GetInstance();
+
 	static void ShowNotification(const char* text, const char* status, const char* sound);
 	static void ShowLevelMeter(uint16_t level, float startPercent, float endPercent);
-
-private:
-
-	void ShowNotification_Impl(const char* text, const char* status, const char* sound);
-	void ShowLevelMeter_Impl(uint16_t level, float startPercent, float endPercent);
 
 	template <typename T,
 		typename = std::enable_if_t<std::is_base_of_v<RE::HUDObject, T>>>
@@ -23,6 +20,11 @@ private:
 		}
 		return nullptr;
 	}
+
+private:
+
+	void ShowNotification_Impl(const char* text, const char* status, const char* sound);
+	void ShowLevelMeter_Impl(uint16_t level, float startPercent, float endPercent);
 };
 
 class HUDNotificationsEx : public RE::HUDNotifications
