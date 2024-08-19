@@ -13,8 +13,6 @@ public:
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::ActorKill::Event* event, ActorKillEventSource* source) override;
 
-	static RE::TESNPC* GetTemplateBase(RE::Actor* actor);
-
 	float GetBaseReward(RE::Actor* victim);
 	static float GetLevelMult(const RE::Actor* victim, const RE::Actor* killer);
 	static float GetGroupMult(const RE::PlayerCharacter* player);

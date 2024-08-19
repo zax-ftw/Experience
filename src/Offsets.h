@@ -9,7 +9,6 @@ namespace RE
 			constexpr auto Kill = RELOCATION_ID(36872, 37896);
 			constexpr auto Resurrect = RELOCATION_ID(36331, 37321);
 			constexpr auto DamageHealth = RELOCATION_ID(36345, 37335);
-			constexpr auto IsCombatTarget = RELOCATION_ID(37618, 38571);
 		}
 
 		namespace PlayerCharacter

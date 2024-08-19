@@ -5,59 +5,18 @@
 
 using namespace RE;
 
-void DamageHealth(Actor* a_actor, float a_damage, Actor* a_attacker, bool a_a4)
+bool ActorEx::IsPlayerOrTeam(Actor* actor)
 {
-	using func_t = decltype(&DamageHealth);
-	REL::Relocation<func_t> func { Offset::Actor::DamageHealth };
-	return func(a_actor, a_damage, a_attacker, a_a4);
-}
-
-bool IsCombatTarget(Actor* a_actor, Actor* a_other)
-{
-	using func_t = decltype(&IsCombatTarget);
-	REL::Relocation<func_t> func { Offset::Actor::IsCombatTarget };
-	return func(a_actor, a_other);
-}
-
-bool GetPlayerControls(const Actor* actor)
-{
-	auto& ctrl = actor->movementController;
-	return ctrl && ctrl->unk1C5 ? true : false;
-}
-
-float ActorEx::GetTrackedDamage(Actor* actor)
-{
-	auto process = actor->currentProcess;
-	return process ? process->trackedDamage : 0.0f;
-}
-
-void ActorEx::ModTrackedDamage(AIProcess* process, Actor* attacker, float damage)
-{
-	auto player = PlayerCharacter::GetSingleton();
-	auto target = process->GetUserData();
-
-	if ((attacker && IsInPlayerTeam(attacker)) || 
-		(target && IsCombatTarget(target, player))) {
-		attacker = player;
-	}
-	_ModTrackedDamage(process, attacker, damage);
-}
-
-bool ActorEx::IsInPlayerTeam(Actor* actor)
-{
-	if (GetPlayerControls(actor)) {
-		//logger::trace("{} is controlled by player", actor->GetName());
+	if (actor->GetPlayerControls()) {
 		return true;
 	}
 
 	if (actor->IsPlayerTeammate()) {
-		//logger::trace("{} is player teammate", actor->GetName());
 		return true;
 	}
 
 	if (auto cmdr = actor->GetCommandingActor()) {
-		//logger::trace("{} is commanded by {}", actor->GetName(), cmdr->GetName());
-		if (IsInPlayerTeam(cmdr.get())) {
+		if (IsPlayerOrTeam(cmdr.get())) {
 			return true;
 		}
 	}
@@ -67,7 +26,14 @@ bool ActorEx::IsInPlayerTeam(Actor* actor)
 // Actor::DamageHealth
 void ActorEx::ModTrackedDamage_Hook(AIProcess* process, Actor* attacker, float damage)
 {
-	ModTrackedDamage(process, attacker, damage);
+	auto player = PlayerCharacter::GetSingleton();
+	auto target = process ? process->GetUserData() : nullptr;
+
+	if ((attacker && IsPlayerOrTeam(attacker)) ||
+		(target && target->IsCombatTarget(player))) {
+		attacker = player;
+	}
+	_ModTrackedDamage(process, attacker, damage);
 }
 
 // Unknown::HandleAction
@@ -75,7 +41,7 @@ void ActorEx::KillMoveStart_Hook(Actor* victim, Actor* killer)
 {
 	float currentHealth = victim->GetActorValue(ActorValue::kHealth);
 	if (currentHealth > 0.0f) {
-		ModTrackedDamage(victim->currentProcess, killer, currentHealth);
+		ModTrackedDamage_Hook(victim->currentProcess, killer, currentHealth);
 	}
 	_KillMoveStart(victim, killer);
 }

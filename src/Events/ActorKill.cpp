@@ -68,18 +68,9 @@ float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 	return std::pow(1.0f - groupFactor, groupSize);
 }
 
-TESNPC* ActorKillEventHandler::GetTemplateBase(Actor* actor)
-{
-	auto LeveledCreature = actor->extraList.GetByType<ExtraLeveledCreature>();
-	if (LeveledCreature) {
-		return static_cast<TESNPC*>(LeveledCreature->templateBase);
-	}
-	return actor->GetActorBase();
-}
-
 float ActorKillEventHandler::GetBaseReward(Actor* actor)
 {
-	auto base = GetTemplateBase(actor);
+	auto base = actor->GetTemplateBase();
 	if (auto it = npcs.find(base); it != npcs.end()) {
 		return (float)it->second;
 	}
@@ -94,14 +85,14 @@ float ActorKillEventHandler::GetBaseReward(Actor* actor)
 float ActorKillEventHandler::GetPlayerDamagePercent(Actor* actor)
 {
 	float totalHealth = actor->GetBaseActorValue(ActorValue::kHealth);
-	float totalDamage = ActorEx::GetTrackedDamage(actor);
+	float totalDamage = actor->GetTrackedDamage();
 
 	return totalDamage / totalHealth;
 }
 
 bool ActorKillEventHandler::IsValidKill(Actor* victim, Actor* killer)
 {
-	if (victim->IsSummoned() || victim->IsCommandedActor()) {
+	if (victim->IsSummoned() || victim->IsReanimated()) {
 		return false;
 	}
 
