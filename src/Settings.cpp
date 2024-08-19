@@ -36,7 +36,9 @@ void Settings::ReadSettings()
 	ReadIntSetting(ini, "Questing", "iXPQuestCivilWar", 75);
 	ReadIntSetting(ini, "Questing", "iXPQuestDawnguard", 50);
 	ReadIntSetting(ini, "Questing", "iXPQuestDragonborn", 75);
-	ReadIntSetting(ini, "Questing", "iXPQuestObjectives", 10);
+
+	int objectives = ReadIntSetting(ini, "Questing", "iXPObjectives", 10);
+	ReadIntSetting(ini, "Questing", "iXPQuestObjectives", objectives);
 
 	int discDefault = ReadIntSetting(ini, "Exploring", "iXPDiscDefault", 10);
 
