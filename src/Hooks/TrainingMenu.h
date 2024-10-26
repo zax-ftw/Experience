@@ -3,11 +3,12 @@
 class TrainingMenuEx : public RE::TrainingMenu
 {
 public:
-	void Train();
 
 	static void Install(SKSE::Trampoline& trampoline);
 
 private:
-	void Train_Hook();
-	void ShowCappedMessage();
+	static void Train_Hook(TrainingMenuEx* menu);
+	static void ShowCappedMessage();
+
+	static inline REL::Relocation<decltype(Train_Hook)> _Train;
 };

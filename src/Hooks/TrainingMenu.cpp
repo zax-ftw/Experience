@@ -7,20 +7,13 @@
 
 using namespace RE;
 
-void TrainingMenuEx::Train()
+void TrainingMenuEx::Train_Hook(TrainingMenuEx* menu)
 {
-	using func_t = decltype(&TrainingMenuEx::Train);
-	REL::Relocation<func_t> func{ Offset::TrainingMenu::Train };
-	return func(this);
-}
-
-void TrainingMenuEx::Train_Hook()
-{
-	logger::trace("Train_Hook: {0} (trainer={1:08X})", skill, trainer->formID);
+	logger::trace("Train_Hook: {} ", menu->skill);
 
 	auto player = PlayerCharacter::GetSingleton();
-	if (player->GetBaseActorValue(skill) < PlayerSkillsEx::GetSkillCap1(skill)) {
-		Train();
+	if (player->GetBaseActorValue(menu->skill) < PlayerSkillsEx::GetSkillCap1(menu->skill)) {
+		_Train(menu);
 	} else {
 		ShowCappedMessage();
 	}
@@ -33,11 +26,11 @@ void TrainingMenuEx::ShowCappedMessage()
 
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 {
-	trampoline.write_branch<6>(
+	_Train = trampoline.write_branch<6>(
 		Offset::TrainingMenu::TrainCallback::Accept.address() + OFFSET(0x7, 0x7, 0x7),
 		&TrainingMenuEx::Train_Hook);
 
-	trampoline.write_call<5>(
+	_Train = trampoline.write_call<5>(
 		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB),
 		&TrainingMenuEx::Train_Hook);
 }
