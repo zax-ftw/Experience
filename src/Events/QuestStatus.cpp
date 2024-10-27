@@ -17,25 +17,44 @@ QuestStatusEventHandler::~QuestStatusEventHandler()
 
 BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Event* event, QuestStatusEventSource*)
 {
-	if (event->status == QuestStatus::kCompleted) {
+	if (event->status != QuestStatus::kCompleted || !event->quest) {
+		return BSEventNotifyControl::kContinue;
+	}
 
-		TESQuest* quest = event->quest;
-		auto name = quest->GetName();
+	TESQuest* quest = event->quest;
 
-		if (name && name[0]) {
+	if (IsValidCompletion(quest)) {
 
-			auto edid = quest->GetFormEditorID();
-			auto type = quest->GetType();
+		auto questType = quest->GetType();
 
-			logger::info("[QuestCompleted] {0} ({1})", 
-				edid, magic_enum::enum_name(type));
+		logger::info("[QuestCompleted] {0} ({1})", 
+			quest->GetFormEditorID(), EnumToString(questType));
 
-			auto reward = GetReward(type);
-			AddExperience(reward);
-		}
+		auto reward = GetReward(questType);
+
+		AddExperience(reward, questType != QuestType::kMiscellaneous);	
 	}
 
 	return BSEventNotifyControl::kContinue;
+}
+
+bool QuestStatusEventHandler::IsValidCompletion(TESQuest *quest)
+{
+	if (quest->GetType() == QuestType::kMiscellaneous){
+		return GetNumObjectivesCompleted(quest) > 0;
+	}
+	return quest->GetName()[0];
+}
+
+uint8_t QuestStatusEventHandler::GetNumObjectivesCompleted(TESQuest *quest)
+{
+	uint8_t completedCount = 0;
+	for (auto objective : quest->objectives) {
+		if (objective->state.get() == QUEST_OBJECTIVE_STATE::kCompletedDisplayed) {
+			completedCount++;
+		}
+	}
+	return completedCount;
 }
 
 int QuestStatusEventHandler::GetReward(QuestType type)

@@ -16,5 +16,8 @@ public:
 private:
 	using QuestType = RE::QUEST_DATA::Type;
 
+	bool IsValidCompletion(RE::TESQuest* quest);
+
+	uint8_t GetNumObjectivesCompleted(RE::TESQuest* quest);
 	int GetReward(QuestType type);
 };
