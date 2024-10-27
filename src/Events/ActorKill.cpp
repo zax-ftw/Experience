@@ -40,7 +40,7 @@ RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill
 		reward *= GetGroupMult(player);
 		reward *= Settings::GetSingleton()->GetValue<float>("fKillingMult");
 
-		int result = std::max(std::ceil(reward), 1.0f);
+		int result = std::ceil(reward);
 
 		AddExperience(result, false);
 	}
