@@ -18,7 +18,7 @@ ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
 	Utils::ParseDirectory("Data/SKSE/Plugins/Experience/Races", races);
 }
 
-ActorKillEventHandler::~ActorKillEventHandler(void)
+ActorKillEventHandler::~ActorKillEventHandler()
 {
 	ActorKill::GetEventSource()->RemoveEventSink(this);
 }

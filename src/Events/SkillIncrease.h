@@ -9,7 +9,7 @@ public:
 	using SkillIncreaseEventSource = RE::BSTEventSource<RE::SkillIncrease::Event>;
 
 	SkillIncreaseEventHandler(ExperienceManager* manager);
-	~SkillIncreaseEventHandler(void);
+	~SkillIncreaseEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::SkillIncrease::Event* event, SkillIncreaseEventSource* source) override;
 

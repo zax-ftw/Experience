@@ -9,7 +9,7 @@ public:
 	using QuestStatusEventSource = RE::BSTEventSource<RE::QuestStatus::Event>;
 
 	QuestStatusEventHandler(ExperienceManager* manager);
-	~QuestStatusEventHandler();
+	~QuestStatusEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::QuestStatus::Event* event, QuestStatusEventSource* source) override;
 

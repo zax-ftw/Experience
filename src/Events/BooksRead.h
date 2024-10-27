@@ -9,7 +9,7 @@ public:
 	using BooksReadEventSource = RE::BSTEventSource<RE::BooksRead::Event>;
 
 	BooksReadEventHandler(ExperienceManager* manager);
-	~BooksReadEventHandler(void);
+	~BooksReadEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::BooksRead::Event* event, BooksReadEventSource* source) override;
 

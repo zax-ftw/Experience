@@ -9,7 +9,7 @@ public:
 	using ActorKillEventSource = RE::BSTEventSource<RE::ActorKill::Event>;
 
 	ActorKillEventHandler(ExperienceManager* manager);
-	~ActorKillEventHandler();
+	~ActorKillEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::ActorKill::Event* event, ActorKillEventSource* source) override;
 

@@ -9,7 +9,7 @@ public:
 	using LocationClearedEventSource = RE::BSTEventSource<RE::LocationCleared::Event>;
 
 	LocationClearedEventHandler(ExperienceManager* manager);
-	~LocationClearedEventHandler(void);
+	~LocationClearedEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::LocationCleared::Event* event, LocationClearedEventSource* source) override;
 

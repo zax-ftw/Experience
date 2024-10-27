@@ -18,7 +18,7 @@ ObjectiveStateEventHandler::ObjectiveStateEventHandler(ExperienceManager* manage
 	ObjectiveState::GetEventSource()->AddEventSink(this);
 }
 
-ObjectiveStateEventHandler::~ObjectiveStateEventHandler(void)
+ObjectiveStateEventHandler::~ObjectiveStateEventHandler()
 {
 	ObjectiveState::GetEventSource()->RemoveEventSink(this);
 }

@@ -12,7 +12,7 @@ BooksReadEventHandler::BooksReadEventHandler(ExperienceManager* manager) :
 	BooksRead::GetEventSource()->AddEventSink(this);
 }
 
-BooksReadEventHandler::~BooksReadEventHandler(void)
+BooksReadEventHandler::~BooksReadEventHandler()
 {
 	BooksRead::GetEventSource()->RemoveEventSink(this);
 }

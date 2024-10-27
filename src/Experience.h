@@ -65,7 +65,7 @@ private:
 	using LevelData = PlayerSkills::Data;
 
 	ExperienceManager();
-	~ExperienceManager();
+	~ExperienceManager() override;
 
 	void Loop();
 	void Process(std::unique_lock<std::mutex>& lock);

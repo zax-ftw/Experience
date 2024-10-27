@@ -10,7 +10,7 @@ QuestStatusEventHandler::QuestStatusEventHandler(ExperienceManager* manager) :
 	QuestStatus::GetEventSource()->AddEventSink(this);
 }
 
-QuestStatusEventHandler::~QuestStatusEventHandler(void)
+QuestStatusEventHandler::~QuestStatusEventHandler()
 {
 	QuestStatus::GetEventSource()->RemoveEventSink(this);
 }

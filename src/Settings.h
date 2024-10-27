@@ -43,7 +43,7 @@ public:
 private:
 
 	Settings() {};
-	~Settings() {};
+	~Settings() override {};
 
 	Setting GetSetting(std::string_view key) const;
 

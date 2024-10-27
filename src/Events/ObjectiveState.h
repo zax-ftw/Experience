@@ -9,7 +9,7 @@ public:
 	using ObjectiveStateEventSource = RE::BSTEventSource<RE::ObjectiveState::Event>;
 
 	ObjectiveStateEventHandler(ExperienceManager* manager);
-	~ObjectiveStateEventHandler(void);
+	~ObjectiveStateEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::ObjectiveState::Event* event, ObjectiveStateEventSource* source) override;
 

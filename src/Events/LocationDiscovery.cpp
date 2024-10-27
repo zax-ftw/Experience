@@ -10,7 +10,7 @@ LocationDiscoveryEventHandler::LocationDiscoveryEventHandler(ExperienceManager* 
 	LocationDiscovery::GetEventSource()->AddEventSink(this);
 }
 
-LocationDiscoveryEventHandler::~LocationDiscoveryEventHandler(void)
+LocationDiscoveryEventHandler::~LocationDiscoveryEventHandler()
 {
 	LocationDiscovery::GetEventSource()->RemoveEventSink(this);
 }

@@ -14,7 +14,7 @@ LocationClearedEventHandler::LocationClearedEventHandler(ExperienceManager* mana
 	LocationCleared::GetEventSource()->AddEventSink(this);
 }
 
-LocationClearedEventHandler::~LocationClearedEventHandler(void)
+LocationClearedEventHandler::~LocationClearedEventHandler()
 {
 	LocationCleared::GetEventSource()->RemoveEventSink(this);
 }

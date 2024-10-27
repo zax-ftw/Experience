@@ -9,7 +9,7 @@ public:
 	using LocationDiscoveryEventSource = RE::BSTEventSource<RE::LocationDiscovery::Event>;
 
 	LocationDiscoveryEventHandler(ExperienceManager* manager);
-	~LocationDiscoveryEventHandler(void);
+	~LocationDiscoveryEventHandler() override;
 
 	RE::BSEventNotifyControl ProcessEvent(const RE::LocationDiscovery::Event* event, LocationDiscoveryEventSource* source) override;
 

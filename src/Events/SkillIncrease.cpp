@@ -11,7 +11,7 @@ SkillIncreaseEventHandler::SkillIncreaseEventHandler(ExperienceManager* manager)
 	SkillIncrease::GetEventSource()->AddEventSink(this);
 }
 
-SkillIncreaseEventHandler::~SkillIncreaseEventHandler(void)
+SkillIncreaseEventHandler::~SkillIncreaseEventHandler()
 {
 	SkillIncrease::GetEventSource()->RemoveEventSink(this);
 }
