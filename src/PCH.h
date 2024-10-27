@@ -35,4 +35,10 @@ namespace logger = SKSE::log;
 #	define OFFSET(se, ae, vr) se
 #endif
 
+template <typename EnumType>
+std::string EnumToString(EnumType enumValue)
+{
+	return std::string(magic_enum::enum_name(enumValue));
+}
+
 #include "Plugin.h"

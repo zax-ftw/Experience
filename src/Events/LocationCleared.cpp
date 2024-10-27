@@ -30,7 +30,7 @@ BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCle
 		ShowLocationCleared(name);
 
 		logger::info("[LocationCleared] {0} ({1})", 
-			name, magic_enum::enum_name(type));
+			name, EnumToString(type));
 
 		auto reward = GetReward(type);
 		AddExperience(reward);
