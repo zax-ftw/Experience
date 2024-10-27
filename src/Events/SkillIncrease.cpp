@@ -6,7 +6,7 @@
 using namespace RE;
 
 SkillIncreaseEventHandler::SkillIncreaseEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kActive)
+	ExperienceManager::Source(manager)
 {	
 	SkillIncrease::GetEventSource()->AddEventSink(this);
 }

@@ -9,7 +9,7 @@
 using namespace RE;
 
 LocationClearedEventHandler::LocationClearedEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kActive)
+	ExperienceManager::Source(manager)
 {
 	LocationCleared::GetEventSource()->AddEventSink(this);
 }

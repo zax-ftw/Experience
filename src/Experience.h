@@ -25,22 +25,15 @@ public:
 	{
 	public:
 
-		enum MeterState
-		{
-			kInactive = 0,
-			kActive = 1
-		};
-
-		Source(ExperienceManager* manager, MeterState meter) :
-			manager(manager), meter(meter) {};
+		Source(ExperienceManager* manager) :
+			manager(manager) {};
 
 		virtual ~Source() {};
 
-		void AddExperience(int points);
+		void AddExperience(int points, bool meter = true);
 
 	private:
 		ExperienceManager* manager;
-		MeterState         meter;
 	};
 
 	struct Experience

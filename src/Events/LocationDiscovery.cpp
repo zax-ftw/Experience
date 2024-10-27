@@ -5,7 +5,7 @@
 using namespace RE;
 
 LocationDiscoveryEventHandler::LocationDiscoveryEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kActive)
+	ExperienceManager::Source(manager)
 {
 	LocationDiscovery::GetEventSource()->AddEventSink(this);
 }

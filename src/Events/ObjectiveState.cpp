@@ -13,7 +13,7 @@ void FillQuestInstanceData(BSString* text, const TESQuest* quest, uint32_t insta
 }
 
 ObjectiveStateEventHandler::ObjectiveStateEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kInactive)
+	ExperienceManager::Source(manager)
 {
 	ObjectiveState::GetEventSource()->AddEventSink(this);
 }

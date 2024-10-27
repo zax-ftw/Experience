@@ -5,7 +5,7 @@
 using namespace RE;
 
 QuestStatusEventHandler::QuestStatusEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kActive)
+	ExperienceManager::Source(manager)
 {
 	QuestStatus::GetEventSource()->AddEventSink(this);
 }

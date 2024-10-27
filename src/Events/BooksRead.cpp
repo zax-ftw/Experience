@@ -7,7 +7,7 @@
 using namespace RE;
 
 BooksReadEventHandler::BooksReadEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kInactive)
+	ExperienceManager::Source(manager)
 {
 	BooksRead::GetEventSource()->AddEventSink(this);
 }
@@ -26,7 +26,7 @@ BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event*
 		logger::info("[BookRead] {0} ({1})", book->GetName(), book->value);
 
 		auto reward = GetReward(book->value);
-		AddExperience(reward);
+		AddExperience(reward, false);
 		
 	}
 	return BSEventNotifyControl::kContinue;

@@ -10,7 +10,7 @@
 using namespace RE;
 
 ActorKillEventHandler::ActorKillEventHandler(ExperienceManager* manager) :
-	ExperienceManager::Source(manager, MeterState::kInactive)
+	ExperienceManager::Source(manager)
 {
 	ActorKill::GetEventSource()->AddEventSink(this);
 
@@ -42,7 +42,7 @@ RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill
 
 		int result = std::max(std::ceil(reward), 1.0f);
 
-		AddExperience(result);
+		AddExperience(result, false);
 	}
 
 	return BSEventNotifyControl::kContinue;
