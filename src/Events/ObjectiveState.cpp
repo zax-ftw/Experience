@@ -5,51 +5,53 @@
 
 using namespace RE;
 
-void FillQuestInstanceData(BSString* text, const TESQuest* quest, uint32_t instanceID)
+void FillQuestInstanceData(BSString* format, const TESQuest* quest, uint32_t instanceID)
 {
 	using func_t = decltype(&FillQuestInstanceData);
 	REL::Relocation<func_t> func{ Offset::BGSQuestObjective::FillQuestInstanceData };
-	return func(text, quest, instanceID);
+	return func(format, quest, instanceID);
 }
 
 ObjectiveStateEventHandler::ObjectiveStateEventHandler(ExperienceManager* manager) :
 	ExperienceManager::Source(manager)
 {
-	ObjectiveState::GetEventSource()->AddEventSink(this);
+	RE::ObjectiveState::GetEventSource()->AddEventSink(this);
 }
 
 ObjectiveStateEventHandler::~ObjectiveStateEventHandler()
 {
-	ObjectiveState::GetEventSource()->RemoveEventSink(this);
+	RE::ObjectiveState::GetEventSource()->RemoveEventSink(this);
 }
 
-BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const ObjectiveState::Event* event, ObjectiveStateEventSource*)
+BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const RE::ObjectiveState::Event* event, ObjectiveStateEventSource*)
 {
-	BGSQuestObjective* objective = event->objective;
-	TESQuest* quest = objective->ownerQuest;
+	logger::info("[ObjectiveState] {0} ({1})",
+		GetFormattedDisplayText(event->objective),
+		EnumToString(event->newState));
 
-	BSString displayText(objective->displayText);
-	FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
-	
-	logger::info("[ObjectiveState] {0} ({1})", 
-		displayText.c_str(), magic_enum::enum_name(event->newState));
-
-	if (quest->GetType() != QuestType::kNone) {
-
-		int reward = Settings::GetSingleton()->GetValue<int>("iXPQuestObjectives");
-
-		if (IsCompleted(event->newState) && !IsCompleted(event->oldState)) {
-			AddExperience(reward);
-		} else if (IsCompleted(event->oldState) && !IsCompleted(event->newState)) {
-			AddExperience(-reward);
-		}
-	}
+	auto reward = GetReward(event->oldState, event->newState);
+	AddExperience(reward, false);
 
 	return BSEventNotifyControl::kContinue;
 }
 
-bool ObjectiveStateEventHandler::IsCompleted(QUEST_OBJECTIVE_STATE state)
+std::string ObjectiveStateEventHandler::GetFormattedDisplayText(BGSQuestObjective* objective)
 {
-	using enum QUEST_OBJECTIVE_STATE;
-	return state == kCompleted || state == kCompletedDisplayed;
+	const TESQuest* quest = objective->ownerQuest;
+
+	BSString displayText(objective->displayText);
+	FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
+
+	return displayText.c_str();
+}
+
+int ObjectiveStateEventHandler::GetReward(ObjectiveState oldState, ObjectiveState newState)
+{
+	const auto base = Settings::GetSingleton()->GetValue<int>("iXPQuestObjectives");
+
+    auto getReward = [base](ObjectiveState state) -> int {
+		return (state == ObjectiveState::kCompletedDisplayed) ? base : 0;
+	};
+
+	return getReward(newState) - getReward(oldState);
 }

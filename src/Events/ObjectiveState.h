@@ -14,8 +14,8 @@ public:
 	RE::BSEventNotifyControl ProcessEvent(const RE::ObjectiveState::Event* event, ObjectiveStateEventSource* source) override;
 
 private:
-	using QuestType = RE::QUEST_DATA::Type;
+	using ObjectiveState = RE::QUEST_OBJECTIVE_STATE;
 
-	static bool IsCompleted(RE::QUEST_OBJECTIVE_STATE state);
+	static std::string GetFormattedDisplayText(RE::BGSQuestObjective* objective);
+	int GetReward(ObjectiveState oldState, ObjectiveState newState);
 };
-
