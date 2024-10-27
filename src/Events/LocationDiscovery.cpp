@@ -37,6 +37,8 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 	auto settings = Settings::GetSingleton();
 
 	switch (type) {
+	case MarkerType::kNone:
+		return settings->GetValue<int>("iXPDiscDefault");
 	case MarkerType::kCity:
 		return settings->GetValue<int>("iXPDiscCity");
 	case MarkerType::kTown:
@@ -89,7 +91,7 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 	case MarkerType::kRock:
 		return settings->GetValue<int>("iXPDiscRock");
 	case MarkerType::kLighthouse:
-		return settings->GetValue<int>("iXPDiscLighhouse");
+		return settings->GetValue<int>("iXPDiscLighthouse");
 	case MarkerType::kOrcStronghold:
 		return settings->GetValue<int>("iXPDiscOrcStronghold");
 	case MarkerType::kGiantCamp:
@@ -136,6 +138,7 @@ int LocationDiscoveryEventHandler::GetReward(MarkerType type)
 	case MarkerType::kDLC02CastleKarstaag:
 		return settings->GetValue<int>("iXPDiscCastleKarstaag");
 	default:
+		logger::warn("Unknown location type: {}", static_cast<int>(type));
 		return settings->GetValue<int>("iXPDiscDefault");
 	}
 }

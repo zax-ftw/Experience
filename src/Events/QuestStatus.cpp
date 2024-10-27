@@ -43,6 +43,8 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 	auto settings = Settings::GetSingleton();
 
 	switch (type) {
+	case QuestType::kNone:
+		return settings->GetValue<int>("iXPQuestNone");
 	case QuestType::kMainQuest:
 		return settings->GetValue<int>("iXPQuestMain");
 	case QuestType::kMagesGuild:
@@ -53,6 +55,8 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 		return settings->GetValue<int>("iXPQuestBrotherhood");
 	case QuestType::kCompanionsQuest:
 		return settings->GetValue<int>("iXPQuestCompanions");
+	case QuestType::kMiscellaneous:
+		return settings->GetValue<int>("iXPQuestMisc");
 	case QuestType::kDaedric:
 		return settings->GetValue<int>("iXPQuestDaedric");
 	case QuestType::kSideQuest:
@@ -64,6 +68,7 @@ int QuestStatusEventHandler::GetReward(QuestType type)
 	case QuestType::kDLC02_Dragonborn:
 		return settings->GetValue<int>("iXPQuestDragonborn");
 	default:
-		return 0;
+		logger::warn("Unknown quest type: {}", static_cast<int>(type));
+		return settings->GetValue<int>("iXPQuestNone");
 	}
 }

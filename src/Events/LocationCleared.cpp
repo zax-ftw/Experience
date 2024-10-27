@@ -43,6 +43,8 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	auto settings = Settings::GetSingleton();
 
 	switch (type) {
+	case MarkerType::kNone:
+		return settings->GetValue<int>("iXPClearDefault");
 	case MarkerType::kCity:
 		return settings->GetValue<int>("iXPClearCity");
 	case MarkerType::kTown:
@@ -142,6 +144,7 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kDLC02CastleKarstaag:
 		return settings->GetValue<int>("iXPClearCastleKarstaag");
 	default:
+		logger::warn("Unknown location type: {}", static_cast<int>(type));
 		return settings->GetValue<int>("iXPClearDefault");
 	}
 }
