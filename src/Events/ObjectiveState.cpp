@@ -5,10 +5,10 @@
 
 using namespace RE;
 
-void FillQuestInstanceData(BSString* format, const TESQuest* quest, uint32_t instanceID)
+void ParseString(BSString* format, const TESQuest* quest, uint32_t instanceID)
 {
-	using func_t = decltype(&FillQuestInstanceData);
-	REL::Relocation<func_t> func{ Offset::BGSQuestObjective::FillQuestInstanceData };
+	using func_t = decltype(&ParseString);
+	REL::Relocation<func_t> func{ Offset::BGSQuestInstanceText::ParseString };
 	return func(format, quest, instanceID);
 }
 
@@ -40,7 +40,7 @@ std::string ObjectiveStateEventHandler::GetFormattedDisplayText(BGSQuestObjectiv
 	const TESQuest* quest = objective->ownerQuest;
 
 	BSString displayText(objective->displayText);
-	FillQuestInstanceData(&displayText, quest, quest->currentInstanceID);
+	ParseString(&displayText, quest, quest->currentInstanceID);
 
 	return displayText.c_str();
 }

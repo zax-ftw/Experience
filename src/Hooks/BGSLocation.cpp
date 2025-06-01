@@ -6,10 +6,10 @@ using namespace RE;
 
 BGSLocationEx* BGSLocationEx::lastChecked = nullptr;
 
-bool BGSLocationEx::ClearedCheck(int time, bool force)
+bool BGSLocationEx::CheckLocationCleared(int time, bool force)
 {
-	using func_t = decltype(&BGSLocationEx::ClearedCheck);
-	REL::Relocation<func_t> func{ Offset::BGSLocation::ClearedCheck };
+	using func_t = decltype(&BGSLocationEx::CheckLocationCleared);
+	REL::Relocation<func_t> func{ Offset::BGSLocation::CheckLocationCleared };
 	return func(this, time, force);
 }
 // TODO: refr->GetMapMarkerData
@@ -26,13 +26,13 @@ MARKER_TYPE BGSLocationEx::GetMapMarkerType()
 
 void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 {
-	_ClearedCheck = trampoline.write_call<5>(Offset::BGSLocation::TryToClear.address() + OFFSET(0x3F, 0x3F, 0x3F), ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Unknown::LocationMarkerRelated.address() + OFFSET(0x71, 0xAE, 0x71), ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Actor::Resurrect.address() + OFFSET(0x386, 0x347, 0x386), ClearedCheck_Hook);
-	trampoline.write_call<5>(Offset::Actor::Kill.address() + OFFSET(0x1142, 0x11E8, 0x1142), ClearedCheck_Hook);
+	trampoline.write_call<5>(Offset::BGSLocation::CanLocBeAlias.address() + OFFSET(0x3F, 0x3F, 0x3F), CheckLocationCleared_Hook);
+	trampoline.write_call<5>(Offset::GetAllGoodLocationsFunctor::Run.address() + OFFSET(0x71, 0xAE, 0x71), CheckLocationCleared_Hook);
+	trampoline.write_call<5>(Offset::Actor::Resurrect.address() + OFFSET(0x386, 0x347, 0x386), CheckLocationCleared_Hook);
+	_CheckLocationCleared = trampoline.write_call<5>(Offset::Actor::KillImpl.address() + OFFSET(0x1142, 0x11E8, 0x1142), CheckLocationCleared_Hook);
 }
 
-bool BGSLocationEx::ClearedCheck_Hook(BGSLocationEx* location, int time, bool force)
+bool BGSLocationEx::CheckLocationCleared_Hook(BGSLocationEx* location, int time, bool force)
 {
 	lastChecked = location;
 

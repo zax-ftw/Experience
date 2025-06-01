@@ -7,13 +7,17 @@
 
 using namespace RE;
 
-void TrainingMenuEx::Train_Hook(TrainingMenuEx* menu)
+void TrainingMenuEx::UpdateSkillMeter(bool a_targetPercent, bool a_skipPercentCalc)
 {
-	logger::trace("Train_Hook: {}", EnumToString(menu->skill));
+	using func_t = decltype(&TrainingMenuEx::UpdateSkillMeter);
+	REL::Relocation<func_t> func { Offset::TrainingMenu::UpdateSkillMeter };
+	return func(this, a_targetPercent, a_skipPercentCalc);
+}
 
 	auto player = PlayerCharacter::GetSingleton();
 	if (player->GetBaseActorValue(menu->skill) < PlayerSkillsEx::GetSkillCap1(menu->skill)) {
 		_Train(menu);
+void TrainingMenuEx::TrainSkill_Hook(TrainingMenuEx* menu)
 	} else {
 		ShowCappedMessage();
 	}
@@ -26,9 +30,8 @@ void TrainingMenuEx::ShowCappedMessage()
 
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 {
-	_Train = trampoline.write_branch<6>(
-		Offset::TrainingMenu::TrainCallback::Accept.address() + OFFSET(0x7, 0x7, 0x7), Train_Hook);
+	_TrainSkill = trampoline.write_branch<6>(
+		Offset::TrainingMenu::Train.address() + OFFSET(0x7, 0x7, 0x7), TrainSkill_Hook);
 
-	trampoline.write_call<5>(
-		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB), Train_Hook);
+
 }

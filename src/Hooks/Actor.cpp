@@ -23,7 +23,6 @@ bool ActorEx::IsPlayerOrTeam(Actor* actor)
 	return false;
 }
 
-// Actor::DamageHealth
 void ActorEx::ModTrackedDamage_Hook(AIProcess* process, Actor* attacker, float damage)
 {
 	auto player = PlayerCharacter::GetSingleton();
@@ -36,21 +35,20 @@ void ActorEx::ModTrackedDamage_Hook(AIProcess* process, Actor* attacker, float d
 	_ModTrackedDamage(process, attacker, damage);
 }
 
-// Unknown::HandleAction
-void ActorEx::KillMoveStart_Hook(Actor* victim, Actor* killer)
+void ActorEx::StartKillMove_Hook(Actor* victim, Actor* killer)
 {
 	float currentHealth = victim->GetActorValue(ActorValue::kHealth);
 	if (currentHealth > 0.0f) {
 		ModTrackedDamage_Hook(victim->currentProcess, killer, currentHealth);
 	}
-	_KillMoveStart(victim, killer);
+	_StartKillMove(victim, killer);
 }
 
 void ActorEx::Install(SKSE::Trampoline& trampoline)
 {
 	_ModTrackedDamage = trampoline.write_call<5>(
-		Offset::Actor::DamageHealth.address() + OFFSET(0xFD, 0x131, 0xFD), ModTrackedDamage_Hook);
+		Offset::Actor::DoDamage.address() + OFFSET(0xFD, 0x131, 0xFD), ModTrackedDamage_Hook);
 
-	_KillMoveStart = trampoline.write_call<5>(
-		Offset::Unknown::HandleAction.address() + OFFSET(0x1A7, 0x1D1, 0x1A7), KillMoveStart_Hook);
+	_StartKillMove = trampoline.write_call<5>(
+		Offset::ActorStateManager::SetStates.address() + OFFSET(0x1A7, 0x1D1, 0x1A7), StartKillMove_Hook);
 }

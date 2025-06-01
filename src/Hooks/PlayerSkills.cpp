@@ -7,10 +7,10 @@
 
 using namespace RE;
 
-void PlayerSkillsEx::InitSkills()
+void PlayerSkillsEx::InitializeData()
 {
-	using func_t = decltype(&PlayerSkillsEx::InitSkills);
-	REL::Relocation<func_t> func{ Offset::PlayerSkills::InitSkills };
+	using func_t = decltype(&PlayerSkillsEx::InitializeData);
+	REL::Relocation<func_t> func{ Offset::PlayerSkills::InitializeData };
 	return func(this);
 }
 
@@ -21,24 +21,24 @@ void PlayerSkillsEx::EvaluateSkillData(uint32_t skillId)
 	return func(this, skillId);
 }
 
-uint32_t PlayerSkillsEx::GetLevelData(float* points, float* pointsMax)
+uint32_t PlayerSkillsEx::GetLevelInfo(float* points, float* pointsMax)
 {
-	using func_t = decltype(&PlayerSkillsEx::GetLevelData);
-	REL::Relocation<func_t> func{ Offset::PlayerSkills::GetLevelData };
+	using func_t = decltype(&PlayerSkillsEx::GetLevelInfo);
+	REL::Relocation<func_t> func{ Offset::PlayerSkills::GetLevelInfo };
 	return func(this, points, pointsMax);
 }
 
-void PlayerSkillsEx::GetSkillData(ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend)
+void PlayerSkillsEx::GetSkillInfo(ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend)
 {
-	using func_t = decltype(&PlayerSkillsEx::GetSkillData);
-	REL::Relocation<func_t> func{ Offset::PlayerSkills::GetSkillData };
+	using func_t = decltype(&PlayerSkillsEx::GetSkillInfo);
+	REL::Relocation<func_t> func{ Offset::PlayerSkills::GetSkillInfo };
 	return func(this, avId, level, points, pointsMax, legend);
 }
 
-bool PlayerSkillsEx::CanLevelUp()
+bool PlayerSkillsEx::IsReadyToLevelUp()
 {
-	using func_t = decltype(&PlayerSkillsEx::CanLevelUp);
-	REL::Relocation<func_t> func{ Offset::PlayerSkills::CanLevelUp };
+	using func_t = decltype(&PlayerSkillsEx::IsReadyToLevelUp);
+	REL::Relocation<func_t> func{ Offset::PlayerSkills::IsReadyToLevelUp };
 	return func(this);
 }
 
@@ -85,7 +85,7 @@ void PlayerSkillsEx::ApplyRacials(TESRace* race)
 		}
 	}
 }
-// InitSkills, AdvanceLevel
+
 void PlayerSkillsEx::UpdateSkillCaps()
 {
 	logger::info("Updating skillcap data...");
@@ -149,18 +149,19 @@ void PlayerSkillsEx::Revert(SKSE::SerializationInterface*)
 	memset(caps, 0, sizeof(caps));
 }
 
-// workaround for existing characters
+// Workaround for existing characters
 void PlayerSkillsEx::PostLoad()
 {
 	if (caps[0] == 0.0f) {
 		UpdateSkillCaps();
 	}
 }
-// new game, race change
-void PlayerSkillsEx::InitSkills_Hook(PlayerSkillsEx* skills)
+
+// New Game, Race Change
+void PlayerSkillsEx::InitializeData_Hook(PlayerSkillsEx* skills)
 {
 	float points, levelup;
-	auto  level = skills->GetLevelData(&points, &levelup);
+	auto  level = skills->GetLevelInfo(&points, &levelup);
 
 	logger::info("Initializing skills at level {}", level);
 
@@ -171,10 +172,11 @@ void PlayerSkillsEx::InitSkills_Hook(PlayerSkillsEx* skills)
 	}
 	UpdateSkillCaps();
 }
-// ConfirmLevelUpAttributeCallback, SetLevel, UpdateLevel
-void PlayerSkillsEx::AdvanceLevel_Hook(PlayerSkillsEx* skills, bool addThreshold)
+
+// ConfirmLevelUpAttributeCallback, ForceLevel, UpdateLevel
+void PlayerSkillsEx::FinishLevelUp_Hook(PlayerSkillsEx* skills, bool addThreshold)
 {
-	_AdvanceLevel(skills, addThreshold);
+	_FinishLevelUp(skills, addThreshold);
 	UpdateSkillCaps();
 
 	auto strings = InterfaceStrings::GetSingleton();
@@ -184,15 +186,15 @@ void PlayerSkillsEx::AdvanceLevel_Hook(PlayerSkillsEx* skills, bool addThreshold
 		auto ptr = ui->GetMenu(strings->statsMenu);
 		StatsMenuEx* menu = static_cast<StatsMenuEx*>(ptr.get());
 		if (menu) {
-			menu->UpdateSkillList();
+			menu->InitSkills();
 		}
 	}
 }
 
-// UpdateSkillList -> AS2_InitAnimatedSkillText
-void PlayerSkillsEx::GetSkillData_Hook(PlayerSkillsEx* skills, ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
+// InitSkills -> AS2_InitAnimatedSkillText
+void PlayerSkillsEx::GetSkillInfo_Hook(PlayerSkillsEx* skills, ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
 {
-	_GetSkillData(skills, avId, level, xp, next, legend);
+	_GetSkillInfo(skills, avId, level, xp, next, legend);
 
 	if (auto id = ResolveAdvanceableSkillId(avId)) {
 		auto player = PlayerCharacter::GetSingleton();
@@ -202,9 +204,9 @@ void PlayerSkillsEx::GetSkillData_Hook(PlayerSkillsEx* skills, ActorValue avId, 
 	}
 }
 
-bool PlayerSkillsEx::CanLevelUp_Hook(PlayerSkillsEx* skills)
+bool PlayerSkillsEx::IsReadyToLevelUp_Hook(PlayerSkillsEx* skills)
 {
-	if (_CanLevelUp(skills)) {
+	if (_IsReadyToLevelUp(skills)) {
 
 		auto player = PlayerCharacter::GetSingleton();
 		auto settings = Settings::GetSingleton();
@@ -264,41 +266,35 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 		code, 
 		Offset::PlayerSkills::ModSkillPoints.address(), 
 		reinterpret_cast<uintptr_t>(&PlayerSkillsEx::GetSkillCap2));
+	_InitializeData = trampoline.write_call<5>(Offset::Main::PerformGameReset.address() + OFFSET(0x289, 0x303, 0x29E), InitializeData_Hook);
+	trampoline.write_call<5>(Offset::Main::UpdatePlayer.address() + OFFSET(0xE5, 0xE5, 0xE5), InitializeData_Hook);
+	trampoline.write_branch<5>(Offset::PlayerCharacter::InitValues.address() + OFFSET(0x1A, 0x1A, 0x1A), InitializeData_Hook);
 
 	trampoline.write_branch<6>(
 		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F, 0x51), 
 		trampoline.allocate(code));
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), FinishLevelUp_Hook);
+	trampoline.write_call<5>(Offset::PlayerSkills::ForceLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), FinishLevelUp_Hook);
+	_FinishLevelUp = trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), FinishLevelUp_Hook);
 
-	_InitSkills = trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), InitSkills_Hook);
-	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), InitSkills_Hook);
-	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + OFFSET(0x1A, 0x1A, 0x1A), InitSkills_Hook);
+	_GetSkillInfo = trampoline.write_call<5>(Offset::StatsMenu::InitSkills.address() + OFFSET(0x103, 0x104, 0x13D), GetSkillInfo_Hook);
+	trampoline.write_call<5>(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x87, 0x87, 0x87), GetSkillInfo_Hook);
+	REL::safe_fill(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
 
 
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), AdvanceLevel_Hook);
-	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), AdvanceLevel_Hook);
-	_AdvanceLevel = trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), AdvanceLevel_Hook);
-
-	_GetSkillData = trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), GetSkillData_Hook);
-	trampoline.write_call<5>(Offset::TrainingMenu::SetSkillPercent.address() + OFFSET(0x87, 0x87, 0x87), GetSkillData_Hook);
-	REL::safe_fill(Offset::TrainingMenu::SetSkillPercent.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
-
-	_CanLevelUp = trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::PlayerCharacter::StopWaitSleep.address() + OFFSET(0x37, 0x37, 0x5E), CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), CanLevelUp_Hook);
-
+	_IsReadyToLevelUp = trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), IsReadyToLevelUp_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), IsReadyToLevelUp_Hook);
+	trampoline.write_call<5>(Offset::PlayerCharacter::WakeUp.address() + OFFSET(0x37, 0x37, 0x5E), IsReadyToLevelUp_Hook);
+	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), IsReadyToLevelUp_Hook);
+	trampoline.write_call<5>(Offset::TweenMenu::StartMenuOpenAnim.address() + OFFSET(0x72, 0x72, 0x72), IsReadyToLevelUp_Hook);
 
 #ifdef SKYRIM_SUPPORT_AE
-		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC9, 0x90, 0x90, 0x90, 0x90 };  // pxor xmm1, xmm1
-		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x2CF,
-			std::span<uint8_t>(kDisableExperienceGain));
+	uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC9, 0x90, 0x90, 0x90, 0x90 };  // pxor xmm1, xmm1
 #else
-		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC0, 0x90 };  // pxor xmm0, xmm0
-		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x22B,
-			std::span<uint8_t>(kDisableExperienceGain));
+	uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC0, 0x90 };  // pxor xmm0, xmm0
 #endif
+	REL::safe_write<uint8_t>(Offset::PlayerSkills::UseSkill.address() + OFFSET(0x22B, 0x2CF, 0x22B), kDisableExperienceGain);
+
 	uint8_t kDisableLevelUpMessage[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };  // level meter for skills
-	REL::safe_write(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC),
-		std::span<uint8_t>(kDisableLevelUpMessage));
+	REL::safe_write<uint8_t>(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC), kDisableLevelUpMessage);
 }
