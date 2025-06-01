@@ -1,13 +1,20 @@
 {
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "experience",
   "version-string": "3.5.0",
   "homepage": "https://github.com/zax-ftw/Experience",
-  "license": "Apache-2.0",
   "dependencies": [
     "rsm-binary-io",
     "magic-enum",
     "simpleini",
     "spdlog",
     "xbyak"
+  ],
+  "builtin-baseline": "f26ec398c25c4980f33a50391f00a75f7ad62ef7",
+  "overrides": [
+    {
+      "name": "xbyak",
+      "version": "7.7"
+    }
   ]
 }
