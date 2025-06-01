@@ -21,8 +21,6 @@ project(
 	LANGUAGES CXX
 )
 
-set(SKSE_SUPPORT_XBYAK ON)
-
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/cmake/Plugin.h.in
 	${CMAKE_CURRENT_BINARY_DIR}/src/Plugin.h
@@ -142,7 +140,6 @@ set(CLIB_PATH "extern/${CLIB_NAME}")
 add_subdirectory(${CLIB_PATH} ${CLIB_NAME} EXCLUDE_FROM_ALL)
 
 find_package(magic_enum CONFIG REQUIRED)
-find_package(xbyak REQUIRED CONFIG)
 
 find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 
@@ -161,7 +158,6 @@ target_link_libraries(
 	PRIVATE
 	${CLIB_NAME}::${CLIB_NAME}
 	magic_enum::magic_enum
-	xbyak::xbyak
 )
 
 target_include_directories(

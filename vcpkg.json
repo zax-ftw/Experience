@@ -7,14 +7,7 @@
     "rsm-binary-io",
     "magic-enum",
     "simpleini",
-    "spdlog",
-    "xbyak"
+    "spdlog"
   ],
-  "builtin-baseline": "f26ec398c25c4980f33a50391f00a75f7ad62ef7",
-  "overrides": [
-    {
-      "name": "xbyak",
-      "version": "7.7"
-    }
-  ]
+  "builtin-baseline": "294f76666c3000630d828703e675814c05a4fd43"
 }
