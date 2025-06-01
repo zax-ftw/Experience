@@ -144,7 +144,7 @@ namespace Experience
 		logger::info("{} {} is loading...", 
 			Plugin::NAME, Plugin::VERSION.string());
 
-		SKSE::Init(skse);
+		SKSE::Init(skse, false);
 		InitializeMessaging();
 		InitializeSerialization();
 		InitializePapyrus();

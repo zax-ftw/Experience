@@ -9,7 +9,7 @@ using namespace RE;
 
 void TrainingMenuEx::Train_Hook(TrainingMenuEx* menu)
 {
-	logger::trace("Train_Hook: {} ", menu->skill);
+	logger::trace("Train_Hook: {}", EnumToString(menu->skill));
 
 	auto player = PlayerCharacter::GetSingleton();
 	if (player->GetBaseActorValue(menu->skill) < PlayerSkillsEx::GetSkillCap1(menu->skill)) {
