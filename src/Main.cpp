@@ -87,6 +87,11 @@ namespace Experience
 						InitializeHooking();
 					}
 					break;
+				case SKSE::MessagingInterface::kPostLoadGame:
+					{
+						PlayerSkillsEx::PostLoad();
+					}
+					break;
 				case SKSE::MessagingInterface::kDataLoaded:  // MainMenu
 					{
 						ExperienceManager::GetSingleton()->Init();

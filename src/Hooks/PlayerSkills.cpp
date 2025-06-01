@@ -7,13 +7,6 @@
 
 using namespace RE;
 
-PlayerCharacter::PlayerSkills* PlayerSkillsEx::Ctor()
-{
-	using func_t = decltype(&PlayerSkillsEx::Ctor);
-	REL::Relocation<func_t> func{ Offset::PlayerSkills::Ctor };
-	return func(this);
-}
-
 void PlayerSkillsEx::InitSkills()
 {
 	using func_t = decltype(&PlayerSkillsEx::InitSkills);
@@ -156,10 +149,12 @@ void PlayerSkillsEx::Revert(SKSE::SerializationInterface*)
 	memset(caps, 0, sizeof(caps));
 }
 
-PlayerCharacter::PlayerSkills* PlayerSkillsEx::PlayerSkills_Hook()
+// workaround for existing characters
+void PlayerSkillsEx::PostLoad()
 {
-	PlayerSkills* skills = Ctor();
-	return skills;
+	if (caps[0] == 0.0f) {
+		UpdateSkillCaps();
+	}
 }
 // new game, race change
 void PlayerSkillsEx::InitSkills_Hook()
@@ -284,7 +279,6 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F, 0x51), 
 		trampoline.allocate(code));
 
-	//trampoline.write_call<5>(Offset::PlayerCharacter::Ctor.address() + OFFSET(0xC3D, 0xECD), &PlayerSkillsEx::PlayerSkills_Hook);
 
 	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), &PlayerSkillsEx::InitSkills_Hook);
 	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), &PlayerSkillsEx::InitSkills_Hook);

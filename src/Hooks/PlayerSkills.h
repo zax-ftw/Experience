@@ -6,7 +6,6 @@ public:
 	static constexpr uint32_t kSkillOffset = 6;
 	static constexpr uint32_t kDataVersion = 2;
 
-	PlayerSkills* Ctor();
 	void          InitSkills();
 	void          EvaluateSkillData(uint32_t skillId);
 	uint32_t      GetLevelData(float* points, float* pointsMax);
@@ -24,6 +23,7 @@ public:
 	static void Load(SKSE::SerializationInterface* intfc, uint32_t version, uint32_t length);
 	static void Save(SKSE::SerializationInterface* intfc);
 	static void Revert(SKSE::SerializationInterface* intfc);
+	static void PostLoad();
 
 	static void Install(SKSE::Trampoline& trampoline);
 
@@ -31,7 +31,6 @@ private:
 	using Skill = Data::Skill;
 	using SkillData = Data::SkillData;
 
-	PlayerSkills* PlayerSkills_Hook();
 	void          InitSkills_Hook();
 	void          AdvanceLevel_Hook(bool addThreshold);
 	void          GetSkillData_Hook(RE::ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend);
