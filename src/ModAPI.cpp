@@ -27,7 +27,7 @@ namespace Experience
 
 	float ExperienceInterface::GetSkillCap(RE::ActorValue skill)
 	{
-		return PlayerSkillsEx::GetSkillCap1(skill);
+		return PlayerSkillsEx::GetSkillCap(skill);
 	}
 
 	void ExperienceInterface::ShowNotification(const char* text, const char* status, const char* sound)

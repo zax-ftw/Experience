@@ -29,7 +29,7 @@ namespace Papyrus
 
 	float GetSkillCap(StaticFunctionTag*, ActorValue skill)
 	{		
-		return PlayerSkillsEx::GetSkillCap1(skill);
+		return PlayerSkillsEx::GetSkillCap(skill);
 	}
 
 	int32_t GetSettingInt(StaticFunctionTag*, BSFixedString setting)

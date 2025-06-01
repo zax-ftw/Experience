@@ -14,10 +14,10 @@ void TrainingMenuEx::UpdateSkillMeter(bool a_targetPercent, bool a_skipPercentCa
 	return func(this, a_targetPercent, a_skipPercentCalc);
 }
 
-	auto player = PlayerCharacter::GetSingleton();
-	if (player->GetBaseActorValue(menu->skill) < PlayerSkillsEx::GetSkillCap1(menu->skill)) {
-		_Train(menu);
 void TrainingMenuEx::TrainSkill_Hook(TrainingMenuEx* menu)
+{
+	if (!PlayerSkillsEx::IsSkillCapped(menu->skill)) {
+		_TrainSkill(menu);
 	} else {
 		ShowCappedMessage();
 	}

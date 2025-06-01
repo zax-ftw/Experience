@@ -51,15 +51,10 @@ std::optional<int> PlayerSkillsEx::ResolveAdvanceableSkillId(ActorValue actorVal
 	return std::nullopt;
 }
 
-float PlayerSkillsEx::GetSkillCap1(ActorValue avId)
+float PlayerSkillsEx::GetSkillCap(ActorValue avId)
 {
 	auto id = ResolveAdvanceableSkillId(avId);
 	return id ? caps[*id] : 0.0f;
-}
-
-float PlayerSkillsEx::GetSkillCap2(ActorValue avId, float hard)
-{
-	return std::min(GetSkillCap1(avId), hard);
 }
 
 float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
@@ -69,6 +64,15 @@ float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
 	float mult = settings->GetValue<float>("fSkillCapMult");
 
 	return base + (level * mult);
+}
+
+bool PlayerSkillsEx::IsSkillCapped(ActorValue avId)
+{
+	auto player = PlayerCharacter::GetSingleton();
+	if (player->GetBaseActorValue(avId) >= GetSkillCap(avId)) {
+		return true;
+	}
+	return false;
 }
 
 void PlayerSkillsEx::ApplyRacials(TESRace* race)
@@ -196,11 +200,15 @@ void PlayerSkillsEx::GetSkillInfo_Hook(PlayerSkillsEx* skills, ActorValue avId, 
 {
 	_GetSkillInfo(skills, avId, level, xp, next, legend);
 
-	if (auto id = ResolveAdvanceableSkillId(avId)) {
-		auto player = PlayerCharacter::GetSingleton();
-		if (caps[*id] <= player->GetBaseActorValue(avId)) {
-			*xp = -100.0f;
-		}
+	if (IsSkillCapped(avId)) {
+		*xp = -100.0f;
+	}
+}
+
+void PlayerSkillsEx::UseSkill_Hook(PlayerSkillsEx* skills, RE::ActorValue avId, float points, void* source, bool power, bool recalc, bool silent)
+{
+	if (!IsSkillCapped(avId)) {
+		_UseSkill(skills, avId, points, source, power, recalc, silent);
 	}
 }
 
@@ -219,60 +227,12 @@ bool PlayerSkillsEx::IsReadyToLevelUp_Hook(PlayerSkillsEx* skills)
 	return false;
 }
 
-void SkillCap_GenCode(Xbyak::CodeGenerator& code, uintptr_t func, uintptr_t call)
-{
-	using namespace Xbyak::util;
-
-#ifdef SKYRIM_SUPPORT_AE
-		Xbyak::Label skipLabel;
-
-		code.movss(xmm1, xmm10);  // max - a2 (xmm6-xmm15 - non volatile)
-
-		code.mov(rcx, esi);  // avId - a1
-		code.mov(rax, call);
-		
-		code.call(rax);  // new max float on xmm0
-
-		code.comiss(xmm8, xmm0);  // lvl, max (original line)
-
-		code.jnb(skipLabel);
-		code.jmp(ptr[rip]);
-		code.dq(func + 0x89);
-
-		code.L(skipLabel);
-		code.jmp(ptr[rip]);
-		code.dq(func + 0x361);
-#else
-		code.movss(xmm6, xmm0);  // lvl (xmm6-xmm15 - non volatile)
-		code.movss(xmm1, xmm8);  // max - a2
-
-		code.mov(rcx, esi);  // avId - a1
-
-		code.mov(rax, call);
-
-		code.call(rax);  // new max float on xmm0
-
-		code.comiss(xmm6, xmm0);  // lvl, max (original line)
-
-		code.jmp(ptr[rip]);
-		code.dq(func + 0x58);
-#endif
-}
-
 void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 {
-	Xbyak::CodeGenerator code;
-	SkillCap_GenCode(
-		code, 
-		Offset::PlayerSkills::ModSkillPoints.address(), 
-		reinterpret_cast<uintptr_t>(&PlayerSkillsEx::GetSkillCap2));
 	_InitializeData = trampoline.write_call<5>(Offset::Main::PerformGameReset.address() + OFFSET(0x289, 0x303, 0x29E), InitializeData_Hook);
 	trampoline.write_call<5>(Offset::Main::UpdatePlayer.address() + OFFSET(0xE5, 0xE5, 0xE5), InitializeData_Hook);
 	trampoline.write_branch<5>(Offset::PlayerCharacter::InitValues.address() + OFFSET(0x1A, 0x1A, 0x1A), InitializeData_Hook);
 
-	trampoline.write_branch<6>(
-		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F, 0x51), 
-		trampoline.allocate(code));
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), FinishLevelUp_Hook);
 	trampoline.write_call<5>(Offset::PlayerSkills::ForceLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), FinishLevelUp_Hook);
 	_FinishLevelUp = trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), FinishLevelUp_Hook);
@@ -281,6 +241,8 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 	trampoline.write_call<5>(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x87, 0x87, 0x87), GetSkillInfo_Hook);
 	REL::safe_fill(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
 
+	_UseSkill = trampoline.write_call<5>(Offset::PlayerCharacter::UseSkill.address() + OFFSET(0x25, 0x25, 0x25), UseSkill_Hook);
+	trampoline.write_call<5>(Offset::PlayerSkills::IncrementSkill.address() + OFFSET(0x99, 0x98, 0x99), UseSkill_Hook);
 
 	_IsReadyToLevelUp = trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), IsReadyToLevelUp_Hook);
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), IsReadyToLevelUp_Hook);

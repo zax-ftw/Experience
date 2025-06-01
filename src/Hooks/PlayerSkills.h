@@ -6,8 +6,6 @@ public:
 	static constexpr uint32_t kSkillOffset = 6;
 	static constexpr uint32_t kDataVersion = 2;
 
-	static float GetSkillCap1(RE::ActorValue avId);
-	static float GetSkillCap2(RE::ActorValue avId, float hard);
 	void     InitializeData();
 	void     EvaluateSkillData(uint32_t skillId);
 	uint32_t GetLevelInfo(float* points, float* pointsMax);
@@ -16,7 +14,9 @@ public:
 	void     IncrementSkill(RE::ActorValue avId, uint32_t levels);
 	bool     IsReadyToLevelUp();
 
+	static float GetSkillCap(RE::ActorValue avId);
 	static float GetBaseSkillCap(uint16_t level);
+	static bool IsSkillCapped(RE::ActorValue avId);
 
 	static std::optional<int> ResolveAdvanceableSkillId(RE::ActorValue actorValue);
 
@@ -49,6 +49,7 @@ private:
 	static inline REL::Relocation<decltype(InitializeData_Hook)> _InitializeData;
 	static inline REL::Relocation<decltype(FinishLevelUp_Hook)> _FinishLevelUp;
 	static inline REL::Relocation<decltype(GetSkillInfo_Hook)> _GetSkillInfo;
+	static inline REL::Relocation<decltype(UseSkill_Hook)> _UseSkill;
 	static inline REL::Relocation<decltype(IsReadyToLevelUp_Hook)> _IsReadyToLevelUp;
 };
 static_assert(sizeof(PlayerSkillsEx) == 0x8);
