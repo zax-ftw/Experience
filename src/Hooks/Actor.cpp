@@ -49,8 +49,8 @@ void ActorEx::KillMoveStart_Hook(Actor* victim, Actor* killer)
 void ActorEx::Install(SKSE::Trampoline& trampoline)
 {
 	_ModTrackedDamage = trampoline.write_call<5>(
-		Offset::Actor::DamageHealth.address() + OFFSET(0xFD, 0x131, 0xFD), &ActorEx::ModTrackedDamage_Hook);
+		Offset::Actor::DamageHealth.address() + OFFSET(0xFD, 0x131, 0xFD), ModTrackedDamage_Hook);
 
 	_KillMoveStart = trampoline.write_call<5>(
-		Offset::Unknown::HandleAction.address() + OFFSET(0x1A7, 0x1D1, 0x1A7), &ActorEx::KillMoveStart_Hook);
+		Offset::Unknown::HandleAction.address() + OFFSET(0x1A7, 0x1D1, 0x1A7), KillMoveStart_Hook);
 }

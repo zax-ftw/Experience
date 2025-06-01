@@ -157,24 +157,24 @@ void PlayerSkillsEx::PostLoad()
 	}
 }
 // new game, race change
-void PlayerSkillsEx::InitSkills_Hook()
+void PlayerSkillsEx::InitSkills_Hook(PlayerSkillsEx* skills)
 {
 	float points, levelup;
-	auto  level = GetLevelData(&points, &levelup);
+	auto  level = skills->GetLevelData(&points, &levelup);
 
 	logger::info("Initializing skills at level {}", level);
 
-	data->levelThreshold = levelup;
+	skills->data->levelThreshold = levelup;
 
 	for (int id = 0; id < Skill::kTotal; id++) {
-		EvaluateSkillData(id);
+		skills->EvaluateSkillData(id);
 	}
 	UpdateSkillCaps();
 }
 // ConfirmLevelUpAttributeCallback, SetLevel, UpdateLevel
-void PlayerSkillsEx::AdvanceLevel_Hook(bool addThreshold)
+void PlayerSkillsEx::AdvanceLevel_Hook(PlayerSkillsEx* skills, bool addThreshold)
 {
-	AdvanceLevel(addThreshold);
+	_AdvanceLevel(skills, addThreshold);
 	UpdateSkillCaps();
 
 	auto strings = InterfaceStrings::GetSingleton();
@@ -190,32 +190,22 @@ void PlayerSkillsEx::AdvanceLevel_Hook(bool addThreshold)
 }
 
 // UpdateSkillList -> AS2_InitAnimatedSkillText
-void PlayerSkillsEx::GetSkillData_Hook(ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
+void PlayerSkillsEx::GetSkillData_Hook(PlayerSkillsEx* skills, ActorValue avId, float* level, float* xp, float* next, uint32_t* legend)
 {
-	auto id = ResolveAdvanceableSkillId(avId);
-	if (id) {
+	_GetSkillData(skills, avId, level, xp, next, legend);
+
+	if (auto id = ResolveAdvanceableSkillId(avId)) {
 		auto player = PlayerCharacter::GetSingleton();
-		SkillData* skill = &data->skills[*id];
-		if (skill) {
-			if (level) {
-				*level = skill->level;  // unused
-			}
-			if (xp) {
-				*xp = caps[*id] > player->GetBaseActorValue(avId) ? skill->xp : -100000.0f;
-			}
-			if (next) {
-				*next = skill->levelThreshold;
-			}
-			if (legend) {
-				*legend = data->legendaryLevels[*id];
-			}
+		if (caps[*id] <= player->GetBaseActorValue(avId)) {
+			*xp = -100.0f;
 		}
 	}
 }
 
-bool PlayerSkillsEx::CanLevelUp_Hook()
+bool PlayerSkillsEx::CanLevelUp_Hook(PlayerSkillsEx* skills)
 {
-	if (CanLevelUp()) {
+	if (_CanLevelUp(skills)) {
+
 		auto player = PlayerCharacter::GetSingleton();
 		auto settings = Settings::GetSingleton();
 
@@ -279,25 +269,26 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 		Offset::PlayerSkills::ModSkillPoints.address() + OFFSET(0x51, 0x7F, 0x51), 
 		trampoline.allocate(code));
 
+	_InitSkills = trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), InitSkills_Hook);
+	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), InitSkills_Hook);
+	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + OFFSET(0x1A, 0x1A, 0x1A), InitSkills_Hook);
 
-	trampoline.write_call<5>(Offset::Main::sub_5B5490.address() + OFFSET(0x289, 0x303, 0x29E), &PlayerSkillsEx::InitSkills_Hook);
-	trampoline.write_call<5>(Offset::Main::sub_5B6DC0.address() + OFFSET(0xE5, 0xE5, 0xE5), &PlayerSkillsEx::InitSkills_Hook);
-	trampoline.write_branch<5>(Offset::PlayerCharacter::InitActorValues.address() + OFFSET(0x1A, 0x1A, 0x1A), &PlayerSkillsEx::InitSkills_Hook);
 
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), &PlayerSkillsEx::AdvanceLevel_Hook);
-	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), &PlayerSkillsEx::AdvanceLevel_Hook);
-	trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), &PlayerSkillsEx::AdvanceLevel_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), AdvanceLevel_Hook);
+	trampoline.write_call<5>(Offset::PlayerSkills::SetLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), AdvanceLevel_Hook);
+	_AdvanceLevel = trampoline.write_call<5>(Offset::ConfirmLevelUpAttributeCallback::Run.address() + OFFSET(0xCE, 0xCE, 0xCE), AdvanceLevel_Hook);
 
-	trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), &PlayerSkillsEx::GetSkillData_Hook);
-	trampoline.write_call<5>(Offset::TrainingMenu::SetSkillXpPercent.address() + OFFSET(0x87, 0x87, 0x87), &PlayerSkillsEx::GetSkillData_Hook);
-	REL::safe_fill(Offset::TrainingMenu::SetSkillXpPercent.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
+	_GetSkillData = trampoline.write_call<5>(Offset::StatsMenu::UpdateSkillList.address() + OFFSET(0x103, 0x104, 0x13D), GetSkillData_Hook);
+	trampoline.write_call<5>(Offset::TrainingMenu::SetSkillPercent.address() + OFFSET(0x87, 0x87, 0x87), GetSkillData_Hook);
+	REL::safe_fill(Offset::TrainingMenu::SetSkillPercent.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
 
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::PlayerCharacter::StopWaitSleep.address() + OFFSET(0x37, 0x37, 0x5E), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), &PlayerSkillsEx::CanLevelUp_Hook);
-	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), &PlayerSkillsEx::CanLevelUp_Hook);
-	
+	_CanLevelUp = trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x2A, 0x2A, 0x2A), CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x48, 0x48, 0x48), CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::PlayerCharacter::StopWaitSleep.address() + OFFSET(0x37, 0x37, 0x5E), CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::StatsMenu::ProcessMessage.address() + OFFSET(0xF23, 0xFA7, 0x100E), CanLevelUp_Hook);
+	trampoline.write_call<5>(Offset::TweenMenu::sub_8D16A0.address() + OFFSET(0x72, 0x72, 0x72), CanLevelUp_Hook);
+
+
 #ifdef SKYRIM_SUPPORT_AE
 		uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC9, 0x90, 0x90, 0x90, 0x90 };  // pxor xmm1, xmm1
 		REL::safe_write(Offset::PlayerSkills::ModSkillPoints.address() + 0x2CF,

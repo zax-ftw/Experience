@@ -57,8 +57,9 @@ namespace RE
 		namespace TrainingMenu
 		{
 			constexpr auto ProcessMessage = RELOCATION_ID(51788, 52662);
-			constexpr auto SetSkillXpPercent = RELOCATION_ID(51795, 52669);
-
+			constexpr auto Train = RELOCATION_ID(51793, 52667);
+			constexpr auto SetSkillPercent = RELOCATION_ID(51795, 52669);
+			
 			namespace TrainCallback
 			{
 				constexpr auto Accept = RELOCATION_ID(51790, 52664);

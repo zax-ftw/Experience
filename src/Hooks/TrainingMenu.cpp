@@ -27,10 +27,8 @@ void TrainingMenuEx::ShowCappedMessage()
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 {
 	_Train = trampoline.write_branch<6>(
-		Offset::TrainingMenu::TrainCallback::Accept.address() + OFFSET(0x7, 0x7, 0x7),
-		&TrainingMenuEx::Train_Hook);
+		Offset::TrainingMenu::TrainCallback::Accept.address() + OFFSET(0x7, 0x7, 0x7), Train_Hook);
 
-	_Train = trampoline.write_call<5>(
-		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB),
-		&TrainingMenuEx::Train_Hook);
+	trampoline.write_call<5>(
+		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB), Train_Hook);
 }

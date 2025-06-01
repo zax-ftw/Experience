@@ -31,10 +31,12 @@ private:
 	using Skill = Data::Skill;
 	using SkillData = Data::SkillData;
 
-	void          InitSkills_Hook();
-	void          AdvanceLevel_Hook(bool addThreshold);
-	void          GetSkillData_Hook(RE::ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend);
-	bool          CanLevelUp_Hook();
+	static void InitSkills_Hook(PlayerSkillsEx* skills);
+	static void AdvanceLevel_Hook(PlayerSkillsEx* skills, bool addThreshold);
+	static void GetSkillData_Hook(PlayerSkillsEx* skills, RE::ActorValue avId, float* level, float* points, float* pointsMax, uint32_t* legend);
+	//static void LevelUp_Hook(PlayerSkillsEx* skills);
+	static bool CanLevelUp_Hook(PlayerSkillsEx* skills);
+	static bool IsLegendaryEnabled_Hook(PlayerSkillsEx* skills);
 
 	static void ApplyRacials(RE::TESRace* race);
 	static void UpdateSkillCaps();
@@ -43,5 +45,11 @@ private:
 
 	// members
 	static inline float caps[Skill::kTotal];
+
+	// hooked
+	static inline REL::Relocation<decltype(InitSkills_Hook)> _InitSkills;
+	static inline REL::Relocation<decltype(AdvanceLevel_Hook)> _AdvanceLevel;
+	static inline REL::Relocation<decltype(GetSkillData_Hook)> _GetSkillData;
+	static inline REL::Relocation<decltype(CanLevelUp_Hook)> _CanLevelUp;
 };
 static_assert(sizeof(PlayerSkillsEx) == 0x8);

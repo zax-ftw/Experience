@@ -11,8 +11,10 @@ public:
 	bool ClearedCheck(int time, bool force);
 
 private:
-	bool ClearedCheck_Hook(int time, bool force);
+	static bool ClearedCheck_Hook(BGSLocationEx* location, int time, bool force);
 
 	// members
 	static BGSLocationEx* lastChecked;
+
+	static inline REL::Relocation<decltype(ClearedCheck_Hook)> _ClearedCheck;
 };
