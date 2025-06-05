@@ -1,6 +1,5 @@
 #include "Events/SkillIncrease.h"
 
-#include "Hooks/PlayerSkills.h"
 #include "Utils/GameSettings.h"
 
 using namespace RE;
@@ -26,7 +25,7 @@ BSEventNotifyControl SkillIncreaseEventHandler::ProcessEvent(const SkillIncrease
 {
 	float level = event->player->GetBaseActorValue(event->actorValue);
 
-	logger::info("[SkillIncrease] {} ({})", EnumToString(event->actorValue), level);
+	logger::info("[SkillIncrease] {} ({})", event->actorValue, level);
 
 	float reward = GetExperienceGain(level);
 	AddExperience(reward);

@@ -81,7 +81,7 @@ void PlayerSkillsEx::ApplyRacials(TESRace* race)
 
 	for (auto& [skill, bonus] : race->data.skillBoosts) {
 
-		logger::info("{}: {}", skill.underlying(), bonus);
+		logger::info("{}: {}", *skill, bonus);
 
 		auto id = ResolveAdvanceableSkillId(*skill);
 		if (id) {
