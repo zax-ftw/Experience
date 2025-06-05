@@ -24,6 +24,11 @@ MARKER_TYPE BGSLocationEx::GetMapMarkerType()
 	return MARKER_TYPE::kNone;
 }
 
+BGSLocationEx* BGSLocationEx::GetLastChecked()
+{
+	return lastChecked;
+}
+
 void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 {
 	trampoline.write_call<5>(Offset::BGSLocation::CanLocBeAlias.address() + OFFSET(0x3F, 0x3F, 0x3F), CheckLocationCleared_Hook);
@@ -36,5 +41,9 @@ bool BGSLocationEx::CheckLocationCleared_Hook(BGSLocationEx* location, int time,
 {
 	lastChecked = location;
 
-	return _ClearedCheck(location, time, force);
+	if (location->IsLoaded()) {
+		return _CheckLocationCleared(location, time, force);
+	}
+
+	return location->IsCleared();
 }

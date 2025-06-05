@@ -3,7 +3,7 @@
 class BGSLocationEx : public RE::BGSLocation
 {
 public:
-	static BGSLocationEx* GetLastChecked() { return lastChecked; };
+	static BGSLocationEx* GetLastChecked();
 	static void           Install(SKSE::Trampoline& trampoline);
 
 	RE::MARKER_TYPE GetMapMarkerType();
