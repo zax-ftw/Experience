@@ -42,9 +42,9 @@ bool PlayerSkillsEx::IsReadyToLevelUp()
 	return func(this);
 }
 
-std::optional<int> PlayerSkillsEx::ResolveAdvanceableSkillId(ActorValue actorValue)
+std::optional<int> PlayerSkillsEx::ResolveAdvanceableSkillId(ActorValue avId)
 {
-	int skill = static_cast<int32_t>(actorValue) - kSkillOffset;
+	int skill = static_cast<int32_t>(avId) - kSkillOffset;
 	if (skill >= Skill::kOneHanded && skill < Skill::kTotal) {
 		return skill;
 	}
@@ -54,7 +54,7 @@ std::optional<int> PlayerSkillsEx::ResolveAdvanceableSkillId(ActorValue actorVal
 float PlayerSkillsEx::GetSkillCap(ActorValue avId)
 {
 	auto id = ResolveAdvanceableSkillId(avId);
-	return id ? caps[*id] : 0.0f;
+	return id ? caps[*id] : std::numeric_limits<float>::max();
 }
 
 float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
@@ -68,9 +68,11 @@ float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
 
 bool PlayerSkillsEx::IsSkillCapped(ActorValue avId)
 {
-	auto player = PlayerCharacter::GetSingleton();
-	if (player->GetBaseActorValue(avId) >= GetSkillCap(avId)) {
-		return true;
+	if (avId != ActorValue::kNone) {
+		auto player = PlayerCharacter::GetSingleton();
+		if (player->GetBaseActorValue(avId) >= GetSkillCap(avId)) {
+			return true;
+		}
 	}
 	return false;
 }

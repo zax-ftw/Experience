@@ -18,7 +18,7 @@ public:
 	static float GetBaseSkillCap(uint16_t level);
 	static bool IsSkillCapped(RE::ActorValue avId);
 
-	static std::optional<int> ResolveAdvanceableSkillId(RE::ActorValue actorValue);
+	static std::optional<int> ResolveAdvanceableSkillId(RE::ActorValue avId);
 
 	static void Load(SKSE::SerializationInterface* intfc, uint32_t version, uint32_t length);
 	static void Save(SKSE::SerializationInterface* intfc);
