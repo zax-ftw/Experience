@@ -8,13 +8,13 @@ public:
 
 	RE::MARKER_TYPE GetMapMarkerType();
 
-	bool CheckLocationCleared(int time, bool force);
-
 private:
-	static bool CheckLocationCleared_Hook(BGSLocationEx* location, int time, bool force);
+
+	template <int N>
+	static bool CheckCleared_Hook(BGSLocationEx* location, int time, bool force);
 
 	// members
-	static BGSLocationEx* lastChecked;
+	static inline BGSLocationEx* lastChecked = nullptr;
 
-	static inline REL::Relocation<decltype(CheckLocationCleared_Hook)> _CheckLocationCleared;
+	static inline REL::Relocation<decltype(CheckCleared_Hook<0>)> _CheckCleared[4];
 };

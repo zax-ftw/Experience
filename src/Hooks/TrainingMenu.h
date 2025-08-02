@@ -10,12 +10,13 @@ public:
 
 private:
 
+	template <int N>
 	static void TrainSkill_Hook(TrainingMenuEx* menu);
 	static void UpdateDisplay_Hook(TrainingMenuEx* menu);
 
 	static void ShowCappedMessage();
 
 	// hooked
-	static inline REL::Relocation<decltype(TrainSkill_Hook)> _TrainSkill;
+	static inline REL::Relocation<decltype(TrainSkill_Hook<0>)> _TrainSkill[2];
 	static inline REL::Relocation<decltype(UpdateDisplay_Hook)> _UpdateDisplay;
 };

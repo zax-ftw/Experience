@@ -14,10 +14,11 @@ void TrainingMenuEx::UpdateSkillMeter(bool a_targetPercent, bool a_skipPercentCa
 	return func(this, a_targetPercent, a_skipPercentCalc);
 }
 
+template <int N>
 void TrainingMenuEx::TrainSkill_Hook(TrainingMenuEx* menu)
 {
 	if (!PlayerSkillsEx::IsSkillCapped(menu->skill)) {
-		_TrainSkill(menu);
+		_TrainSkill[N](menu);
 	} else {
 		ShowCappedMessage();
 	}
@@ -38,8 +39,11 @@ void TrainingMenuEx::ShowCappedMessage()
 
 void TrainingMenuEx::Install(SKSE::Trampoline& trampoline)
 {
-	_TrainSkill = trampoline.write_branch<6>(
-		Offset::TrainingMenu::Train.address() + OFFSET(0x7, 0x7, 0x7), TrainSkill_Hook);
+	_TrainSkill[0] = trampoline.write_branch<6>(
+		Offset::TrainingMenu::Train.address() + OFFSET(0x7, 0x7, 0x7), TrainSkill_Hook<0>);
+
+	_TrainSkill[1] = trampoline.write_call<5>(
+		Offset::TrainingMenu::ProcessMessage.address() + OFFSET(0xDB, 0xD8, 0xDB), TrainSkill_Hook<1>);
 
 #ifdef SKYRIM_SUPPORT_AE
 
