@@ -53,7 +53,7 @@ void HUDMenuEx::ShowLevelMeter_Impl(uint16_t level, float startPercent, float en
 
 void HUDNotificationsEx::ShowNotification(const char* text, const char* status, const char* sound)
 {
-	Notification notification { .text = text, .status = status, .sound = sound, .type = 14 };
+	Notification notification { .text = text, .status = status, .sound = sound, .type = Type::kQuestStarted };
 
 	int waitTime = Utils::GetGameSettingInt("iObjectivesWaitTime:Interface");
 	notification.time = waitTime + GetDurationOfApplicationRunTime();

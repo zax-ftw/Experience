@@ -30,6 +30,7 @@ private:
 class HUDNotificationsEx : public RE::HUDNotifications
 {
 public:
+	using Type = RE::HUD_MESSAGE_TYPE;
 
 	void ShowNotification(const char* text, const char* status, const char* sound);
 	void ShowLevelMeter(uint16_t level, float startPercent, float endPercent);

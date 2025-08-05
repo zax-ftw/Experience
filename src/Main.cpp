@@ -113,7 +113,7 @@ namespace Experience
 		v.AuthorName("Zax-Ftw");
 		v.UsesAddressLibrary();
 		v.UsesUpdatedStructs();
-		v.CompatibleVersions({ SKSE::RUNTIME_LATEST });
+		v.CompatibleVersions({ SKSE::RUNTIME_SSE_LATEST });
 
 		return v;
 	}();
@@ -133,7 +133,7 @@ namespace Experience
 #	ifdef SKYRIMVR
 		if (ver > SKSE::RUNTIME_VR_1_4_15_1) {
 #	else
-		if (ver < SKSE::RUNTIME_1_5_39) {
+		if (ver < SKSE::RUNTIME_SSE_1_5_39) {
 #	endif	
 			logger::critical("Unsupported runtime version {}", ver.string());
 			return false;
