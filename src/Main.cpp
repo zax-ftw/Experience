@@ -6,7 +6,7 @@
 #include "Experience.h"
 #include "Serialization.h"
 #include "HUDInjector.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Papyrus.h"
 #include "Console.h"
 #include "ModAPI.h"

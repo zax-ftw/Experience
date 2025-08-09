@@ -1,6 +1,6 @@
 #include "Events/QuestStatus.h"
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 
 using namespace RE;
 
@@ -27,8 +27,8 @@ BSEventNotifyControl QuestStatusEventHandler::ProcessEvent(const QuestStatus::Ev
 
 		auto questType = quest->GetType();
 
-		logger::info("[QuestCompleted] {0} ({1})", 
-			quest->GetFormEditorID(), EnumToString(questType));
+		logger::info("[QuestCompleted] {} (type: {})", 
+			quest->GetFormEditorID(), static_cast<int>(questType));
 
 		auto reward = GetReward(questType);
 
@@ -59,35 +59,33 @@ uint8_t QuestStatusEventHandler::GetNumObjectivesCompleted(TESQuest *quest)
 
 int QuestStatusEventHandler::GetReward(QuestType type)
 {
-	auto settings = Settings::GetSingleton();
-
 	switch (type) {
 	case QuestType::kNone:
-		return settings->GetValue<int>("iXPQuestNone");
+		return Settings::Questing::XPQuestNone;
 	case QuestType::kMainQuest:
-		return settings->GetValue<int>("iXPQuestMain");
+		return Settings::Questing::XPQuestMain;
 	case QuestType::kMagesGuild:
-		return settings->GetValue<int>("iXPQuestCollege");
+		return Settings::Questing::XPQuestCollege;
 	case QuestType::kThievesGuild:
-		return settings->GetValue<int>("iXPQuestThieves");
+		return Settings::Questing::XPQuestThieves;
 	case QuestType::kDarkBrotherhood:
-		return settings->GetValue<int>("iXPQuestBrotherhood");
+		return Settings::Questing::XPQuestBrotherhood;
 	case QuestType::kCompanionsQuest:
-		return settings->GetValue<int>("iXPQuestCompanions");
+		return Settings::Questing::XPQuestCompanions;
 	case QuestType::kMiscellaneous:
-		return settings->GetValue<int>("iXPQuestMisc");
+		return Settings::Questing::XPQuestMisc;
 	case QuestType::kDaedric:
-		return settings->GetValue<int>("iXPQuestDaedric");
+		return Settings::Questing::XPQuestDaedric;
 	case QuestType::kSideQuest:
-		return settings->GetValue<int>("iXPQuestSide");
+		return Settings::Questing::XPQuestSide;
 	case QuestType::kCivilWar:
-		return settings->GetValue<int>("iXPQuestCivilWar");
+		return Settings::Questing::XPQuestCivilWar;
 	case QuestType::kDLC01_Vampire:
-		return settings->GetValue<int>("iXPQuestDawnguard");
+		return Settings::Questing::XPQuestDawnguard;
 	case QuestType::kDLC02_Dragonborn:
-		return settings->GetValue<int>("iXPQuestDragonborn");
+		return Settings::Questing::XPQuestDragonborn;
 	default:
 		logger::warn("Unknown quest type: {}", static_cast<int>(type));
-		return settings->GetValue<int>("iXPQuestNone");
+		return Settings::Questing::XPQuestSide;
 	}
 }

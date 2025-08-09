@@ -1,7 +1,7 @@
 #include "ModAPI.h"
 
 #include "Experience.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Skyrim/HUDMenu.h"
 
 #include "Hooks/PlayerSkills.h"

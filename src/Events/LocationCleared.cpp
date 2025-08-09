@@ -1,6 +1,6 @@
 #include "Events/LocationCleared.h"
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Skyrim/HUDMenu.h"
 
 #include "Hooks/BGSLocation.h"
@@ -29,8 +29,8 @@ BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCle
 
 		ShowLocationCleared(name);
 
-		logger::info("[LocationCleared] {0} ({1})", 
-			name, EnumToString(type));
+		logger::info("[LocationCleared] {} (type: {})", 
+			name, static_cast<int>(type));
 
 		auto reward = GetReward(type);
 		AddExperience(reward);
@@ -40,78 +40,76 @@ BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCle
 
 int LocationClearedEventHandler::GetReward(MarkerType type)
 {
-	auto settings = Settings::GetSingleton();
-
 	switch (type) {
 	case MarkerType::kNone:
-		return settings->GetValue<int>("iXPClearDefault");
+		return Settings::Clearing::XPClearDefault;
 	case MarkerType::kCity:
-		return settings->GetValue<int>("iXPClearCity");
+		return Settings::Clearing::XPClearCity;
 	case MarkerType::kTown:
-		return settings->GetValue<int>("iXPClearTown");
+		return Settings::Clearing::XPClearTown;
 	case MarkerType::kSettlement:
-		return settings->GetValue<int>("iXPClearSettlement");
+		return Settings::Clearing::XPClearSettlement;
 	case MarkerType::kCave:
-		return settings->GetValue<int>("iXPClearCave");
+		return Settings::Clearing::XPClearCave;
 	case MarkerType::kCamp:
-		return settings->GetValue<int>("iXPClearCamp");
+		return Settings::Clearing::XPClearCamp;
 	case MarkerType::kFort:
-		return settings->GetValue<int>("iXPClearFort");
+		return Settings::Clearing::XPClearFort;
 	case MarkerType::kNordicRuin:
-		return settings->GetValue<int>("iXPClearNordicRuin");
+		return Settings::Clearing::XPClearNordicRuin;
 	case MarkerType::kDwemerRuin:
-		return settings->GetValue<int>("iXPClearDwemerRuin");
+		return Settings::Clearing::XPClearDwemerRuin;
 	case MarkerType::kShipwreck:
-		return settings->GetValue<int>("iXPClearShipwreck");
+		return Settings::Clearing::XPClearShipwreck;
 	case MarkerType::kGrove:
-		return settings->GetValue<int>("iXPClearGrove");
+		return Settings::Clearing::XPClearGrove;
 	case MarkerType::kLandmark:
-		return settings->GetValue<int>("iXPClearLandmark");
+		return Settings::Clearing::XPClearLandmark;
 	case MarkerType::kDragonLair:
-		return settings->GetValue<int>("iXPClearDragonLair");
+		return Settings::Clearing::XPClearDragonLair;
 	case MarkerType::kFarm:
-		return settings->GetValue<int>("iXPClearFarm");
+		return Settings::Clearing::XPClearFarm;
 	case MarkerType::kWoodMill:
-		return settings->GetValue<int>("iXPClearWoodMill");
+		return Settings::Clearing::XPClearWoodMill;
 	case MarkerType::kMine:
-		return settings->GetValue<int>("iXPClearMine");
+		return Settings::Clearing::XPClearMine;
 	case MarkerType::kImperialCamp:
 	case MarkerType::kStormcloakCamp:
-		return settings->GetValue<int>("iXPClearMilitaryCamp");
+		return Settings::Clearing::XPClearMilitaryCamp;
 	case MarkerType::kDoomstone:
-		return settings->GetValue<int>("iXPClearDoomstone");
+		return Settings::Clearing::XPClearDoomstone;
 	case MarkerType::kWheatMill:
-		return settings->GetValue<int>("iXPClearWheatMill");
+		return Settings::Clearing::XPClearWheatMill;
 	case MarkerType::kSmelter:
-		return settings->GetValue<int>("iXPClearSmelter");
+		return Settings::Clearing::XPClearSmelter;
 	case MarkerType::kStable:
-		return settings->GetValue<int>("iXPClearStable");
+		return Settings::Clearing::XPClearStable;
 	case MarkerType::kImperialTower:
-		return settings->GetValue<int>("iXPClearImperialTower");
+		return Settings::Clearing::XPClearImperialTower;
 	case MarkerType::kClearing:
-		return settings->GetValue<int>("iXPClearClearing");
+		return Settings::Clearing::XPClearClearing;
 	case MarkerType::kPass:
-		return settings->GetValue<int>("iXPClearPass");
+		return Settings::Clearing::XPClearPass;
 	case MarkerType::kAltar:
-		return settings->GetValue<int>("iXPClearAltar");
+		return Settings::Clearing::XPClearAltar;
 	case MarkerType::kRock:
-		return settings->GetValue<int>("iXPClearRock");
+		return Settings::Clearing::XPClearRock;
 	case MarkerType::kLighthouse:
-		return settings->GetValue<int>("iXPClearLighthouse");
+		return Settings::Clearing::XPClearLighthouse;
 	case MarkerType::kOrcStronghold:
-		return settings->GetValue<int>("iXPClearOrcStronghold");
+		return Settings::Clearing::XPClearOrcStronghold;
 	case MarkerType::kGiantCamp:
-		return settings->GetValue<int>("iXPClearGiantCamp");
+		return Settings::Clearing::XPClearGiantCamp;
 	case MarkerType::kShack:
-		return settings->GetValue<int>("iXPClearShack");
+		return Settings::Clearing::XPClearShack;
 	case MarkerType::kNordicTower:
-		return settings->GetValue<int>("iXPClearNordicTower");
+		return Settings::Clearing::XPClearNordicTower;
 	case MarkerType::kNordicDwelling:
-		return settings->GetValue<int>("iXPClearNordicDwelling");
+		return Settings::Clearing::XPClearNordicDwelling;
 	case MarkerType::kDocks:
-		return settings->GetValue<int>("iXPClearDocks");
+		return Settings::Clearing::XPClearDocks;
 	case MarkerType::kShrine:
-		return settings->GetValue<int>("iXPClearDaedricShrine");
+		return Settings::Clearing::XPClearDaedricShrine;
 	case MarkerType::kRiftenCastle:
 	case MarkerType::kWindhelmCastle:
 	case MarkerType::kWhiterunCastle:
@@ -121,7 +119,7 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kMorthalCastle:
 	case MarkerType::kFalkreathCastle:
 	case MarkerType::kDawnstarCastle:
-		return settings->GetValue<int>("iXPClearCastle");
+		return Settings::Clearing::XPClearCastle;
 	case MarkerType::kRiftenCapitol:
 	case MarkerType::kWindhelmCapitol:
 	case MarkerType::kWhiterunCapitol:
@@ -132,20 +130,20 @@ int LocationClearedEventHandler::GetReward(MarkerType type)
 	case MarkerType::kFalkreathCapitol:
 	case MarkerType::kDawnstarCapitol:
 	case MarkerType::kDLC02RavenRock:
-		return settings->GetValue<int>("iXPClearCity");
+		return Settings::Clearing::XPClearCity;
 	case MarkerType::kDLC02MiraakTemple:
-		return settings->GetValue<int>("iXPClearMiraakTemple");
+		return Settings::Clearing::XPClearMiraakTemple;
 	case MarkerType::kDLC02StandingStone:
-		return settings->GetValue<int>("iXPClearStandingStone");
+		return Settings::Clearing::XPClearStandingStone;
 	case MarkerType::kDLC02TelvanniTower:
-		return settings->GetValue<int>("iXPClearTelvanniTower");
+		return Settings::Clearing::XPClearTelvanniTower;
 	//case MarkerType::kDLC02ToSkyrim:
-	//case MarkerType::kDLC02ToSolstheim:	
+	//case MarkerType::kDLC02ToSolstheim:
 	case MarkerType::kDLC02CastleKarstaag:
-		return settings->GetValue<int>("iXPClearCastleKarstaag");
+		return Settings::Clearing::XPClearCastleKarstaag;
 	default:
 		logger::warn("Unknown location type: {}", static_cast<int>(type));
-		return settings->GetValue<int>("iXPClearDefault");
+		return Settings::Clearing::XPClearDefault;
 	}
 }
 

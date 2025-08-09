@@ -3,7 +3,6 @@
 #include "Hooks/PlayerSkills.h"
 #include "Utils/GameSettings.h"
 #include "Offsets.h"
-#include "Settings.h"
 
 using namespace RE;
 

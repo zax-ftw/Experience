@@ -1,7 +1,7 @@
 #include "Hooks/PlayerSkills.h"
 
 #include "Offsets.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 
 #include "Skyrim/StatsMenu.h"
 
@@ -59,9 +59,8 @@ float PlayerSkillsEx::GetSkillCap(ActorValue avId)
 
 float PlayerSkillsEx::GetBaseSkillCap(uint16_t level)
 {
-	auto settings = Settings::GetSingleton();
-	float base = settings->GetValue<float>("fSkillCapBase");
-	float mult = settings->GetValue<float>("fSkillCapMult");
+	float base = Settings::General::SkillCapBase;
+	float mult = Settings::General::SkillCapMult;
 
 	return base + (level * mult);
 }
@@ -102,8 +101,7 @@ void PlayerSkillsEx::UpdateSkillCaps()
 	float base = GetBaseSkillCap(level);
 	std::fill(std::begin(caps), std::end(caps), base);
 
-	auto settings = Settings::GetSingleton();
-	if (settings->GetValue<bool>("bUseRacialCaps")) {
+	if (Settings::General::UseRacialCaps) {
 
 		if (auto race = player->GetRace()) {
 			ApplyRacials(race);
@@ -219,9 +217,7 @@ bool PlayerSkillsEx::IsReadyToLevelUp_Hook(PlayerSkillsEx* skills)
 	if (_IsReadyToLevelUp(skills)) {
 
 		auto player = PlayerCharacter::GetSingleton();
-		auto settings = Settings::GetSingleton();
-
-		int maxLevel = settings->GetValue<int>("iMaxPlayerLevel");
+		int maxLevel = Settings::General::MaxPlayerLevel;
 
 		if (player->GetLevel() < maxLevel)
 			return true;

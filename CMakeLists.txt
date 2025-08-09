@@ -39,8 +39,10 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
  "src/Main.cpp"
- "src/Settings.cpp"
- "src/Settings.h"
+ "src/Settings/Settings.cpp"
+ "src/Settings/Settings.h"
+ "src/Settings/SettingField.cpp"
+ "src/Settings/SettingField.h"
  "src/HUDInjector.cpp"
  "src/HUDInjector.h"
  "src/Experience.cpp"
@@ -81,10 +83,7 @@ set(SOURCE_FILES
  "src/Skyrim/HUDMenu.h"
  "src/Skyrim/StatsMenu.cpp"
  "src/Skyrim/StatsMenu.h"
- "src/Utils/GameSettings.h" 
- "src/Utils/DirectoryParser.h"
- "src/Utils/SafeQueue.h"
- "src/Utils/Singleton.h")
+)
 
 source_group(
 	TREE ${CMAKE_CURRENT_SOURCE_DIR}/src

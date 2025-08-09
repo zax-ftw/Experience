@@ -1,7 +1,7 @@
 #include "Events/ObjectiveState.h"
 
 #include "Offsets.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 
 using namespace RE;
 
@@ -25,7 +25,7 @@ ObjectiveStateEventHandler::~ObjectiveStateEventHandler()
 
 BSEventNotifyControl ObjectiveStateEventHandler::ProcessEvent(const RE::ObjectiveState::Event* event, ObjectiveStateEventSource*)
 {
-	logger::info("[ObjectiveState] {0} ({1})",
+	logger::info("[ObjectiveState] {} ({})",
 		GetFormattedDisplayText(event->objective),
 		EnumToString(event->newState));
 
@@ -47,7 +47,7 @@ std::string ObjectiveStateEventHandler::GetFormattedDisplayText(BGSQuestObjectiv
 
 int ObjectiveStateEventHandler::GetReward(ObjectiveState oldState, ObjectiveState newState)
 {
-	const auto base = Settings::GetSingleton()->GetValue<int>("iXPQuestObjectives");
+	const int base = Settings::Questing::XPQuestObjectives;
 
     auto getReward = [base](ObjectiveState state) -> int {
 		return (state == ObjectiveState::kCompletedDisplayed) ? base : 0;

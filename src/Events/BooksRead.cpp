@@ -1,6 +1,6 @@
 #include "Events/BooksRead.h"
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 
 #include <math.h> // round, sqrt
 
@@ -34,7 +34,7 @@ BSEventNotifyControl BooksReadEventHandler::ProcessEvent(const BooksRead::Event*
 
 int BooksReadEventHandler::GetReward(float value)
 {
-	float mult = Settings::GetSingleton()->GetValue<float>("fReadingMult");
+	float mult = Settings::Reading::ReadingMult;
 	float sqrt = std::sqrtf(value * mult);
 
 	return std::round(sqrt);

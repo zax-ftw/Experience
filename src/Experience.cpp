@@ -1,6 +1,6 @@
 #include "Experience.h"
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Translation.h"
 #include "Skyrim/HUDMenu.h"
 
@@ -37,15 +37,13 @@ void ExperienceManager::Init()
 	events.emplace_back(new LocationClearedEventHandler(this));
 	events.emplace_back(new ObjectiveStateEventHandler(this));
 
-	auto settings = Settings::GetSingleton();
-
-	if (settings->GetValue<bool>("bEnableKilling")) {
+	if (Settings::General::EnableKilling) {
 		events.emplace_back(new ActorKillEventHandler(this));
 	}
-	if (settings->GetValue<bool>("bEnableReading")) {
+	if (Settings::General::EnableReading) {
 		events.emplace_back(new BooksReadEventHandler(this));
 	}
-	if (settings->GetValue<bool>("bEnableSkillXP")) {
+	if (Settings::General::EnableSkillXP) {
 		events.emplace_back(new SkillIncreaseEventHandler(this));
 	}
 
@@ -115,7 +113,7 @@ void ExperienceManager::AddExperience(int points, bool meter)
 	if (xp_new >= xp_max && xp_old < xp_max) {
 		ShowLevelUpNotification();
 	}
-	if (Settings::GetSingleton()->GetValue<bool>("bShowMessages")) {
+	if (Settings::General::ShowMessages) {
 		ShowRewardMessage(points);
 	}
 }
@@ -139,7 +137,7 @@ void ExperienceManager::Source::AddExperience(int points, bool meter)
 
 bool ExperienceManager::ShouldDisplayLevelMeter(bool display)
 {
-	int mode = Settings::GetSingleton()->GetValue<int>("iMeterMode");
+	int mode = Settings::General::MeterMode;
 	switch (mode) {
 	case MeterMode::kHidden:
 		return false;
@@ -169,7 +167,7 @@ void ExperienceManager::ShowLevelUpNotification()
 
 void ExperienceManager::ShowRewardMessage(int points)
 {
-	std::string format = Settings::GetSingleton()->GetValue<std::string>("sMessageFormat");
+	std::string format = Settings::General::MessageFormat;
 	std::string result = std::vformat(format, std::make_format_args(points));
 
 	DebugNotification(result.c_str());

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <math.h>
 
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Utils/DirectoryParser.h"
 #include "Hooks/Actor.h"
 
@@ -38,7 +38,7 @@ RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill
 
 		reward *= GetLevelMult(victim, player);
 		reward *= GetGroupMult(player);
-		reward *= Settings::GetSingleton()->GetValue<float>("fKillingMult");
+		reward *= Settings::Killing::KillingMult;
 
 		int result = std::ceil(reward);
 
@@ -50,7 +50,7 @@ RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill
 
 float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* killer)
 {
-	float setting = Settings::GetSingleton()->GetValue<float>("fLevelFactor");
+	float setting = Settings::Killing::LevelFactor;
 
 	float levelFactor = std::clamp(setting, 0.0f, 1.0f);
 	float levelRatio = (float)victim->GetLevel() / (float)killer->GetLevel();
@@ -60,7 +60,7 @@ float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* kill
 
 float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 {
-	float setting = Settings::GetSingleton()->GetValue<float>("fGroupFactor");
+	float setting = Settings::Killing::GroupFactor;
 
 	float groupFactor = std::clamp(setting, 0.0f, 0.5f);
 	float groupSize = player->teammateCount;
@@ -96,7 +96,7 @@ bool ActorKillEventHandler::IsValidKill(Actor* victim, Actor* killer)
 		return false;
 	}
 
-	float damageThreshold = Settings::GetSingleton()->GetValue<float>("fDamageThreshold");
+	float damageThreshold = Settings::Killing::DamageThreshold;
 
 	if (GetPlayerDamagePercent(victim) < damageThreshold) {
 		return false;

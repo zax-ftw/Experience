@@ -1,7 +1,7 @@
 #include "Papyrus.h"
 
 #include "Experience.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Skyrim/HUDMenu.h"
 
 #include "Hooks/PlayerSkills.h"
@@ -74,12 +74,17 @@ namespace Papyrus
 
 	void SaveSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton()->WriteSettings();
+		Settings::GetSingleton()->WriteSettings();
 	}
 
 	void LoadSettings(StaticFunctionTag*)
 	{
-		return Settings::GetSingleton()->ReadSettings();
+		Settings::GetSingleton()->ReadSettings();
+	}
+
+	void DumpSettings(StaticFunctionTag*)
+	{
+		Settings::GetSingleton()->ReadSettings();
 	}
 
 	bool RegisterFuncs(BSScript::IVirtualMachine* vm)
@@ -100,6 +105,8 @@ namespace Papyrus
 		vm->RegisterFunction("SetSettingString", "Experience", SetSettingString);
 
 		vm->RegisterFunction("SaveSettings", "Experience", SaveSettings);
+		vm->RegisterFunction("LoadSettings", "Experience", LoadSettings);
+		vm->RegisterFunction("DumpSettings", "Experience", DumpSettings);
 
 		logger::info("Papyrus functions registered");
 

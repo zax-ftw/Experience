@@ -1,6 +1,6 @@
 #include "Hooks/Actor.h"
 #include "Offsets.h"
-#include "Settings.h"
+#include "Settings/Settings.h"
 #include "Utils/GameSettings.h"
 
 using namespace RE;
