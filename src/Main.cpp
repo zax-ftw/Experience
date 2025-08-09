@@ -147,7 +147,7 @@ namespace Experience
 		InitializeLogging();
 
 		logger::info("{} {} is loading...", 
-			Plugin::NAME, Plugin::VERSION.string());
+			Plugin::NAME, Plugin::VERSION.string("."));
 
 		SKSE::Init(skse, false);
 		InitializeMessaging();

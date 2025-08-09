@@ -12,7 +12,7 @@ namespace Papyrus
 {
 	BSFixedString GetVersion(StaticFunctionTag*)
 	{
-		return Plugin::VERSION.string();
+		return Plugin::VERSION.string(".");
 	}
 
 	void AddExperience(StaticFunctionTag*, int points, bool meter)
