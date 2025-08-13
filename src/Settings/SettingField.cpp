@@ -40,10 +40,10 @@ void SettingField<float>::Load(CSimpleIniA& ini)
 	value = static_cast<float>(ini.GetDoubleValue(section.c_str(), key.c_str(), value));
 }
 template <>
-void SettingField<float>::Save(CSimpleIniA& ini) const
+void SettingField<float>::Save(CSimpleIniA& ini, bool force) const
 {
 	std::shared_lock lock(mtx);
-	if (flags.loaded || flags.modified) {
+	if (flags.loaded || flags.modified || force) {
 		ini.SetDoubleValue(section.c_str(), key.c_str(), value, comment.empty() ? nullptr : comment.c_str());
 	}
 }
@@ -57,10 +57,10 @@ void SettingField<bool>::Load(CSimpleIniA& ini)
 	value = ini.GetBoolValue(section.c_str(), key.c_str(), value);
 }
 template <>
-void SettingField<bool>::Save(CSimpleIniA& ini) const
+void SettingField<bool>::Save(CSimpleIniA& ini, bool force) const
 {
 	std::shared_lock lock(mtx);
-	if (flags.loaded || flags.modified) {
+	if (flags.loaded || flags.modified || force) {
 		ini.SetBoolValue(section.c_str(), key.c_str(), value, comment.empty() ? nullptr : comment.c_str());
 	}
 }
@@ -74,10 +74,10 @@ void SettingField<int>::Load(CSimpleIniA& ini)
 	value = ini.GetLongValue(section.c_str(), key.c_str(), value);
 }
 template <>
-void SettingField<int>::Save(CSimpleIniA& ini) const
+void SettingField<int>::Save(CSimpleIniA& ini, bool force) const
 {
 	std::shared_lock lock(mtx);
-	if (flags.loaded || flags.modified) {
+	if (flags.loaded || flags.modified || force) {
 		ini.SetLongValue(section.c_str(), key.c_str(), value, comment.empty() ? nullptr : comment.c_str());
 	}
 }
@@ -92,10 +92,10 @@ void SettingField<std::string>::Load(CSimpleIniA& ini)
 }
 
 template <>
-void SettingField<std::string>::Save(CSimpleIniA& ini) const
+void SettingField<std::string>::Save(CSimpleIniA& ini, bool force) const
 {
 	std::shared_lock lock(mtx);
-	if (flags.loaded || flags.modified) {
+	if (flags.loaded || flags.modified || force) {
 		ini.SetValue(section.c_str(), key.c_str(), value.c_str(), comment.empty() ? nullptr : comment.c_str());
 	}
 }

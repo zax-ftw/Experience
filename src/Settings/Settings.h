@@ -201,8 +201,8 @@ public:
 		SETTING_FLOAT(ReadingMult, "Reading", 2.0f);
 	};
 
-	void ReadSettings();
-	void WriteSettings();
+	void LoadSettings();
+	void SaveSettings(bool force = false) const;
 	void DumpSettings() const;
 
 	template <typename T>

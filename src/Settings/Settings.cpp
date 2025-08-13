@@ -1,6 +1,6 @@
 #include "Settings.h"
 
-void Settings::ReadSettings()
+void Settings::LoadSettings()
 {
 	CSimpleIniA ini;
 	ini.SetUnicode();
@@ -14,14 +14,14 @@ void Settings::ReadSettings()
 		field->Load(ini);
 }
 
-void Settings::WriteSettings()
+void Settings::SaveSettings(bool force) const
 {
 	CSimpleIniA ini;
 	ini.SetUnicode();
 
 	std::shared_lock lock(mtx);
 	for (auto field : fields)
-		field->Save(ini);
+		field->Save(ini, force);
 
 	if (ini.SaveFile(path) == SI_FILE) {
 		logger::warn("Failed to save file: {}", path);

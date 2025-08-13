@@ -15,7 +15,7 @@ public:
 
 	virtual ~ISettingField() = default;
 	virtual void Load(CSimpleIniA& ini) = 0;
-	virtual void Save(CSimpleIniA& ini) const = 0;
+	virtual void Save(CSimpleIniA& ini, bool force) const = 0;
 	virtual const std::string& GetKey() const = 0;
 	virtual const std::string& GetSection() const = 0;
 	virtual std::string ToString() const = 0;
@@ -89,7 +89,7 @@ public:
 	}
 
 	void Load(CSimpleIniA& ini) override;
-	void Save(CSimpleIniA& ini) const override;
+	void Save(CSimpleIniA& ini, bool force) const override;
 
 private:
 

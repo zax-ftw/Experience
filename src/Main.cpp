@@ -154,7 +154,7 @@ namespace Experience
 		InitializeSerialization();
 		InitializePapyrus();
 
-		Settings::GetSingleton()->ReadSettings();
+		Settings::GetSingleton()->LoadSettings();
 		HUDInjector::GetSingleton()->Register();
 
 		return true;

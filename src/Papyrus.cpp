@@ -74,17 +74,17 @@ namespace Papyrus
 
 	void SaveSettings(StaticFunctionTag*)
 	{
-		Settings::GetSingleton()->WriteSettings();
+		Settings::GetSingleton()->SaveSettings();
 	}
 
 	void LoadSettings(StaticFunctionTag*)
 	{
-		Settings::GetSingleton()->ReadSettings();
+		Settings::GetSingleton()->LoadSettings();
 	}
 
 	void DumpSettings(StaticFunctionTag*)
 	{
-		Settings::GetSingleton()->ReadSettings();
+		Settings::GetSingleton()->DumpSettings();
 	}
 
 	bool RegisterFuncs(BSScript::IVirtualMachine* vm)
