@@ -17,7 +17,7 @@ option(COPY_OUTPUT "Copy the build output to the Skyrim directory." ON)
 
 project(
 	Experience
-	VERSION 3.7.0
+	VERSION 3.7.1
 	LANGUAGES CXX
 )
 
