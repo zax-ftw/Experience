@@ -6,8 +6,6 @@ namespace RE
 	{
 		namespace Actor
 		{
-			constexpr auto KillImpl = RELOCATION_ID(36872, 37896);
-			constexpr auto Resurrect = RELOCATION_ID(36331, 37321);
 			constexpr auto DoDamage = RELOCATION_ID(36345, 37335);
 		}
 
@@ -16,7 +14,6 @@ namespace RE
 			constexpr auto Ctor = RELOCATION_ID(39340, 40411);
 			constexpr auto InitValues = RELOCATION_ID(39415, 40490);
 			constexpr auto WakeUp = RELOCATION_ID(39346, 40417);
-			constexpr auto UpdateNearbyMapMarkers = RELOCATION_ID(39663, 40750);
 			constexpr auto UseSkill = RELOCATION_ID(39413, 40488);
 		}
 
@@ -36,12 +33,6 @@ namespace RE
 		namespace BGSLocation
 		{
 			constexpr auto CheckLocationCleared = RELOCATION_ID(17965, 18369);
-			constexpr auto CanLocBeAlias = RELOCATION_ID(24526, 25055);
-		}
-
-		namespace GetAllGoodLocationsFunctor
-		{
-			constexpr auto Run = RELOCATION_ID(24647, 25118);
 		}
 
 		namespace ActorStateManager
