@@ -25,7 +25,7 @@ public:
 		SETTING_BOOL(EnableKilling, "General", true);
 		SETTING_BOOL(EnableReading, "General", true);
 		SETTING_BOOL(EnableSkillXP, "General", false);
-		SETTING_INT(MaxPlayerLevel, "General", 255);
+		SETTING_INT(MaxPlayerLevel, "General", 65535);
 		SETTING_FLOAT(SkillCapBase, "General", 18.0f);
 		SETTING_FLOAT(SkillCapMult, "General", 2.0f);
 		SETTING_BOOL(UseRacialCaps, "General", true);
@@ -191,7 +191,7 @@ public:
 	struct Killing
 	{
 		SETTING_FLOAT(LevelFactor, "Killing", 0.8f);
-		SETTING_FLOAT(GroupFactor, "Killing", 0.0f);
+		SETTING_FLOAT(GroupFactor, "Killing", 0.2f);
 		SETTING_FLOAT(DamageThreshold, "Killing", 0.2f);
 		SETTING_FLOAT(KillingMult, "Killing", 1.0f);
 	};
