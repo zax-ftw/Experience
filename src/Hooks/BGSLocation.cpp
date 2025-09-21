@@ -4,39 +4,49 @@
 
 using namespace RE;
 
-// TODO: refr->GetMapMarkerData
-MARKER_TYPE BGSLocationEx::GetMapMarkerType()
-{
-	if (auto marker = worldLocMarker.get()) {
-		ExtraMapMarker* extra = marker->extraList.GetByType<ExtraMapMarker>();
-		if (extra) {
-			return extra->mapData->type.get();
-		}
-	}
-	return MARKER_TYPE::kNone;
-}
-
-BGSLocationEx* BGSLocationEx::GetLastChecked()
-{
-	return lastChecked;
-}
-
-template <int N>
-bool BGSLocationEx::CheckCleared_Hook(BGSLocationEx* location, int time, bool force)
-{
-	lastChecked = location;
-
-	if (location->IsLoaded()) {
-		return _CheckCleared[N](location, time, force);
-	}
-
-	return location->IsCleared();
-}
-
 void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 {
-	_CheckCleared[0] = trampoline.write_call<5>(Offset::BGSLocation::CanLocBeAlias.address() + OFFSET(0x3F, 0x3F, 0x3F), CheckCleared_Hook<0>);
-	_CheckCleared[1] = trampoline.write_call<5>(Offset::GetAllGoodLocationsFunctor::Run.address() + OFFSET(0x71, 0xAE, 0x71), CheckCleared_Hook<1>);
-	_CheckCleared[2] = trampoline.write_call<5>(Offset::Actor::Resurrect.address() + OFFSET(0x386, 0x347, 0x386), CheckCleared_Hook<2>);
-	_CheckCleared[3] = trampoline.write_call<5>(Offset::Actor::KillImpl.address() + OFFSET(0x1142, 0x11E8, 0x1142), CheckCleared_Hook<3>);
+#ifdef SKYRIM_SUPPORT_AE
+	/*
+		B9 0D 00 00 00 
+		E8 28 AE EB FF 
+		48 85 C0 
+		74 26 
+		48 8B 0D 7C A1 D0 02 
+		48 8D 54 24 20 
+		48 83 C0 20 
+		C7 44 24 28 00 00 00 00 
+		48 89 44 24 20 
+		45 33 C0 
+		48 8B 01 
+		FF 50 08
+	*/
+	REL::safe_fill(Offset::BGSLocation::CheckLocationCleared.address() + 0x16E, REL::NOP, 53);
+#else
+	/*
+		E8 6D 3D EB FF
+		44 38 B0 8D 0B 00 00
+		74 2F
+		48 8B 80 88 00 00 00
+		48 85 C0
+		74 23
+		48 8B 0D 21 28 C8 02
+		48 8D 54 24 20
+		48 83 C0 20
+		44 89 74 24 28
+		48 89 44 24 20
+		45 33 C0
+		48 8B 01
+		FF 50 08
+	*/
+	REL::safe_fill(Offset::BGSLocation::CheckLocationCleared.address() + 0x11E, REL::NOP, 61);	
+#endif
+
+#ifdef SKYRIM_SUPPORT_AE
+	uint8_t kInitEventStruct[] = { 0x48, 0x89, 0x94, 0x24, 0x80, 0x00, 0x00, 0x00 }; // mov qword ptr [rsp+0x80], rsi
+#else
+	uint8_t kInitEventStruct[] = { 0x48, 0x89, 0x9C, 0x24, 0x90, 0x00, 0x00, 0x00 }; // mov qword ptr [rsp+0x90], rbx
+#endif
+
+	REL::safe_write<uint8_t>(Offset::BGSLocation::CheckLocationCleared.address() + OFFSET(0x11E, 0x16E, 0x11E), kInitEventStruct);
 }

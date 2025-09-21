@@ -2,6 +2,18 @@
 
 #include "Experience.h"
 
+namespace RE
+{
+	struct LocationClearedEx
+	{
+	public:
+		struct Event
+		{
+			BGSLocation* location;
+		};
+	};
+}
+
 class LocationClearedEventHandler : public ExperienceManager::Source, 
 	public RE::BSTEventSink<RE::LocationCleared::Event>
 {

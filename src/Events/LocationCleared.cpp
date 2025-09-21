@@ -19,12 +19,26 @@ LocationClearedEventHandler::~LocationClearedEventHandler()
 	LocationCleared::GetEventSource()->RemoveEventSink(this);
 }
 
-BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCleared::Event*, LocationClearedEventSource*)
+// TODO: refr->GetExtraMapMarker
+MARKER_TYPE GetMapMarkerType(BGSLocation* location)
 {
-	BGSLocationEx* location = BGSLocationEx::GetLastChecked();
-	if (location) {
+	if (auto marker = location->worldLocMarker.get()) {
+		ExtraMapMarker* extra = marker->extraList.GetByType<ExtraMapMarker>();
+		if (extra) {
+			return extra->mapData->type.get();
+		}
+	}
+	return MARKER_TYPE::kNone;
+}
 
-		auto type = location->GetMapMarkerType();
+BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCleared::Event* event, LocationClearedEventSource*)
+{
+	auto fixed = reinterpret_cast<const LocationClearedEx::Event*>(event);
+
+	auto location = fixed->location;
+	if (location && location->IsLoaded()) {
+
+		auto type = GetMapMarkerType(location);
 		auto name = location->GetName();
 
 		ShowLocationCleared(name);
@@ -35,6 +49,7 @@ BSEventNotifyControl LocationClearedEventHandler::ProcessEvent(const LocationCle
 		auto reward = GetReward(type);
 		AddExperience(reward);
 	}
+
 	return BSEventNotifyControl::kContinue;
 }
 
@@ -151,5 +166,5 @@ void LocationClearedEventHandler::ShowLocationCleared(const char* text)
 {
 	auto status = Utils::GetGameSettingString("sCleared");
 
-	HUDMenuEx::ShowNotification(text, status, "");
+	HUDMenuEx::ShowNotification(text, status, "MUSDungeonCleared");
 }
