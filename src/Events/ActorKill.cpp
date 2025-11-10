@@ -50,19 +50,18 @@ RE::BSEventNotifyControl ActorKillEventHandler::ProcessEvent(const RE::ActorKill
 
 float ActorKillEventHandler::GetLevelMult(const Actor* victim, const Actor* killer)
 {
-	float setting = Settings::Killing::LevelFactor;
+	float levelFactor = Settings::Killing::LevelFactor;
+	float maxLevelMult = Settings::Killing::MaxLevelMult;
 
-	float levelFactor = std::clamp(setting, 0.0f, 1.0f);
-	float levelRatio = (float)victim->GetLevel() / (float)killer->GetLevel();
+	float levelRatio = float(victim->GetLevel()) / float(killer->GetLevel());
+	float levelMult = std::pow(levelRatio, levelFactor);
 
-	return std::pow(levelRatio, levelFactor);
+	return std::min(levelMult, maxLevelMult);
 }
 
 float ActorKillEventHandler::GetGroupMult(const PlayerCharacter* player)
 {
-	float setting = Settings::Killing::GroupFactor;
-
-	float groupFactor = std::clamp(setting, 0.0f, 0.5f);
+	float groupFactor = Settings::Killing::GroupFactor;
 	float groupSize = player->teammateCount;
 
 	return std::pow(1.0f - groupFactor, groupSize);

@@ -192,6 +192,7 @@ public:
 	{
 		SETTING_FLOAT(LevelFactor, "Killing", 0.8f);
 		SETTING_FLOAT(GroupFactor, "Killing", 0.2f);
+		SETTING_FLOAT(MaxLevelMult, "Killing", 3.0f);
 		SETTING_FLOAT(DamageThreshold, "Killing", 0.2f);
 		SETTING_FLOAT(KillingMult, "Killing", 1.0f);
 	};
