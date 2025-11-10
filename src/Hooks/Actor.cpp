@@ -26,10 +26,8 @@ bool ActorEx::IsPlayerOrTeam(Actor* actor)
 void ActorEx::ModTrackedDamage_Hook(AIProcess* process, Actor* attacker, float damage)
 {
 	auto player = PlayerCharacter::GetSingleton();
-	auto target = process ? process->GetUserData() : nullptr;
 
-	if ((attacker && IsPlayerOrTeam(attacker)) ||
-		(target && target->IsCombatTarget(player))) {
+	if (attacker && IsPlayerOrTeam(attacker)) {
 		attacker = player;
 	}
 	_ModTrackedDamage(process, attacker, damage);
