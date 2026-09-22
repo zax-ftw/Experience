@@ -48,5 +48,5 @@ void ActorEx::Install(REL::Trampoline& trampoline)
 		Offset::Actor::DoDamage.address() + OFFSET(0xFD, 0x131, 0xFD), ModTrackedDamage_Hook);
 
 	_StartKillMove = trampoline.write_call<5>(
-		Offset::ActorStateManager::SetStates.address() + OFFSET(0x1A7, 0x1D1, 0x1A7), StartKillMove_Hook);
+		Offset::ActorStateManager::SetStates.address() + OFFSET(0x1A7, 0x1D6, 0x1A7), StartKillMove_Hook);
 }
