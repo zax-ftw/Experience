@@ -82,7 +82,7 @@ void PlayerSkillsEx::ApplyRacials(TESRace* race)
 
 	for (auto& [skill, bonus] : race->data.skillBoosts) {
 
-		logger::info("{}: {}", *skill, bonus);
+		logger::info("{}: {}", EnumToString(*skill), bonus);
 
 		auto id = ResolveAdvanceableSkillId(*skill);
 		if (id) {
@@ -225,11 +225,11 @@ bool PlayerSkillsEx::IsReadyToLevelUp_Hook(PlayerSkillsEx* skills)
 	return false;
 }
 
-void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
+void PlayerSkillsEx::Install(REL::Trampoline& trampoline)
 {
 	_InitializeData = trampoline.write_call<5>(Offset::Main::PerformGameReset.address() + OFFSET(0x289, 0x303, 0x29E), InitializeData_Hook);
 	trampoline.write_call<5>(Offset::Main::UpdatePlayer.address() + OFFSET(0xE5, 0xE5, 0xE5), InitializeData_Hook);
-	trampoline.write_branch<5>(Offset::PlayerCharacter::InitValues.address() + OFFSET(0x1A, 0x1A, 0x1A), InitializeData_Hook);
+	trampoline.write_jmp<5>(Offset::PlayerCharacter::InitValues.address() + OFFSET(0x1A, 0x1A, 0x1A), REX::UNRESTRICTED_CAST<std::uintptr_t>(InitializeData_Hook));
 
 	trampoline.write_call<5>(Offset::Console::UpdateLevel.address() + OFFSET(0x40, 0x40, 0x40), FinishLevelUp_Hook);
 	trampoline.write_call<5>(Offset::PlayerSkills::ForceLevel.address() + OFFSET(0x3E, 0x3E, 0x3E), FinishLevelUp_Hook);
@@ -237,7 +237,7 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 
 	_GetSkillInfo = trampoline.write_call<5>(Offset::StatsMenu::InitSkills.address() + OFFSET(0x103, 0x104, 0x13D), GetSkillInfo_Hook);
 	trampoline.write_call<5>(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x87, 0x87, 0x87), GetSkillInfo_Hook);
-	REL::safe_fill(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
+	REL::WriteSafeFill(Offset::TrainingMenu::UpdateSkillMeter.address() + OFFSET(0x44, 0x44, 0x44), REL::NOP, 0x2);
 
 	_UseSkill = trampoline.write_call<5>(Offset::PlayerCharacter::UseSkill.address() + OFFSET(0x25, 0x25, 0x25), UseSkill_Hook);
 	trampoline.write_call<5>(Offset::PlayerSkills::IncrementSkill.address() + OFFSET(0x99, 0x98, 0x99), UseSkill_Hook);
@@ -253,8 +253,8 @@ void PlayerSkillsEx::Install(SKSE::Trampoline& trampoline)
 #else
 	uint8_t kDisableExperienceGain[] = { 0x66, 0x0F, 0xEF, 0xC0, 0x90 };  // pxor xmm0, xmm0
 #endif
-	REL::safe_write<uint8_t>(Offset::PlayerSkills::UseSkill.address() + OFFSET(0x22B, 0x2CF, 0x22B), kDisableExperienceGain);
+	REL::WriteSafe<uint8_t>(Offset::PlayerSkills::UseSkill.address() + OFFSET(0x22B, 0x2CF, 0x22B), kDisableExperienceGain);
 
 	uint8_t kDisableLevelUpMessage[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };  // level meter for skills
-	REL::safe_write<uint8_t>(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC), kDisableLevelUpMessage);
+	REL::WriteSafe<uint8_t>(Offset::HUDNotifications::Update.address() + OFFSET(0x2FC, 0x2FF, 0x2FC), kDisableLevelUpMessage);
 }

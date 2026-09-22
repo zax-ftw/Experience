@@ -6,7 +6,7 @@ public:
 
 	void UpdateSkillMeter(bool a_targetPercent, bool a_skipPercentCalc);
 
-	static void Install(SKSE::Trampoline& trampoline);
+	static void Install(REL::Trampoline& trampoline);
 
 private:
 

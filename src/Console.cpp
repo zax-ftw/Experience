@@ -57,7 +57,7 @@ void ObScript::AdvancePCLevel_Commit(Command* original)
 
 	cmd.params = param;
 
-	REL::safe_write((uintptr_t)original, &cmd, sizeof(cmd));
+	REL::WriteSafe((uintptr_t)original, &cmd, sizeof(cmd));
 }
 
 void ObScript::GetXPForNextLevel_Commit(Command* original) 
@@ -79,7 +79,7 @@ void ObScript::GetXPForNextLevel_Commit(Command* original)
 
 	//cmd.params = param;
 
-	REL::safe_write((uintptr_t)original, &cmd, sizeof(cmd));
+	REL::WriteSafe((uintptr_t)original, &cmd, sizeof(cmd));
 }
 
 void ObScript::Init()

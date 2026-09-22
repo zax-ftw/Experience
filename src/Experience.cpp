@@ -170,5 +170,5 @@ void ExperienceManager::ShowRewardMessage(int points)
 	std::string format = Settings::General::MessageFormat;
 	std::string result = std::vformat(format, std::make_format_args(points));
 
-	DebugNotification(result.c_str());
+	SendHUDMessage::ShowHUDMessage(result.c_str());
 }

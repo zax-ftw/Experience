@@ -3,7 +3,7 @@
 class ActorEx : public RE::Actor
 {
 public:
-	static void Install(SKSE::Trampoline& trampoline);
+	static void Install(REL::Trampoline& trampoline);
 	static bool IsPlayerOrTeam(RE::Actor* actor);
 
 private:

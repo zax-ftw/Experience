@@ -15,6 +15,8 @@ using namespace SKSE;
 
 namespace Experience
 {
+	constexpr REL::Version SSE_1_7_99(1, 7, 99, 0);
+
 	void InitializeLogging()
 	{
 #ifndef NDEBUG
@@ -22,7 +24,7 @@ namespace Experience
 #else
 		auto path = logger::log_directory();
 		if (!path) {
-			stl::report_and_fail("Unable to lookup SKSE logs directory"sv);
+			REX::FAIL("Unable to lookup SKSE logs directory"sv);
 		}
 
 		*path /= std::format("{}.log"sv, Plugin::NAME);
@@ -40,7 +42,7 @@ namespace Experience
 		log->set_level(level);
 		log->flush_on(level);
 
-		spdlog::set_default_logger(std::move(log));
+		spdlog::set_default_logger(log);
 		spdlog::set_pattern("[%H:%M:%S][%l] %v"s);
 	}
 
@@ -61,14 +63,14 @@ namespace Experience
 		if (GetPapyrusInterface()->Register(Papyrus::RegisterFuncs)) {
 			logger::debug("Papyrus functions bound");
 		} else {
-			stl::report_and_fail("Failure to register Papyrus bindings");
+			REX::FAIL("Failure to register Papyrus bindings");
 		}
 	}
 
     void InitializeHooking()
 	{
 		logger::trace("Initializing trampoline...");
-		auto& trampoline = GetTrampoline();
+		auto& trampoline = REL::GetTrampoline();
 		trampoline.create(256);
 		logger::trace("Trampoline initialized");
 
@@ -100,12 +102,12 @@ namespace Experience
 					break;
 				}
 			})) {
-			stl::report_and_fail("Unable to register message listener.");
+			REX::FAIL("Unable to register message listener.");
 		}
 	}
 
 #ifdef SKYRIM_SUPPORT_AE
-	extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() {
+	SKSE_PLUGIN_VERSION = []() {
 		SKSE::PluginVersionData v;
 
 		v.PluginVersion(Plugin::VERSION);
@@ -115,41 +117,58 @@ namespace Experience
 		v.UsesUpdatedStructs();
 		v.CompatibleVersions({ SKSE::RUNTIME_SSE_LATEST });
 
+		if constexpr (SKSE::RUNTIME_SSE_LATEST < SSE_1_7_99) {
+			v.MinimumRequiredXSEVersion({ 2, 2, 5 });
+		} else {
+			v.MinimumRequiredXSEVersion({ 2, 3, 0 });
+		}
+
 		return v;
 	}();
 #else
-	extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+	SKSE_PLUGIN_QUERY(const SKSE::QueryInterface* skse, SKSE::PluginInfo* info)
 	{
-		a_info->infoVersion = SKSE::PluginInfo::kVersion;
-		a_info->name = Plugin::NAME.data();
-		a_info->version = Plugin::VERSION.pack();
+		info->infoVersion = SKSE::PluginInfo::kVersion;
+		info->name = Plugin::NAME.data();
+		info->version = Plugin::VERSION.pack();
 
-		if (a_skse->IsEditor()) {
-			logger::critical("Loaded in editor, marking as incompatible"sv);
+		if (skse->IsEditor()) {
+			REX::CRITICAL("Loaded in editor, marking as incompatible"sv);
 			return false;
 		}
 
-		const auto ver = a_skse->RuntimeVersion();
+		const auto ver = skse->RuntimeVersion();
 #	ifdef SKYRIMVR
 		if (ver > SKSE::RUNTIME_VR_1_4_15_1) {
 #	else
 		if (ver < SKSE::RUNTIME_SSE_1_5_39) {
 #	endif	
-			logger::critical("Unsupported runtime version {}", ver.string());
+			REX::CRITICAL("Unsupported runtime version {}", ver.string());
 			return false;
 		}
 		return true;
 	}
 #endif
 
-	extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* skse)
+	SKSE_PLUGIN_LOAD(const SKSE::LoadInterface* skse)
 	{
 		InitializeLogging();
 
-		logger::info("{} {} is loading...", 
+		REX::INFO("{} {} is loading...", 
 			Plugin::NAME, Plugin::VERSION.string("."));
 
 		SKSE::Init(skse, false);
+
+		const auto runtime = skse->RuntimeVersion();
+		REX::INFO("Game version: {}", runtime);
+
+#ifdef SKYRIM_SUPPORT_AE
+		if constexpr (SKSE::RUNTIME_SSE_LATEST < SSE_1_7_99) {
+			if (runtime >= SSE_1_7_99) {
+				REX::FAIL("{} does not support Skyrim runtime {}.", Plugin::NAME, runtime);
+			}
+		}
+#endif
 		InitializeMessaging();
 		InitializeSerialization();
 		InitializePapyrus();
@@ -160,7 +179,7 @@ namespace Experience
 		return true;
 	}
 
-	extern "C" DLLEXPORT void* SKSEAPI RequestAPI(ApiVersion a_version)
+	SKSE_EXPORT void* RequestAPI(ApiVersion a_version)
 	{
 		auto api = ExperienceInterface::GetSingleton();
 

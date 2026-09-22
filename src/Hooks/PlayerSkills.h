@@ -25,7 +25,7 @@ public:
 	static void Revert(SKSE::SerializationInterface* intfc);
 	static void PostLoad();
 
-	static void Install(SKSE::Trampoline& trampoline);
+	static void Install(REL::Trampoline& trampoline);
 
 private:
 	using Skill = Data::Skill;

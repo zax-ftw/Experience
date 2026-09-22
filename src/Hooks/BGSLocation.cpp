@@ -4,7 +4,7 @@
 
 using namespace RE;
 
-void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
+void BGSLocationEx::Install(REL::Trampoline& trampoline)
 {
 #ifdef SKYRIM_SUPPORT_AE
 	/*
@@ -21,7 +21,7 @@ void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 		48 8B 01 
 		FF 50 08
 	*/
-	REL::safe_fill(Offset::BGSLocation::CheckLocationCleared.address() + 0x16E, REL::NOP, 53);
+	REL::WriteSafeFill(Offset::BGSLocation::CheckLocationCleared.address() + 0x16E, REL::NOP, 53);
 #else
 	/*
 		E8 6D 3D EB FF
@@ -39,7 +39,7 @@ void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 		48 8B 01
 		FF 50 08
 	*/
-	REL::safe_fill(Offset::BGSLocation::CheckLocationCleared.address() + 0x11E, REL::NOP, 61);	
+	REL::WriteSafeFill(Offset::BGSLocation::CheckLocationCleared.address() + 0x11E, REL::NOP, 61);	
 #endif
 
 #ifdef SKYRIM_SUPPORT_AE
@@ -48,5 +48,5 @@ void BGSLocationEx::Install(SKSE::Trampoline& trampoline)
 	uint8_t kInitEventStruct[] = { 0x48, 0x89, 0x9C, 0x24, 0x90, 0x00, 0x00, 0x00 }; // mov qword ptr [rsp+0x90], rbx
 #endif
 
-	REL::safe_write<uint8_t>(Offset::BGSLocation::CheckLocationCleared.address() + OFFSET(0x11E, 0x16E, 0x11E), kInitEventStruct);
+	REL::WriteSafe<uint8_t>(Offset::BGSLocation::CheckLocationCleared.address() + OFFSET(0x11E, 0x16E, 0x11E), kInitEventStruct);
 }

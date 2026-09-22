@@ -3,5 +3,5 @@
 class BGSLocationEx : public RE::BGSLocation
 {
 public:
-	static void Install(SKSE::Trampoline& trampoline);
+	static void Install(REL::Trampoline& trampoline);
 };
